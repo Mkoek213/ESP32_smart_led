@@ -1,0 +1,2 @@
+source /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/bootloader/gdbinit/symbols
+source /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/bootloader/gdbinit/connect

@@ -1,0 +1,70 @@
+Command: ninja flash
+[1/5] cd /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/esp-idf/esptool_py && /home/mikolaj/.espressif/python_env/idf5.5_py3.12_env/bin/python /home/mikolaj/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/partition_table/partition-table.bin /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.bin
+wifi_station.bin binary size 0xaf7b0 bytes. Smallest app partition is 0x100000 bytes. 0x50850 bytes (31%) free.
+[2/5] Performing build step for 'bootloader'
+[1/1] cd /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/bootloader/esp-idf/esptool_py && /home/mikolaj/.espressif/python_env/idf5.5_py3.12_env/bin/python /home/mikolaj/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/bootloader/bootloader.bin
+Bootloader binary size 0x6680 bytes. 0x980 bytes (8%) free.
+[3/5] No install step for 'bootloader'
+[4/5] Completed 'bootloader'
+[4/5] cd /home/mikolaj/esp/esp-idf/components/esptool_py && /usr/bin/cmake -D IDF_PATH=/home/mikolaj/esp/esp-idf -D "SERIAL_TOOL=/home/mikolaj/.espressif/python_env/idf5.5_py3.12_env/bin/python;;/home/mikolaj/esp/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D WORKING_DIRECTORY=/home/mikolaj/work/ESP32_smart_led/wifi_led_project/build -P /home/mikolaj/esp/esp-idf/components/esptool_py/run_serial_tool.cmake
+esptool.py --chip esp32 -p /dev/ttyUSB0 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 2MB 0x1000 bootloader/bootloader.bin 0x10000 wifi_station.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.10.0
+Serial port /dev/ttyUSB0
+Connecting....
+Chip is ESP32-D0WD-V3 (revision v3.1)
+Features: WiFi, BT, Dual Core, 240MHz, VRef calibration in efuse, Coding Scheme None
+Crystal is 40MHz
+MAC: 6c:c8:40:92:3f:14
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00001000 to 0x00007fff...
+Flash will be erased from 0x00010000 to 0x000bffff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+SHA digest in image updated
+Compressed 26240 bytes to 16489...
+Writing at 0x00001000... (50 %)
+Writing at 0x000075fa... (100 %)
+Wrote 26240 bytes (16489 compressed) at 0x00001000 in 0.5 seconds (effective 395.8 kbit/s)...
+Hash of data verified.
+Compressed 718768 bytes to 447024...
+Writing at 0x00010000... (3 %)
+Writing at 0x0001c64c... (7 %)
+Writing at 0x00024cd8... (10 %)
+Writing at 0x0002ef2f... (14 %)
+Writing at 0x0003486c... (17 %)
+Writing at 0x0003a987... (21 %)
+Writing at 0x0004073e... (25 %)
+Writing at 0x0004673c... (28 %)
+Writing at 0x0004c244... (32 %)
+Writing at 0x0005217d... (35 %)
+Writing at 0x00057c1c... (39 %)
+Writing at 0x0005d6f1... (42 %)
+Writing at 0x00062efd... (46 %)
+Writing at 0x000687f4... (50 %)
+Writing at 0x0006e540... (53 %)
+Writing at 0x00073ed5... (57 %)
+Writing at 0x00079a0e... (60 %)
+Writing at 0x0007f7cb... (64 %)
+Writing at 0x000851b8... (67 %)
+Writing at 0x0008aed1... (71 %)
+Writing at 0x0009086d... (75 %)
+Writing at 0x000961c4... (78 %)
+Writing at 0x0009f9cd... (82 %)
+Writing at 0x000a695b... (85 %)
+Writing at 0x000aca3c... (89 %)
+Writing at 0x000b257e... (92 %)
+Writing at 0x000b846c... (96 %)
+Writing at 0x000bd85b... (100 %)
+Wrote 718768 bytes (447024 compressed) at 0x00010000 in 10.5 seconds (effective 546.4 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 103...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (103 compressed) at 0x00008000 in 0.0 seconds (effective 1386.0 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...
