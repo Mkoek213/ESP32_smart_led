@@ -1,0 +1,1013 @@
+Command: /home/mikolaj/.espressif/python_env/idf5.5_py3.12_env/bin/python /home/mikolaj/esp/esp-idf/tools/idf_monitor.py -p /dev/ttyUSB0 -b 115200 --toolchain-prefix xtensa-esp32-elf- --target esp32 --revision 0 /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/bootloader/bootloader.elf -m '/home/mikolaj/.espressif/python_env/idf5.5_py3.12_env/bin/python' '/home/mikolaj/esp/esp-idf/tools/idf.py' '-p' '/dev/ttyUSB0'
+[0;33m--- esp-idf-monitor 1.8.0 on /dev/ttyUSB0 115200[0m
+[0;33m--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m564[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m535[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m136[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run_task[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m106[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[1;31mxtensa-esp32-elf-addr2line -fiaC -e /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf 0x400d8053: Command '['xtensa-esp32-elf-addr2line', '-fiaC', '-e', '/home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf', '0x400d8053']' returned non-zero exit status 1.[0m
+[1;31mELF file is missing or has changed, the build folder was probably modified.[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[1;31mxtensa-esp32-elf-addr2line -fiaC -e /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf 0x400d8050 0x400d8b86 0x400d8bab 0x401582c1 0x40157d09 0x40157dc5 0x40089731: Command '['xtensa-esp32-elf-addr2line', '-fiaC', '-e', '/home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf', '0x400d8050', '0x400d8b86', '0x400d8bab', '0x401582c1', '0x40157d09', '0x40157dc5', '0x40089731']' returned non-zero exit status 1.[0m
+[1;31mELF file is missing or has changed, the build folder was probably modified.[0m
+[0;33m--- Warning: Checksum mismatch between flashed and built applications. Checksum of built application is ddc944c9e1c40ec95856f0893e964d18aea6002e59092f3c515481381d3c7ccb[0m
+[1;31mxtensa-esp32-elf-addr2line -fiaC -e /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf 0x40080400: Command '['xtensa-esp32-elf-addr2line', '-fiaC', '-e', '/home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf', '0x40080400']' returned non-zero exit status 1.[0m
+[1;31mELF file is missing or has changed, the build folder was probably modified.[0m
+[0m--- 0x40080400: [0;33m_stext[0m[0m at [0;32m??[0m[0m:[1;31m?[0m
+[1;31mxtensa-esp32-elf-addr2line -fiaC -e /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf 0x40080638: Command '['xtensa-esp32-elf-addr2line', '-fiaC', '-e', '/home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf', '0x40080638']' returned non-zero exit status 1.[0m
+[1;31mELF file is missing or has changed, the build folder was probably modified.[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0;33m--- Warning: Checksum mismatch between flashed and built applications. Checksum of built application is ddc944c9e1c40ec95856f0893e964d18aea6002e59092f3c515481381d3c7ccb[0m
+[1;31mxtensa-esp32-elf-addr2line -fiaC -e /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf 0x400d8053: Command '['xtensa-esp32-elf-addr2line', '-fiaC', '-e', '/home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf', '0x400d8053']' returned non-zero exit status 1.[0m
+[1;31mELF file is missing or has changed, the build folder was probably modified.[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[1;31mxtensa-esp32-elf-addr2line -fiaC -e /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf 0x400d8050 0x400d8b86 0x400d8bab 0x401582c1 0x40157d09 0x40157dc5 0x40089731: Command '['xtensa-esp32-elf-addr2line', '-fiaC', '-e', '/home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf', '0x400d8050', '0x400d8b86', '0x400d8bab', '0x401582c1', '0x40157d09', '0x40157dc5', '0x40089731']' returned non-zero exit status 1.[0m
+[1;31mELF file is missing or has changed, the build folder was probably modified.[0m
+[0;33m--- Warning: Checksum mismatch between flashed and built applications. Checksum of built application is ddc944c9e1c40ec95856f0893e964d18aea6002e59092f3c515481381d3c7ccb[0m
+[1;31mxtensa-esp32-elf-addr2line -fiaC -e /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf 0x40080400: Command '['xtensa-esp32-elf-addr2line', '-fiaC', '-e', '/home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf', '0x40080400']' returned non-zero exit status 1.[0m
+[1;31mELF file is missing or has changed, the build folder was probably modified.[0m
+[0m--- 0x40080400: [0;33m_stext[0m[0m at [0;32m??[0m[0m:[1;31m?[0m
+[1;31mxtensa-esp32-elf-addr2line -fiaC -e /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf 0x40080638: Command '['xtensa-esp32-elf-addr2line', '-fiaC', '-e', '/home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf', '0x40080638']' returned non-zero exit status 1.[0m
+[1;31mELF file is missing or has changed, the build folder was probably modified.[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0;33m--- Warning: Checksum mismatch between flashed and built applications. Checksum of built application is ddc944c9e1c40ec95856f0893e964d18aea6002e59092f3c515481381d3c7ccb[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m565[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m532[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m132[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m736[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0;33m--- Warning: Checksum mismatch between flashed and built applications. Checksum of built application is ddc944c9e1c40ec95856f0893e964d18aea6002e59092f3c515481381d3c7ccb[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0;33m--- Warning: Checksum mismatch between flashed and built applications. Checksum of built application is ddc944c9e1c40ec95856f0893e964d18aea6002e59092f3c515481381d3c7ccb[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m565[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m532[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m132[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m736[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0;33m--- Warning: Checksum mismatch between flashed and built applications. Checksum of built application is ddc944c9e1c40ec95856f0893e964d18aea6002e59092f3c515481381d3c7ccb[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0;33m--- Warning: Checksum mismatch between flashed and built applications. Checksum of built application is ddc944c9e1c40ec95856f0893e964d18aea6002e59092f3c515481381d3c7ccb[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m565[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m532[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m132[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m736[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0;33m--- Warning: Checksum mismatch between flashed and built applications. Checksum of built application is ddc944c9e1c40ec95856f0893e964d18aea6002e59092f3c515481381d3c7ccb[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0;33m--- Warning: Checksum mismatch between flashed and built applications. Checksum of built application is ddc944c9e1c40ec95856f0893e964d18aea6002e59092f3c515481381d3c7ccb[0m
+[0m--- 0x400d8053: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m110[0m
+[0m--- 0x400014fd: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x4000150d: [0;33mstrlen[0m[0m in [0;32mROM[0m
+[0m--- 0x400d8050: [0;33mLEDController::stop_blinking()[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m109[0m
+[0m--- 0x400d8b86: [0;33mWiFiStation::event_handler(char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m565[0m
+[0m--- 0x400d8bab: [0;33mWiFiStation::event_handler_wrapper(void*, char const*, long, void*)[0m[0m at [0;32m/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/station_example_main.cpp[0m[0m:[1;31m532[0m
+[0m--- 0x401582c1: [0;33mhandler_execute[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m132[0m
+[0m--- 0x40157d09: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m696[0m
+[0m--- 0x40157dc5: [0;33mesp_event_loop_run[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/esp_event/esp_event.c[0m[0m:[1;31m736[0m
+[0m--- 0x40089731: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0;33m--- Warning: Checksum mismatch between flashed and built applications. Checksum of built application is ddc944c9e1c40ec95856f0893e964d18aea6002e59092f3c515481381d3c7ccb[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2235[0m
+[0m--- 0x40080638: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/mikolaj/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m25[0m
+[0;33m--- Warni

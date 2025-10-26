@@ -1,0 +1,290 @@
+Command: /home/mikolaj/.espressif/python_env/idf5.5_py3.12_env/bin/python /home/mikolaj/esp/esp-idf/tools/idf_monitor.py -p /dev/ttyUSB0 -b 115200 --toolchain-prefix xtensa-esp32-elf- --target esp32 --revision 0 /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.elf /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/bootloader/bootloader.elf -m '/home/mikolaj/.espressif/python_env/idf5.5_py3.12_env/bin/python' '/home/mikolaj/esp/esp-idf/tools/idf.py' '-p' '/dev/ttyUSB0'
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:6380
+ho 0 tail 12 room 4
+load:0x40078000,len:15916
+load:0x40080400,len:3860
+entry 0x40080638
+[0;32mI (29) boot: ESP-IDF v5.5.1 2nd stage bootloader[0m
+[0;32mI (29) boot: compile time Oct 26 2025 14:27:37[0m
+[0;32mI (29) boot: Multicore bootloader[0m
+[0;32mI (31) boot: chip revision: v3.1[0m
+[0;32mI (33) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (37) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (41) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (44) boot: Enabling RNG early entropy source...[0m
+[0;32mI (49) boot: Partition Table:[0m
+[0;32mI (51) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (58) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (64) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (71) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (77) boot: End of partition table[0m
+[0;32mI (81) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=1aea0h (110240) map[0m
+[0;32mI (126) esp_image: segment 1: paddr=0002aec8 vaddr=3ffb0000 size=03f1ch ( 16156) load[0m
+[0;32mI (132) esp_image: segment 2: paddr=0002edec vaddr=40080000 size=0122ch (  4652) load[0m
+[0;32mI (134) esp_image: segment 3: paddr=00030020 vaddr=400d0020 size=8bde8h (572904) map[0m
+[0;32mI (333) esp_image: segment 4: paddr=000bbe10 vaddr=4008122c size=16c34h ( 93236) load[0m
+[0;32mI (369) esp_image: segment 5: paddr=000d2a4c vaddr=50000000 size=00020h (    32) load[0m
+[0;32mI (381) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (381) boot: Disabling RNG early entropy source...[0m
+[0;32mI (392) cpu_start: Multicore app[0m
+[0;32mI (400) cpu_start: Pro cpu start user code[0m
+[0;32mI (400) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (400) app_init: Application information:[0m
+[0;32mI (400) app_init: Project name:     wifi_station[0m
+[0;32mI (405) app_init: App version:      2ce7951-dirty[0m
+[0;32mI (409) app_init: Compile time:     Oct 26 2025 14:35:51[0m
+[0;32mI (414) app_init: ELF file SHA256:  885a5537f...[0m
+[0;32mI (418) app_init: ESP-IDF:          v5.5.1[0m
+[0;32mI (422) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (426) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (430) efuse_init: Chip rev:         v3.1[0m
+[0;32mI (434) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (440) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (445) heap_init: At 3FFB8640 len 000279C0 (158 KiB): DRAM[0m
+[0;32mI (451) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (456) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (461) heap_init: At 40097E60 len 000081A0 (32 KiB): IRAM[0m
+[0;32mI (468) spi_flash: detected chip: generic[0m
+[0;32mI (470) spi_flash: flash io: dio[0m
+[0;33mW (473) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (486) main_task: Started on CPU0[0m
+[0;32mI (496) main_task: Calling app_main()[0m
+[0;32mI (526) LED_CONTROLLER: LED initialized on GPIO 2[0m
+[0;32mI (526) main: ============================================[0m
+[0;32mI (526) main: ESP32 Smart LED - WiFi Station + AP[0m
+[0;32mI (526) main: Mode: SoftAP + Station (APSTA)[0m
+[0;32mI (536) main: ============================================[0m
+[0;32mI (556) wifi:wifi driver task: 3ffc0980, prio:23, stack:6656, core=0[0m
+[0;32mI (576) wifi:wifi firmware version: 14da9b7[0m
+[0;32mI (576) wifi:wifi certification version: v7.0[0m
+[0;32mI (576) wifi:config NVS flash: enabled[0m
+[0;32mI (576) wifi:config nano formatting: disabled[0m
+[0;32mI (576) wifi:Init data frame dynamic rx buffer num: 32[0m
+[0;32mI (586) wifi:Init static rx mgmt buffer num: 5[0m
+[0;32mI (586) wifi:Init management short buffer num: 32[0m
+[0;32mI (586) wifi:Init dynamic tx buffer num: 32[0m
+[0;32mI (596) wifi:Init static rx buffer size: 1600[0m
+[0;32mI (596) wifi:Init static rx buffer num: 10[0m
+[0;32mI (606) wifi:Init dynamic rx buffer num: 32[0m
+[0;32mI (606) wifi_init: rx ba win: 6[0m
+[0;32mI (606) wifi_init: accept mbox: 6[0m
+[0;32mI (616) wifi_init: tcpip mbox: 32[0m
+[0;32mI (616) wifi_init: udp mbox: 6[0m
+[0;32mI (616) wifi_init: tcp mbox: 6[0m
+[0;32mI (616) wifi_init: tcp tx win: 5760[0m
+[0;32mI (626) wifi_init: tcp rx win: 5760[0m
+[0;32mI (626) wifi_init: tcp mss: 1440[0m
+[0;32mI (626) wifi_init: WiFi IRAM OP enabled[0m
+[0;32mI (636) wifi_init: WiFi RX IRAM OP enabled[0m
+[0;32mI (636) wifi station: AP: WPA/WPA2-PSK mode, password length: 9[0m
+[0;32mI (646) wifi station: AP configured - SSID: ESP32-Config, Auth: 4[0m
+[0;32mI (646) phy_init: phy_version 4861,b71b5ad,Aug  5 2025,11:16:06[0m
+[0;32mI (726) wifi:mode : sta (6c:c8:40:92:3f:14) + softAP (6c:c8:40:92:3f:15)[0m
+[0;32mI (726) wifi:enable tsf[0m
+[0;32mI (736) wifi:Total power save buffer number: 16[0m
+[0;32mI (736) wifi:Init max length of beacon: 752/752[0m
+[0;32mI (736) wifi:Init max length of beacon: 752/752[0m
+[0;32mI (746) wifi station: WiFi initialization finished[0m
+[0;32mI (746) wifi station: WiFi station started, attempting initial connection...[0m
+[0;32mI (756) wifi station: AP mode enabled - returning immediately (station will connect in background)[0m
+[0;32mI (766) wifi:I (756) esp_netif_lwip: DHCP server started on interface WIFI_AP_DEF with IP: 192.168.4.1[0m
+new:<1,1>, old:<1,1>, ap:<1,1>, sta:<1,0>, prof:1, snd_ch_cfg:0x0
+[0;32mI (776) wifi:state: init -> auth (0xb0)[0m
+[0;32mI (766) ACCESS_POINT: ============================================[0m
+[0;32mI (786) ACCESS_POINT: Initializing Access Point Mode[0m
+[0;32mI (786) wifi:state: auth -> assoc (0x0)[0m
+[0;32mI (796) ACCESS_POINT: ============================================[0m
+[0;32mI (796) wifi:state: assoc -> run (0x10)[0m
+[0;32mI (806) ACCESS_POINT: Access Point configured (in WiFiStation::init)[0m
+[0;32mI (806) ACCESS_POINT:    SSID: ESP32-Config[0m
+[0;32mI (816) ACCESS_POINT:    Password: esp32pass[0m
+[0;32mI (816) ACCESS_POINT:    Channel: 1[0m
+[0;32mI (816) ACCESS_POINT:    Max Connections: 4[0m
+[0;32mI (826) ACCESS_POINT:    IP Address: 192.168.4.1[0m
+[0;32mI (826) wifi:connected with iPhone, aid = 1, channel 1, BW20, bssid = 16:3b:16:29:44:dc[0m
+[0;32mI (836) wifi:security: WPA2-PSK, phy: bgn, rssi: -32[0m
+[0;32mI (846) wifi:pm start, type: 1[0m
+
+[0;32mI (846) wifi:dp: 1, bi: 102400, li: 3, scale listen interval from 307200 us to 307200 us[0m
+[0;32mI (856) ACCESS_POINT: ============================================[0m
+[0;32mI (856) WEB_SERVER: Web server started on port 80[0m
+[0;32mI (866) ACCESS_POINT: Web server running at http://192.168.4.1[0m
+[0;32mI (866) main: ============================================[0m
+[0;32mI (876) main: Access Point is ready![0m
+[0;32mI (876) main:    Connect to: ESP32-Config[0m
+[0;32mI (876) main:    Password: esp32pass[0m
+[0;32mI (886) main:    Open browser: http://192.168.4.1[0m
+[0;32mI (886) main: ============================================[0m
+[0;32mI (896) main: Creating HTTP GET task...[0m
+[0;32mI (896) HTTP_TASK: Waiting for WiFi connection before HTTP request...[0m
+[0;32mI (906) main: Initialization complete![0m
+[0;32mI (906) main_task: Returned from app_main()[0m
+[0;32mI (1026) wifi:AP's beacon interval = 102400 us, DTIM period = 3[0m
+[0;32mI (1896) esp_netif_handlers: sta ip: 172.20.10.2, mask: 255.255.255.240, gw: 172.20.10.1[0m
+[0;32mI (1896) wifi station: ============================================[0m
+[0;32mI (1896) wifi station: WiFi CONNECTED![0m
+[0;32mI (1896) wifi station: IP Address: 172.20.10.2[0m
+[0;32mI (1906) wifi station: Netmask: 255.255.255.240[0m
+[0;32mI (1906) wifi station: Gateway: 172.20.10.1[0m
+[0;32mI (1906) wifi station: Connected successfully on first attempt[0m
+[0;32mI (1916) wifi station: ============================================[0m
+[0;32mI (2906) HTTP_TASK: WiFi connected, starting HTTP request[0m
+[0;32mI (2906) HTTP_CLIENT: ============================================[0m
+[0;32mI (2906) HTTP_CLIENT: Starting HTTP GET request to 172.20.10.7:5000/[0m
+[0;32mI (2906) HTTP_CLIENT: ============================================[0m
+[0;32mI (2916) HTTP_CLIENT: DNS lookup successful[0m
+[0;32mI (2916) HTTP_CLIENT: Server IP: 172.20.10.7[0m
+[0;32mI (2926) HTTP_CLIENT: Socket created successfully[0m
+[0;32mI (2926) HTTP_CLIENT: Connecting to 172.20.10.7:5000...[0m
+[0;32mI (2976) wifi:<ba-add>idx:0 (ifx:0, 16:3b:16:29:44:dc), tid:0, ssn:2, winSize:64[0m
+[0;32mI (2986) HTTP_CLIENT: TCP connection established![0m
+[0;32mI (2986) HTTP_CLIENT: Sending HTTP GET request...[0m
+[0;32mI (2986) HTTP_CLIENT: Request:[0m
+GET / HTTP/1.1
+Host: 172.20.10.7
+User-Agent: ESP32-CPP
+Connection: close
+
+
+[0;32mI (2996) HTTP_CLIENT: HTTP request sent (79 bytes)[0m
+[0;32mI (3006) HTTP_CLIENT: ============================================[0m
+[0;32mI (3006) HTTP_CLIENT: Receiving HTTP response:[0m
+[0;32mI (3016) HTTP_CLIENT: ============================================[0m
+HTTP/1.1 200 OK
+Server: Werkzeug/3.1.3 Python/3.12.3
+Date: Sun, 26 Oct 2025 15:58:10 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 1518
+Connection: close
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ESP32 Test Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .info {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-left: 4px solid #2196F3;
+            margin: 20px 0;
+        }
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ESP32 HTTP Client Test Server</h1>
+        <div class="info">
+            <p class="success">Connection Successful!</p>
+            <p><strong>Server Time:</strong> 2025-10-26 16:58:10</p>
+            <p><strong>Client IP:</strong> 172.20.10.2</p>
+            <p><strong>Request Method:</strong> GET</p>
+        </div>
+        <h2>Test Data</h2>
+        <p>This is a test HTML page served from a Flask server.</p>
+        <p>Your ESP32 successfully made an HTTP GET request!</p>
+        <ul>
+            <li>WiFi Connection: OK</li>
+            <li>DNS Resolution: OK</li>
+            <li>TCP Connection: OK</li>
+            <li>HTTP GET Request: OK</li>
+        </ul>
+    </div>
+</body>
+</html>I (3166) HTTP_CLIENT: 
+[0;32mI (3176) HTTP_CLIENT: ============================================[0m
+[0;32mI (3176) HTTP_CLIENT: HTTP response received successfully![0m
+[0;32mI (3186) HTTP_CLIENT: Total bytes received: 1693[0m
+[0;32mI (3186) HTTP_CLIENT: ============================================[0m
+[0;32mI (3196) HTTP_CLIENT: Socket closed[0m
+[0;32mI (21666) wifi:new:<1,0>, old:<1,1>, ap:<1,0>, sta:<1,0>, prof:1, snd_ch_cfg:0x0[0m
+[0;32mI (21666) wifi:station: be:ee:e6:bc:4f:67 join, AID=1, bgn, 20[0m
+[0;32mI (21686) ACCESS_POINT: Client connected to AP, MAC: be:ee:e6:bc:4f:67[0m
+[0;32mI (21816) esp_netif_lwip: DHCP server assigned IP to a client, IP is: 192.168.4.2[0m
+[0;32mI (22156) wifi:<ba-add>idx:2 (ifx:1, be:ee:e6:bc:4f:67), tid:0, ssn:2, winSize:64[0m
+[0;32mI (24646) wifi:bcn_timeout,ap_probe_send_start[0m
+[0;32mI (27146) wifi:ap_probe_send over, reset wifi status to disassoc[0m
+[0;32mI (27146) wifi:state: run -> init (0xc800)[0m
+[0;32mI (27156) wifi:pm stop, total sleep time: 16203753 us / 26308685 us[0m
+
+[0;32mI (27156) wifi:<ba-del>idx:0, tid:0[0m
+[0;32mI (27156) wifi:new:<1,0>, old:<1,0>, ap:<1,0>, sta:<1,0>, prof:1, snd_ch_cfg:0x0[0m
+[0;33mW (27166) wifi station: ============================================[0m
+[0;33mW (27166) wifi station: WiFi DISCONNECTED![0m
+[0;33mW (27176) wifi station: SSID: iPhone[0m
+[0;33mW (27176) wifi station: Reason code: 200[0m
+[0;33mW (27176) wifi station: Reason: Beacon timeout (out of range?)[0m
+[0;33mW (27186) wifi station: ============================================[0m
+[0;32mI (27186) wifi station: Reconnection attempt #1 - Trying to reconnect to AP 'iPhone'...[0m
+[0;32mI (27186) LED_CONTROLLER: LED blink task started - waiting for WiFi connection[0m
+[0;33mW (30036) wifi station: ============================================[0m
+[0;33mW (30036) wifi station: WiFi DISCONNECTED![0m
+[0;33mW (30036) wifi station: SSID: iPhone[0m
+[0;33mW (30046) wifi station: Reason code: 201[0m
+[0;33mW (30046) wifi station: Reason: AP not found[0m
+[0;33mW (30046) wifi station: ============================================[0m
+[0;32mI (30056) wifi station: Reconnection attempt #2 - Trying to reconnect to AP 'iPhone'...[0m
+[0;33mW (32906) wifi station: ============================================[0m
+[0;33mW (32906) wifi station: WiFi DISCONNECTED![0m
+[0;33mW (32906) wifi station: SSID: iPhone[0m
+[0;33mW (32906) wifi station: Reason code: 201[0m
+[0;33mW (32906) wifi station: Reason: AP not found[0m
+[0;33mW (32916) wifi station: ============================================[0m
+[0;32mI (32916) wifi station: Reconnection attempt #3 - Trying to reconnect to AP 'iPhone'...[0m
+[0;33mW (35766) wifi station: ============================================[0m
+[0;33mW (35766) wifi station: WiFi DISCONNECTED![0m
+[0;33mW (35766) wifi station: SSID: iPhone[0m
+[0;33mW (35776) wifi station: Reason code: 201[0m
+[0;33mW (35776) wifi station: Reason: AP not found[0m
+[0;33mW (35776) wifi station: ============================================[0m
+[0;32mI (35786) wifi station: Reconnection attempt #4 - Trying to reconnect to AP 'iPhone'...[0m
+[0;32mI (36246) WEB_SERVER: Client connected: 192.168.4.2[0m
+[0;32mI (36246) WEB_SERVER: Request: GET / HTTP/1.1[0m
+Host: 192.168.4.1
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_6_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/141.0.7390.96 Mobile/15E148 Safari/604.1
+Referer: http://192.168.4.1/status
+Accept-Language: pl-PL,pl;q=0.9
+Accept-Encoding: gzip, deflate
+
+
+[0;33mW (38636) wifi station: ============================================[0m
+[0;33mW (38636) wifi station: WiFi DISCONNECTED![0m
+[0;33mW (38636) wifi station: SSID: iPhone[0m
+[0;33mW (38636) wifi station: Reason code: 201[0m
+[0;33mW (38646) wifi station: Reason: AP not found[0m
+[0;33mW (38646) wifi station: ============================================[0m
+[0;32mI (38656) wifi station: Reconnection attempt #5 - Trying to reconnect to AP 'iPhone'...[0m
+[0;33mW (41506) wifi station: ============================================[0m
+[0;33mW (41506) wifi station: WiFi DISCONNECTED![0m
+[0;33mW (41506) wifi station: SSID: iPhone[0m
+[0;33mW (41506) wifi station: Reason code: 201[0m
+[0;33mW (41506) wifi station: Reason: AP not found[0m
+[0;33mW (41516) wifi station: =============

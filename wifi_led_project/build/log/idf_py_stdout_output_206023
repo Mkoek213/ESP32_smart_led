@@ -1,0 +1,8 @@
+Command: ninja all
+[1/4] cd /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/esp-idf/esptool_py && /home/mikolaj/.espressif/python_env/idf5.5_py3.12_env/bin/python /home/mikolaj/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/partition_table/partition-table.bin /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/wifi_station.bin
+wifi_station.bin binary size 0xc2940 bytes. Smallest app partition is 0x100000 bytes. 0x3d6c0 bytes (24%) free.
+[2/4] Performing build step for 'bootloader'
+[1/1] cd /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/bootloader/esp-idf/esptool_py && /home/mikolaj/.espressif/python_env/idf5.5_py3.12_env/bin/python /home/mikolaj/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/bootloader/bootloader.bin
+Bootloader binary size 0x6680 bytes. 0x980 bytes (8%) free.
+[3/4] No install step for 'bootloader'
+[4/4] Completed 'bootloader'
