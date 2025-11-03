@@ -14,43 +14,50 @@ static const char* TAG = "main";
 static void http_get_task(void* pvParameters) {
     const char* TAG_TASK = "HTTP_TASK";
     
-    ESP_LOGI(TAG_TASK, "Waiting for WiFi connection before HTTP request...");
+    ESP_LOGI(TAG_TASK, "HTTP request task started");
+    
+    // Periodic HTTP requests with exponential backoff on failure
+    int retry_delay_ms = 2000;  // Start with 2 seconds for retries
+    const int max_delay_ms = 3600000;  // Max 1 hour (3600000ms)
+    const int success_interval_ms = 60000;  // 60 seconds between successful requests
+    int attempt = 1;
+    
     while (true) {
+        // Check WiFi connection before each attempt
         WiFiStation* wifi = WiFiStation::get_instance();
-        if (wifi && wifi->is_connected()) {
-            ESP_LOGI(TAG_TASK, "WiFi connected, starting HTTP request");
-            break;
+        if (!wifi || !wifi->is_connected()) {
+            ESP_LOGW(TAG_TASK, "WiFi disconnected, waiting for connection...");
+            retry_delay_ms = 2000;  // Reset delay when disconnected
+            attempt = 1;
+            vTaskDelay(pdMS_TO_TICKS(1000));  // Check every second when disconnected
+            continue;
         }
-        ESP_LOGD(TAG_TASK, "WiFi not connected, waiting...");
-        vTaskDelay(pdMS_TO_TICKS(1000)); 
-    }
-    
-    // Try HTTP request with retries
-    const int max_retries = 5;
-    const int retry_delay_ms = 5000;
-    bool success = false;
-    
-    for (int attempt = 1; attempt <= max_retries; attempt++) {
-        ESP_LOGI(TAG_TASK, "HTTP request attempt %d/%d", attempt, max_retries);
+        
+        ESP_LOGI(TAG_TASK, "HTTP request attempt #%d", attempt);
         
         HTTPClient client(HTTP_SERVER, HTTP_PORT, HTTP_PATH, HTTP_RECV_BUF_SIZE);
-        success = client.perform_get_request();
+        bool success = client.perform_get_request();
         
         if (success) {
-            ESP_LOGI(TAG_TASK, "HTTP request successful!");
-            break;
-        }
-        
-        if (attempt < max_retries) {
+            ESP_LOGI(TAG_TASK, "HTTP request successful! Next request in %d seconds", 
+                     success_interval_ms/1000);
+            retry_delay_ms = 2000;  // Reset delay on success
+            attempt = 1;
+            vTaskDelay(pdMS_TO_TICKS(success_interval_ms));
+        } else {
             ESP_LOGW(TAG_TASK, "HTTP request failed, retrying in %d seconds...", retry_delay_ms/1000);
             vTaskDelay(pdMS_TO_TICKS(retry_delay_ms));
+            
+            // Exponential backoff: double the delay, capped at 1 hour
+            retry_delay_ms = retry_delay_ms * 2;
+            if (retry_delay_ms > max_delay_ms) {
+                retry_delay_ms = max_delay_ms;
+            }
+            attempt++;
         }
     }
     
-    if (!success) {
-        ESP_LOGE(TAG_TASK, "HTTP request failed after %d attempts", max_retries);
-    }
-    
+    // This should never be reached, but if it is, delete the task
     vTaskDelete(nullptr);
 }
 
