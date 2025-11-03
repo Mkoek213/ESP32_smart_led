@@ -25,8 +25,32 @@ static void http_get_task(void* pvParameters) {
         vTaskDelay(pdMS_TO_TICKS(1000)); 
     }
     
-    HTTPClient client(HTTP_SERVER, HTTP_PORT, HTTP_PATH, HTTP_RECV_BUF_SIZE);
-    client.perform_get_request();
+    // Try HTTP request with retries
+    const int max_retries = 5;
+    const int retry_delay_ms = 5000;
+    bool success = false;
+    
+    for (int attempt = 1; attempt <= max_retries; attempt++) {
+        ESP_LOGI(TAG_TASK, "HTTP request attempt %d/%d", attempt, max_retries);
+        
+        HTTPClient client(HTTP_SERVER, HTTP_PORT, HTTP_PATH, HTTP_RECV_BUF_SIZE);
+        success = client.perform_get_request();
+        
+        if (success) {
+            ESP_LOGI(TAG_TASK, "HTTP request successful!");
+            break;
+        }
+        
+        if (attempt < max_retries) {
+            ESP_LOGW(TAG_TASK, "HTTP request failed, retrying in %d seconds...", retry_delay_ms/1000);
+            vTaskDelay(pdMS_TO_TICKS(retry_delay_ms));
+        }
+    }
+    
+    if (!success) {
+        ESP_LOGE(TAG_TASK, "HTTP request failed after %d attempts", max_retries);
+    }
+    
     vTaskDelete(nullptr);
 }
 
