@@ -14,7 +14,7 @@ mqtt:
   client:
     id: mqtt-data-hub-dev
   topic:
-    sensor-data: dev/+/+/+/sensor-data
+    sensor-data: +/+/+/sensor-data
 
 logging:
   level:

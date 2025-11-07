@@ -14,7 +14,7 @@ mqtt:
   client:
     id: ${MQTT_CLIENT_ID}
   topic:
-    sensor-data: prod/+/+/+/sensor-data
+    sensor-data: ${MQTT_SENSOR_DATA_TOPIC}
 
 logging:
   level:

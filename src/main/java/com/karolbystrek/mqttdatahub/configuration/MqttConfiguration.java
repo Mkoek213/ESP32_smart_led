@@ -40,7 +40,7 @@ public class MqttConfiguration {
     @Bean
     public IntegrationFlow mqttInboundFlow(MqttPahoMessageDrivenChannelAdapter adapter, MqttIngestionService ingestionService) {
         return IntegrationFlow.from(adapter)
-                .handle(ingestionService, "handleMessage")
+                .handle(ingestionService, "handleSensorData")
                 .get();
     }
 }
