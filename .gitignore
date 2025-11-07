@@ -39,3 +39,10 @@
 
 # debug information files
 *.dwo
+
+# MacOs
+.DS_Store
+**/.DS_Store
+
+# IDEA
+.idea

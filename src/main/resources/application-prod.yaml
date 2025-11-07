@@ -1,0 +1,21 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+mqtt:
+  broker:
+    url: ${MQTT_BROKER_URL}
+  client:
+    id: ${MQTT_CLIENT_ID}
+  topic:
+    sensor-data: prod/+/+/+/sensor-data
+
+logging:
+  level:
+    root: warn
