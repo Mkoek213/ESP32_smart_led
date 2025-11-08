@@ -45,3 +45,5 @@
 
 # Ignore all .cache directories
 **/.cache/
+ble_com/components/
+venv/
