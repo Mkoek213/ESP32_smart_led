@@ -3,5 +3,7 @@
     "idf.openOcdConfigs": [
         "board/esp32-wrover-kit-3.3v.cfg"
     ],
-    "idf.port": "/dev/ttyUSB0"
+    "idf.port": "/dev/ttyUSB0",
+    "idf.espIdfPath": "/home/mikolaj/esp/esp-idf",
+    "idf.toolsPath": "/home/mikolaj/.espressif"
 }
