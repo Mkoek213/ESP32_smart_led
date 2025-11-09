@@ -1,12 +1,3 @@
-/*
- * CZĘŚĆ 2 PROJEKTU: Klient GATT (Uproszczony)
- *
- * Ten kod łączy się z czujnikiem o nazwie "ATC_8E4B89",
- * wyszukuje standardowe serwisy (0x181A i 0x180F)
- * i odczytuje z nich dane: Temperaturę, Wilgotność i Baterię.
- *
- * WAŻNE: Czujnik musi być w trybie "Custom" w flasherze Telink!
- */
 #include <cstdint>
 #include <cstddef>
 #include <cstring>
@@ -72,7 +63,6 @@ void reset_context() {
     g_ctx = TargetContext{};
 }
 
-// Prototypy
 void start_scan();
 int characteristic_disc_cb(uint16_t, const struct ble_gatt_error *, const struct ble_gatt_chr *, void *);
 int service_disc_cb(uint16_t, const struct ble_gatt_error *, const struct ble_gatt_svc *, void *);
@@ -84,7 +74,6 @@ int value_read_cb(uint16_t conn_handle, const struct ble_gatt_error *error,
                   struct ble_gatt_attr *attr, void *arg) {
     const char *label = static_cast<const char *>(arg);
 
-    // Załóżmy, że błędy nie wystąpią (zgodnie z prośbą o uproszczenie)
     if (error->status == 0) {
         uint8_t buffer[8] = {0};
         int len = OS_MBUF_PKTLEN(attr->om);
@@ -198,7 +187,7 @@ int characteristic_disc_cb(uint16_t conn_handle,
         }
         return 0;
     }
-    return 0; // Ignoruj błędy
+    return 0;
 }
 
 /**
@@ -243,7 +232,7 @@ int service_disc_cb(uint16_t conn_handle, const struct ble_gatt_error *error,
         }
         return 0;
     }
-    return 0; // Ignoruj błędy
+    return 0; 
 }
 
 /**
@@ -366,7 +355,7 @@ void host_task(void *param) {
     nimble_port_freertos_deinit();
 }
 
-} // namespace
+} 
 
 // === Główna funkcja programu ===
 
