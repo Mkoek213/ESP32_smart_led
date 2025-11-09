@@ -13,8 +13,10 @@ mqtt:
     url: tcp://localhost:1883
   client:
     id: mqtt-data-hub-dev
+  username: user
+  password: user
   topic:
-    sensor-data: +/+/+/sensor-data
+    sensor-data: customer/+/location/+/device/+/sensor-data
 
 logging:
   level:

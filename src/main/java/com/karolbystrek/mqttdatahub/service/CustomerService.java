@@ -13,8 +13,8 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
 
-    public Customer getCustomerBy(String customerName) {
-        return customerRepository.findByName(customerName)
-                .orElseThrow(() -> new IllegalArgumentException(format("Customer with name '%s' not found.", customerName)));
+    public Customer getCustomerBy(Long customerId) {
+        return customerRepository.findById(customerId)
+                .orElseThrow(() -> new IllegalArgumentException(format("Customer with id '%s' not found.", customerId)));
     }
 }

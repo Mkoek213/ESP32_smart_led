@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface DeviceRepository extends JpaRepository<Device, Long> {
-    Optional<Device> findByNameAndLocationId(String name, Long locationId);
+    Optional<Device> findByIdAndLocationId(Long id, Long locationId);
 
     boolean existsByIdAndLocationCustomerId(Long deviceId, Long customerId);
 }

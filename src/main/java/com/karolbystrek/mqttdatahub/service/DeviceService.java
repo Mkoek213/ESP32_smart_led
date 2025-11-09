@@ -12,10 +12,10 @@ public class DeviceService {
 
     private final DeviceRepository deviceRepository;
 
-    public Device getDeviceBy(String deviceName, Location location) {
-        return deviceRepository.findByNameAndLocationId(deviceName, location.getId())
+    public Device getDeviceBy(Long deviceId, Location location) {
+        return deviceRepository.findByIdAndLocationId(deviceId, location.getId())
                 .orElseThrow(() ->
-                        new IllegalArgumentException(String.format("Device with name '%s' for location '%s' not found.", deviceName, location.getName()))
+                        new IllegalArgumentException(String.format("Device with id '%s' for location '%s' not found.", deviceId, location.getName()))
                 );
     }
 

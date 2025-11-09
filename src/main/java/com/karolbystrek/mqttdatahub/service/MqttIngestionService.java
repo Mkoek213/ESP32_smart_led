@@ -1,8 +1,8 @@
 package com.karolbystrek.mqttdatahub.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.karolbystrek.mqttdatahub.dto.SensorDataDto;
 import lombok.RequiredArgsConstructor;
@@ -30,21 +30,21 @@ public class MqttIngestionService {
 
         try {
             String[] topicParts = topic.split("/");
-            if (topicParts.length != 4) {
-                log.error("Invalid topic format: {}. Expected: {customer}/{location}/{device}/sensor-data", topic);
+            if (topicParts.length != 7) {
+                log.error("Invalid topic format: {}. Expected: /customer/{customer_id}/location/{location_id}/device/{device_id}/sensor-data", topic);
                 return;
             }
 
-            String customerName = topicParts[0];
-            String locationName = topicParts[1];
-            String deviceName = topicParts[2];
+            Long customerId = Long.parseLong(topicParts[1]);
+            Long locationId = Long.parseLong(topicParts[3]);
+            Long deviceId = Long.parseLong(topicParts[5]);
 
             List<SensorDataDto> sensorDataDtos = objectMapper.readValue(payload, new TypeReference<>() {
             });
 
             log.info("Received sensor readings: {}", sensorDataDtos);
 
-            sensorDataDtos.forEach(dto -> sensorDataService.saveSensorDataFor(dto, customerName, locationName, deviceName));
+            sensorDataDtos.forEach(dto -> sensorDataService.saveSensorDataFor(dto, customerId, locationId, deviceId));
 
         } catch (JsonProcessingException e) {
             log.error("Failed to parse JSON payload: {}", payload, e);

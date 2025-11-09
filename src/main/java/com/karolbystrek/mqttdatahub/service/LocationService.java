@@ -14,10 +14,10 @@ public class LocationService {
 
     private final LocationRepository locationRepository;
 
-    public Location getLocationBy(String locationName, Customer customer) {
-        return locationRepository.findByNameAndCustomerId(locationName, customer.getId())
+    public Location getLocationBy(Long locationId, Customer customer) {
+        return locationRepository.findByIdAndCustomerId(locationId, customer.getId())
                 .orElseThrow(() ->
-                    new IllegalArgumentException(format("Location with name '%s' for customer '%s' not found.", locationName, customer.getName()))
+                        new IllegalArgumentException(format("Location with id '%s' for customer '%s' not found.", locationId, customer.getName()))
                 );
     }
 }

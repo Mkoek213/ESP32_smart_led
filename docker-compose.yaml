@@ -1,7 +1,7 @@
 services:
   postgres-db:
     image: postgres:17-alpine
-    container_name: mqtt-data-hub-postgres
+    container_name: iot-postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres

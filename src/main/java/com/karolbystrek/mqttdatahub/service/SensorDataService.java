@@ -29,16 +29,16 @@ public class SensorDataService {
     private final SensorDataRepository sensorDataRepository;
 
     @Transactional
-    public void saveSensorDataFor(SensorDataDto dto, String customerName, String locationName, String deviceName) {
-        Customer customer = customerService.getCustomerBy(customerName);
-        Location location = locationService.getLocationBy(locationName, customer);
-        Device device = deviceService.getDeviceBy(deviceName, location);
+    public void saveSensorDataFor(SensorDataDto dto, Long customerId, Long locationId, Long deviceId) {
+        Customer customer = customerService.getCustomerBy(customerId);
+        Location location = locationService.getLocationBy(locationId, customer);
+        Device device = deviceService.getDeviceBy(deviceId, location);
 
         SensorData sensorData = createSensorDataFrom(dto, device);
 
         sensorDataRepository.save(sensorData);
         log.info("Successfully saved sensor reading {} from device: {} (customer: {}, location: {})",
-                sensorData, device, customerName, locationName);
+                sensorData, device, customerId, locationId);
     }
 
     @Transactional(readOnly = true)
