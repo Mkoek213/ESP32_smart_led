@@ -1,47 +1,36 @@
 #include "led_controller.h"
-#include "esp_log.h"
 
-static const char* TAG = "LED_CONTROLLER";
-
-LEDController::LEDController(gpio_num_t gpio_pin, int period_ms) 
-    : pin(gpio_pin), blink_period_ms(period_ms), task_handle(nullptr) {
-    gpio_reset_pin(pin);
-    gpio_set_direction(pin, GPIO_MODE_OUTPUT);
-    gpio_set_level(pin, 0);
-    ESP_LOGI(TAG, "LED initialized on GPIO %d", pin);
-}
-
-LEDController::~LEDController() {
-    stop_blinking();
-}
-
-void LEDController::blink_task_wrapper(void* arg) {
-    LEDController* controller = static_cast<LEDController*>(arg);
-    controller->blink_task();
-}
-
-void LEDController::blink_task() {
-    ESP_LOGI(TAG, "LED blink task started - waiting for WiFi connection");
-    while (true) {
-        gpio_set_level(pin, 1);
-        vTaskDelay(pdMS_TO_TICKS(blink_period_ms));
-        gpio_set_level(pin, 0);
-        vTaskDelay(pdMS_TO_TICKS(blink_period_ms));
-    }
+LEDController::LEDController(gpio_num_t pin, int period_ms)
+    : pin_(pin), period_ms_(period_ms), task_(nullptr) {
+    gpio_reset_pin(pin_);
+    gpio_set_direction(pin_, GPIO_MODE_OUTPUT);
+    gpio_set_level(pin_, 0);
 }
 
 void LEDController::start_blinking() {
-    if (task_handle == nullptr) {
-        xTaskCreate(blink_task_wrapper, "led_blink_task", 2048, this, 5, &task_handle);
+    if (task_ == nullptr) {
+        xTaskCreate(task_entry, "led_blink", 1024, this, 1, &task_);
     }
 }
 
 void LEDController::stop_blinking() {
-    if (task_handle != nullptr) {
-        vTaskDelete(task_handle);
-        task_handle = nullptr;
-        gpio_set_level(pin, 0);
-        ESP_LOGI(TAG, "LED blink task stopped - WiFi connected");
+    if (task_ != nullptr) {
+        vTaskDelete(task_);
+        task_ = nullptr;
+        gpio_set_level(pin_, 0);
+    }
+}
+
+void LEDController::task_entry(void* arg) {
+    static_cast<LEDController*>(arg)->run();
+}
+
+void LEDController::run() {
+    while (true) {
+        gpio_set_level(pin_, 1);
+        vTaskDelay(pdMS_TO_TICKS(period_ms_));
+        gpio_set_level(pin_, 0);
+        vTaskDelay(pdMS_TO_TICKS(period_ms_));
     }
 }
 

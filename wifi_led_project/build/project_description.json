@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "wifi_station",
-    "project_version":    "1188597-dirty",
+    "project_version":    "a7dee7f-dirty",
     "project_path":       "/home/mikolaj/work/ESP32_smart_led/wifi_led_project",
     "idf_path":           "/home/mikolaj/esp/esp-idf",
     "build_dir":          "/home/mikolaj/work/ESP32_smart_led/wifi_led_project/build",
@@ -535,7 +535,7 @@
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "/home/mikolaj/work/ESP32_smart_led/wifi_led_project/build/esp-idf/main/libmain.a",
-            "sources": [ "/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/main.cpp", "/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/led_controller.cpp", "/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/http_client.cpp", "/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/wifi_station.cpp", "/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/web_server.cpp", "/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/access_point.cpp" ],
+            "sources": [ "/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/main.cpp", "/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/led_controller.cpp", "/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/wifi_station.cpp", "/home/mikolaj/work/ESP32_smart_led/wifi_led_project/main/http_client.cpp" ],
             "include_dirs": [ "." ]
         },
         "mbedtls": {
