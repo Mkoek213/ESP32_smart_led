@@ -5,9 +5,14 @@
 #include "esp_netif.h"
 #include "esp_wifi.h"
 #include <cstring>
+#include "freertos/FreeRTOS.h"
+#include "freertos/event_groups.h"
+
+//dodac wait zamiast odpytywac ciagle
 
 static LEDController* led_controller = nullptr;
-static bool wifi_connected = false;
+static EventGroupHandle_t s_wifi_event_group = NULL;
+static const int WIFI_CONNECTED_BIT = BIT0;
 static const char* TAG = "wifi_station";
 
 static void handle_event(void*,
@@ -15,7 +20,9 @@ static void handle_event(void*,
                          int32_t event_id,
                          void*) {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
-        wifi_connected = false;
+        if (s_wifi_event_group) {
+            xEventGroupClearBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+        }
         if (led_controller != nullptr) {
             led_controller->start_blinking();
         }
@@ -23,7 +30,9 @@ static void handle_event(void*,
     }
 
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
-        wifi_connected = false;
+        if (s_wifi_event_group) {
+            xEventGroupClearBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+        }
         if (led_controller != nullptr) {
             led_controller->start_blinking();
         }
@@ -32,7 +41,9 @@ static void handle_event(void*,
     }
 
     if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
-        wifi_connected = true;
+        if (s_wifi_event_group) {
+            xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+        }
         if (led_controller != nullptr) {
             led_controller->stop_blinking();
         }
@@ -42,7 +53,10 @@ static void handle_event(void*,
 
 void wifi_station_start(LEDController* led) {
     led_controller = led;
-    wifi_connected = false;
+
+    if (s_wifi_event_group == NULL) {
+        s_wifi_event_group = xEventGroupCreate();
+    }
 
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
@@ -68,6 +82,9 @@ void wifi_station_start(LEDController* led) {
 }
 
 bool wifi_station_is_connected() {
-    return wifi_connected;
+    if (s_wifi_event_group != NULL) {
+        EventBits_t bits = xEventGroupGetBits(s_wifi_event_group);
+        return (bits & WIFI_CONNECTED_BIT) != 0;
+    }
+    return false;
 }
-

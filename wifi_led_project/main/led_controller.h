@@ -15,6 +15,7 @@ private:
     gpio_num_t pin_;
     int period_ms_;
     TaskHandle_t task_;
+    volatile bool stop_requested_;
 
     static void task_entry(void* arg);
     void run();

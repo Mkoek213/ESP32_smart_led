@@ -14,16 +14,31 @@ extern "C" void app_main(void)
 
     LEDController led(LED_GPIO, LED_BLINK_PERIOD_MS);
     wifi_station_start(&led);
-
+    bool request_completed = false;
     while (true) {
-        while (!wifi_station_is_connected()) {
-            vTaskDelay(pdMS_TO_TICKS(1000));
+        if (!wifi_station_is_connected()) {
+            request_completed = false;
+            vTaskDelay(pdMS_TO_TICKS(500));
+            continue;
         }
-        bool ok = http_client_get(HTTP_SERVER, HTTP_PORT, HTTP_PATH);
-        if (!ok) {
-            printf("Brak odpowiedzi od serwera\n");
+
+        if (!request_completed) {
+            bool success = false;
+            while (!success && wifi_station_is_connected()) {
+                success = http_client_get(HTTP_SERVER, HTTP_PORT, HTTP_PATH);
+                if (!success) {
+                    printf("Brak odpowiedzi od serwera\n");
+                    vTaskDelay(pdMS_TO_TICKS(15000));
+                }
+            }
+
+            if (success) {
+                request_completed = true;
+            }
+            continue;
         }
-        vTaskDelay(pdMS_TO_TICKS(100000));
+
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
 
