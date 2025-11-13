@@ -1,7 +1,0 @@
-{
-    "cmake.configureOnOpen": false,
-    "cmake.autoSelectActiveFolder": false,
-    "C_Cpp.intelliSenseEngine": "default",
-    "idf.flashType": "UART",
-    "idf.port": "/dev/ttyUSB0"
-}
