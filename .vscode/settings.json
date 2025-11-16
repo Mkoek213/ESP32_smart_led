@@ -1,9 +1,12 @@
 {
-    "idf.pythonInstallPath": "/usr/bin/python3",
+    "idf.pythonInstallPath": "C:\\Users\\chame\\.espressif\\tools\\idf-python\\3.11.2\\python.exe",
     "idf.openOcdConfigs": [
         "board/esp32-wrover-kit-3.3v.cfg"
     ],
     "idf.port": "/dev/ttyUSB0",
     "idf.espIdfPath": "/home/mikolaj/esp/esp-idf",
-    "idf.toolsPath": "/home/mikolaj/.espressif"
+    "idf.toolsPath": "/home/mikolaj/.espressif",
+    "files.associations": {
+        "cstring": "cpp"
+    }
 }
