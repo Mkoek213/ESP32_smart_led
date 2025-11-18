@@ -46,16 +46,7 @@ static void send_sensor_data(void)
              "[{\"timestamp\":\"%s\",\"humidity\":%.1f,\"motionDetected\":%s,\"lightLevel\":%d}]",
              timestamp, humidity, motion_detected ? "true" : "false", light_level);
 
-    int msg_id = esp_mqtt_client_publish(mqtt_client, SENSOR_DATA_TOPIC, payload, 0, 1, 0);
-    ESP_LOGI(TAG, "Published sensor data to topic=%s, msg_id=%d: %s", SENSOR_DATA_TOPIC, msg_id, payload);
-}
-
-static void log_error_if_nonzero(const char *message, int error_code)
-{
-    if (error_code != 0)
-    {
-        ESP_LOGE(TAG, "Last error %s: 0x%x", message, error_code);
-    }
+    esp_mqtt_client_publish(mqtt_client, SENSOR_DATA_TOPIC, payload, 0, 1, 0);
 }
 
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
@@ -73,6 +64,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         break;
     case MQTT_EVENT_PUBLISHED:
         ESP_LOGI(TAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
+        ESP_LOGI(TAG, "Published sensor data to topic=%s, msg_id=%d: %s", SENSOR_DATA_TOPIC, event->msg_id, event->data);
         break;
     case MQTT_EVENT_DATA:
         ESP_LOGI(TAG, "MQTT_EVENT_DATA");
@@ -80,17 +72,15 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         printf("DATA=%.*s\r\n", event->data_len, event->data);
         break;
     case MQTT_EVENT_ERROR:
-        ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
+        ESP_LOGE(TAG, "MQTT_EVENT_ERROR");
+
         if (event->error_handle->error_type == MQTT_ERROR_TYPE_TCP_TRANSPORT)
         {
-            log_error_if_nonzero("reported from esp-tls", event->error_handle->esp_tls_last_esp_err);
-            log_error_if_nonzero("reported from tls stack", event->error_handle->esp_tls_stack_err);
-            log_error_if_nonzero("captured as transport's socket errno", event->error_handle->esp_transport_sock_errno);
-            ESP_LOGI(TAG, "Last errno string (%s)", strerror(event->error_handle->esp_transport_sock_errno));
+            ESP_LOGE(TAG, "TCP transport error connecting to the MQTT broker");
         }
+
         break;
     default:
-        ESP_LOGI(TAG, "Other event id:%d", event->event_id);
         break;
     }
 }
@@ -105,7 +95,7 @@ static void sensor_data_task(void *pvParameters)
             s_app_event_group,
             WIFI_CONNECTED_BIT | TIME_SYNCED_BIT,
             pdFALSE,              // don't clear the bits on exit
-            pdTRUE,               // wait for ALL bits to be set
+            pdTRUE,               // wait for all bits to be set
             pdMS_TO_TICKS(5000)); // wait for max 1 second
 
         if ((bits & (WIFI_CONNECTED_BIT | TIME_SYNCED_BIT)) == (WIFI_CONNECTED_BIT | TIME_SYNCED_BIT))

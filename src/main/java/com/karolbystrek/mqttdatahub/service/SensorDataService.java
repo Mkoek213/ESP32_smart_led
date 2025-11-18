@@ -34,11 +34,10 @@ public class SensorDataService {
         Location location = locationService.getLocationBy(locationId, customer);
         Device device = deviceService.getDeviceBy(deviceId, location);
 
-        SensorData sensorData = createSensorDataFrom(dto, device);
+        var sensorData = createSensorDataFrom(dto, device);
 
         sensorDataRepository.save(sensorData);
-        log.info("Successfully saved sensor reading {} from device: {} (customer: {}, location: {})",
-                sensorData, device, customerId, locationId);
+        log.info("\nSuccessfully saved sensor reading from device: {} (customer: {}, location: {})\n", device, customerId, locationId);
     }
 
     @Transactional(readOnly = true)

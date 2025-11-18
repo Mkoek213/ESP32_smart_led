@@ -12,8 +12,10 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import static java.time.LocalDateTime.now;
 import static org.springframework.integration.mqtt.support.MqttHeaders.RECEIVED_TOPIC;
 
 @Slf4j
@@ -26,7 +28,7 @@ public class MqttIngestionService {
 
     @Transactional
     public void handleSensorData(@Payload String payload, @Header(RECEIVED_TOPIC) String topic) {
-        log.info("Received message on topic {}: {}", topic, payload);
+        log.info("\nReceived message on topic {}: {}\n", topic, payload);
 
         try {
             String[] topicParts = topic.split("/");
@@ -42,7 +44,7 @@ public class MqttIngestionService {
             List<SensorDataDto> sensorDataDtos = objectMapper.readValue(payload, new TypeReference<>() {
             });
 
-            log.info("Received sensor readings: {}", sensorDataDtos);
+            log.info("\nReceived sensor readings at {}:\n{}\n", now(), sensorDataDtos);
 
             sensorDataDtos.forEach(dto -> sensorDataService.saveSensorDataFor(dto, customerId, locationId, deviceId));
 
