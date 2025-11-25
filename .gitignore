@@ -49,3 +49,5 @@ ble_com/components/
 venv/
 **/build/
 **/.cache/
+.vscode/
+*.code-workspace
