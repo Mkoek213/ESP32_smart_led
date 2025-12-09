@@ -12,7 +12,17 @@
 #include "wifi_config.h"
 #include "ble_provisioning.h"
 
+extern "C" {
+#include "app_common.h"
+#include "app_mqtt.h"
+#include "app_sntp.h"
+}
+
 static const char* TAG = "main";
+
+// Tracking MQTT/SNTP state - accessible from button monitor task
+static volatile bool mqtt_started = false;
+static volatile bool sntp_started = false;
 
 // Task monitorujący przycisk konfiguracyjny
 static void button_monitor_task(void* arg)
@@ -57,6 +67,18 @@ static void button_monitor_task(void* arg)
             if (press_duration >= CONFIG_BUTTON_LONG_PRESS_MS) {
                 ESP_LOGI(TAG, "Long press detected! Entering BLE provisioning mode...");
                 
+                // Stop MQTT and SNTP
+                if (mqtt_started) {
+                    ESP_LOGI(TAG, "Stopping MQTT...");
+                    app_mqtt_stop();
+                    mqtt_started = false;
+                }
+                if (sntp_started) {
+                    ESP_LOGI(TAG, "Stopping SNTP...");
+                    app_sntp_stop();
+                    sntp_started = false;
+                }
+                
                 // Zatrzymaj WiFi
                 wifi_station_stop();
                 
@@ -91,11 +113,22 @@ extern "C" void app_main(void)
 {
     ESP_LOGI(TAG, "=== WiFi LED Project with BLE Provisioning ===");
     
+    // Initialize global event group for MQTT/WiFi coordination
+    s_app_event_group = xEventGroupCreate();
+    if (s_app_event_group == NULL) {
+        ESP_LOGE(TAG, "Failed to create event group!");
+        return;
+    }
+    
     // Inicjalizacja NVS
     if (!wifi_config_nvs_init()) {
         ESP_LOGE(TAG, "Failed to init NVS!");
         return;
     }
+    
+    // Initialize MQTT client
+    ESP_LOGI(TAG, "Initializing MQTT...");
+    app_mqtt_init();
     
     // Inicjalizacja LED controllera
     LEDController led(LED_GPIO, LED_BLINK_PERIOD_MS);
@@ -140,6 +173,27 @@ extern "C" void app_main(void)
     
     while (true) {
         if (wifi_station_is_connected()) {
+            // Start SNTP if not already started
+            if (!sntp_started) {
+                ESP_LOGI(TAG, "WiFi connected - starting SNTP...");
+                app_sntp_init();
+                sntp_started = true;
+            }
+            
+            // Start MQTT if not already started
+            if (!mqtt_started) {
+                ESP_LOGI(TAG, "WiFi connected - starting MQTT...");
+                app_mqtt_start();
+                app_mqtt_start_publishing_task();
+                mqtt_started = true;
+            }
+        } else {
+            // WiFi disconnected - reset state
+            if (mqtt_started || sntp_started) {
+                ESP_LOGI(TAG, "WiFi disconnected - resetting MQTT/SNTP state");
+                mqtt_started = false;
+                sntp_started = false;
+            }
         }
         
         vTaskDelay(pdMS_TO_TICKS(1000));

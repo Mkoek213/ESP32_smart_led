@@ -66,4 +66,32 @@ menu "Example Configuration"
             bool "WAPI PSK"
     endchoice
 
+menu "MQTT Configuration"
+
+    config BROKER_URI
+        string "MQTT Broker URI"
+        default "mqtt://mqtt.example.com:1883"
+        help
+            URI of the MQTT broker to connect to
+
+    config MQTT_USERNAME
+        string "MQTT Username"
+        default "user"
+        help
+            Username for MQTT broker authentication
+
+    config MQTT_PASSWORD
+        string "MQTT Password"
+        default "password"
+        help
+            Password for MQTT broker authentication
+
+    config SENSOR_TOPIC
+        string "Sensor Data Topic"
+        default "sensor/data"
+        help
+            MQTT topic to publish sensor data to
+
+endmenu
+
 endmenu
