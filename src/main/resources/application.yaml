@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: mqtt-data-hub
+  profiles:
+    active: dev

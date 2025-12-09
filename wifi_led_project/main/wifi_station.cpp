@@ -1,6 +1,7 @@
 #include "wifi_station.h"
 #include "wifi_config.h"
 #include "config.h"
+#include "app_common.h"
 #include "esp_event.h"
 #include "esp_log.h"
 #include "esp_netif.h"
@@ -11,7 +12,7 @@
 
 static LEDController* led_controller = nullptr;
 static EventGroupHandle_t s_wifi_event_group = NULL;
-static const int WIFI_CONNECTED_BIT = BIT0;
+static const int WIFI_STA_CONNECTED_BIT = BIT0;  // Local event bit for wifi_station module
 static const char* TAG = "wifi_station";
 static esp_netif_t* s_sta_netif = nullptr;
 
@@ -21,7 +22,7 @@ static void handle_event(void*,
                          void*) {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         if (s_wifi_event_group) {
-            xEventGroupClearBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+            xEventGroupClearBits(s_wifi_event_group, WIFI_STA_CONNECTED_BIT);
         }
         if (led_controller != nullptr) {
             led_controller->start_blinking();
@@ -31,7 +32,11 @@ static void handle_event(void*,
 
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
         if (s_wifi_event_group) {
-            xEventGroupClearBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+            xEventGroupClearBits(s_wifi_event_group, WIFI_STA_CONNECTED_BIT);
+        }
+        // Clear global event group for MQTT
+        if (s_app_event_group) {
+            xEventGroupClearBits(s_app_event_group, WIFI_CONNECTED_BIT | TIME_SYNCED_BIT);
         }
         if (led_controller != nullptr) {
             led_controller->start_blinking();
@@ -42,7 +47,11 @@ static void handle_event(void*,
 
     if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
         if (s_wifi_event_group) {
-            xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+            xEventGroupSetBits(s_wifi_event_group, WIFI_STA_CONNECTED_BIT);
+        }
+        // Set global event group for MQTT
+        if (s_app_event_group) {
+            xEventGroupSetBits(s_app_event_group, WIFI_CONNECTED_BIT);
         }
         if (led_controller != nullptr) {
             led_controller->stop_blinking();
@@ -106,14 +115,18 @@ void wifi_station_start(LEDController* led, const WifiConfig* cfg) {
 bool wifi_station_is_connected() {
     if (s_wifi_event_group != NULL) {
         EventBits_t bits = xEventGroupGetBits(s_wifi_event_group);
-        return (bits & WIFI_CONNECTED_BIT) != 0;
+        return (bits & WIFI_STA_CONNECTED_BIT) != 0;
     }
     return false;
 }
 
 void wifi_station_stop() {
     if (s_wifi_event_group != NULL) {
-        xEventGroupClearBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+        xEventGroupClearBits(s_wifi_event_group, WIFI_STA_CONNECTED_BIT);
+    }
+    // Clear global event group for MQTT
+    if (s_app_event_group) {
+        xEventGroupClearBits(s_app_event_group, WIFI_CONNECTED_BIT | TIME_SYNCED_BIT);
     }
     
     esp_event_handler_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, &handle_event);
