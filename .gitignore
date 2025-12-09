@@ -39,3 +39,15 @@
 
 # debug information files
 *.dwo
+
+# Ignore all build directories
+**/build/
+
+# Ignore all .cache directories
+**/.cache/
+ble_com/components/
+venv/
+**/build/
+**/.cache/
+.vscode/
+*.code-workspace
