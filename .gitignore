@@ -40,15 +40,14 @@
 # debug information files
 *.dwo
 
-# MacOs
-.DS_Store
-**/.DS_Store
+# Ignore all build directories
+**/build/
 
-# IDEA
-.idea
-
-# vscode
-.vscode
-
-# Java
-target/
+# Ignore all .cache directories
+**/.cache/
+ble_com/components/
+venv/
+**/build/
+**/.cache/
+.vscode/
+*.code-workspace
