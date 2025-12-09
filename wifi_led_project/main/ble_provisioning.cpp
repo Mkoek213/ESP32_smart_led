@@ -5,6 +5,7 @@
 #include "wifi_station.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "freertos/timers.h"
 
 extern "C" {
     #include "nimble/nimble_port.h"
@@ -21,6 +22,9 @@ static const char* TAG = "ble_prov";
 
 // Nazwa urządzenia widoczna przez BLE
 static const char* DEVICE_NAME = "LED_WiFi_Config";
+
+// Provisioning timeout (60 seconds)
+#define PROVISIONING_TIMEOUT_MS 60000
 
 // uuid dla provisioning service
 static ble_uuid128_t UUID_PROV_SVC = BLE_UUID128_INIT(
@@ -58,6 +62,7 @@ static bool s_provisioning_active = false;
 static WifiConfig s_temp_config = {};
 static uint16_t s_conn_handle = BLE_HS_CONN_HANDLE_NONE;
 static uint16_t s_status_val_handle = 0;
+static TimerHandle_t s_provisioning_timer = nullptr;
 
 // wartosci statusu zwracane przez płytke
 enum ProvStatus : uint8_t {
@@ -69,6 +74,14 @@ enum ProvStatus : uint8_t {
 };
 
 static uint8_t s_status = STATUS_READY;
+
+// Provisioning timeout callback
+static void provisioning_timeout_cb(TimerHandle_t xTimer)
+{
+    (void)xTimer;
+    ESP_LOGW(TAG, "Provisioning timeout - stopping BLE");
+    ble_provisioning_stop();
+}
 
 static void notify_status_if_possible()
 {
@@ -118,6 +131,11 @@ static int gatt_chr_access_cb(uint16_t conn_handle,
             s_status = STATUS_SSID_SET;
             notify_status_if_possible();
             return 0;
+        }
+        if (ctxt->op == BLE_GATT_ACCESS_OP_READ_CHR) {
+            // Allow reading back the current SSID
+            int rc = os_mbuf_append(ctxt->om, s_temp_config.ssid, strlen(s_temp_config.ssid));
+            return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
         }
         return BLE_ATT_ERR_UNLIKELY;
     }
@@ -214,26 +232,96 @@ static int gatt_chr_access_cb(uint16_t conn_handle,
 static struct ble_gatt_chr_def prov_chrs[5];
 static struct ble_gatt_svc_def gatt_svcs[2];
 
+// Descriptors for characteristics (User Description)
+static const char* desc_ssid = "WiFi SSID";
+static const char* desc_pass = "WiFi Password";
+static const char* desc_status = "Provisioning Status";
+static const char* desc_cmd = "Command";
+
+// Static UUIDs for descriptors (CUD - Characteristic User Description, 0x2901)
+static const ble_uuid16_t UUID_CUD = BLE_UUID16_INIT(0x2901);
+
+// Descriptor access callbacks
+static int desc_ssid_access(uint16_t, uint16_t, struct ble_gatt_access_ctxt *ctxt, void*) {
+    ESP_LOGI(TAG, "Reading SSID descriptor");
+    int rc = os_mbuf_append(ctxt->om, desc_ssid, strlen(desc_ssid));
+    return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+}
+
+static int desc_pass_access(uint16_t, uint16_t, struct ble_gatt_access_ctxt *ctxt, void*) {
+    ESP_LOGI(TAG, "Reading Password descriptor");
+    int rc = os_mbuf_append(ctxt->om, desc_pass, strlen(desc_pass));
+    return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+}
+
+static int desc_status_access(uint16_t, uint16_t, struct ble_gatt_access_ctxt *ctxt, void*) {
+    ESP_LOGI(TAG, "Reading Status descriptor");
+    int rc = os_mbuf_append(ctxt->om, desc_status, strlen(desc_status));
+    return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+}
+
+static int desc_cmd_access(uint16_t, uint16_t, struct ble_gatt_access_ctxt *ctxt, void*) {
+    ESP_LOGI(TAG, "Reading Command descriptor");
+    int rc = os_mbuf_append(ctxt->om, desc_cmd, strlen(desc_cmd));
+    return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+}
+
+// Descriptor definitions - will be filled at runtime
+static struct ble_gatt_dsc_def ssid_dsc[2];
+static struct ble_gatt_dsc_def pass_dsc[2];
+static struct ble_gatt_dsc_def status_dsc[2];
+static struct ble_gatt_dsc_def cmd_dsc[2];
+
 static int gatt_svr_init()
 {
     memset(prov_chrs, 0, sizeof(prov_chrs));
 
+    // Fill descriptor definitions at runtime
+    memset(ssid_dsc, 0, sizeof(ssid_dsc));
+    ssid_dsc[0].uuid = &UUID_CUD.u;
+    ssid_dsc[0].att_flags = BLE_ATT_F_READ;
+    ssid_dsc[0].access_cb = desc_ssid_access;
+    ssid_dsc[0].arg = nullptr;
+    // ssid_dsc[1] is terminator (already zeroed)
+
+    memset(pass_dsc, 0, sizeof(pass_dsc));
+    pass_dsc[0].uuid = &UUID_CUD.u;
+    pass_dsc[0].att_flags = BLE_ATT_F_READ;
+    pass_dsc[0].access_cb = desc_pass_access;
+    pass_dsc[0].arg = nullptr;
+
+    memset(status_dsc, 0, sizeof(status_dsc));
+    status_dsc[0].uuid = &UUID_CUD.u;
+    status_dsc[0].att_flags = BLE_ATT_F_READ;
+    status_dsc[0].access_cb = desc_status_access;
+    status_dsc[0].arg = nullptr;
+
+    memset(cmd_dsc, 0, sizeof(cmd_dsc));
+    cmd_dsc[0].uuid = &UUID_CUD.u;
+    cmd_dsc[0].att_flags = BLE_ATT_F_READ;
+    cmd_dsc[0].access_cb = desc_cmd_access;
+    cmd_dsc[0].arg = nullptr;
+
     prov_chrs[0].uuid = &UUID_CHR_SSID.u;
     prov_chrs[0].access_cb = gatt_chr_access_cb;
-    prov_chrs[0].flags = BLE_GATT_CHR_F_WRITE;
+    prov_chrs[0].flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ;
+    prov_chrs[0].descriptors = ssid_dsc;
 
     prov_chrs[1].uuid = &UUID_CHR_PASS.u;
     prov_chrs[1].access_cb = gatt_chr_access_cb;
     prov_chrs[1].flags = BLE_GATT_CHR_F_WRITE;
+    prov_chrs[1].descriptors = pass_dsc;
 
     prov_chrs[2].uuid = &UUID_CHR_STATUS.u;
     prov_chrs[2].access_cb = gatt_chr_access_cb;
     prov_chrs[2].flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_NOTIFY;
     prov_chrs[2].val_handle = &s_status_val_handle; // store val handle for notify
+    prov_chrs[2].descriptors = status_dsc;
 
     prov_chrs[3].uuid = &UUID_CHR_CMD.u;
     prov_chrs[3].access_cb = gatt_chr_access_cb;
     prov_chrs[3].flags = BLE_GATT_CHR_F_WRITE;
+    prov_chrs[3].descriptors = cmd_dsc;
 
 
     memset(gatt_svcs, 0, sizeof(gatt_svcs));
@@ -408,6 +496,22 @@ void ble_provisioning_start(LEDController* led)
     // Start BLE host task
     nimble_port_freertos_init(host_task);
     
+    // Create and start provisioning timeout timer
+    s_provisioning_timer = xTimerCreate(
+        "prov_timer",
+        pdMS_TO_TICKS(PROVISIONING_TIMEOUT_MS),
+        pdFALSE, // one-shot
+        nullptr,
+        provisioning_timeout_cb
+    );
+    
+    if (s_provisioning_timer != nullptr) {
+        xTimerStart(s_provisioning_timer, 0);
+        ESP_LOGI(TAG, "Provisioning timeout set to %d seconds", PROVISIONING_TIMEOUT_MS / 1000);
+    } else {
+        ESP_LOGW(TAG, "Failed to create provisioning timer");
+    }
+    
     ESP_LOGI(TAG, "BLE provisioning started successfully");
 }
 
@@ -418,6 +522,13 @@ void ble_provisioning_stop()
     }
     
     ESP_LOGI(TAG, "Stopping BLE provisioning...");
+    
+    // Stop and delete timer
+    if (s_provisioning_timer != nullptr) {
+        xTimerStop(s_provisioning_timer, 0);
+        xTimerDelete(s_provisioning_timer, 0);
+        s_provisioning_timer = nullptr;
+    }
     
     // Rozłącz klienta jeśli jest podłączony
     if (s_conn_handle != BLE_HS_CONN_HANDLE_NONE) {
