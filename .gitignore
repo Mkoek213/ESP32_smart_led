@@ -51,3 +51,25 @@ venv/
 **/.cache/
 .vscode/
 *.code-workspace
+
+# Maven
+target/
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# IDEs
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# ESP-IDF
+sdkconfig
+managed_components/
+dependencies.lock
