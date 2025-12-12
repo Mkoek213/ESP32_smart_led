@@ -73,3 +73,6 @@ __pycache__/
 sdkconfig
 managed_components/
 dependencies.lock
+
+# PostgreSQL
+postgres/

@@ -6,95 +6,24 @@ users customize lighting.
 
 ## Backend
 
-### Mosquitto MQTT Broker
+The backend consists of a Spring Boot application, a Mosquitto MQTT broker, and a PostgreSQL database. The entire stack can be easily run using Docker Compose.
 
-There are two ways to run the mosquitto mqtt broker.
+### Prerequisites
 
-#### Docker
+- Dockers
 
-To run the mosquitto mqtt broker, you can use docker.
+### Running the Application with Docker Compose
 
-```bash
-docker run -it -p 1883:1883 -p 9001:9001 eclipse-mosquitto
-```
-
-#### Homebrew (macOS)
-
-Install mosquitto using brew:
+To build and run all the services (backend, MQTT broker, and database), use the following command from the project root directory:
 
 ```bash
-brew install mosquitto
+docker compose up --build
 ```
 
-Run mosquitto as a service:
+This command will:
+1.  Build the Docker image for the backend service as defined in the `Dockerfile`.
+2.  Start the backend service, Mosquitto broker, and PostgreSQL database containers in the correct order.
+3.  The services will be networked together, allowing them to communicate.
 
-```bash
-brew services start mosquitto
-```
+To stop all the running services, you can press `Ctrl+C` in the terminal where `docker compose` is running, or run `docker compose down` from another terminal in the project root.
 
-### Example Mosquitto configuration
-
-An example configuration is provided at `mosquitto.conf.example` in the project root. Use it to run a broker with the project's recommended listeners and options.
-
-- Local mosquitto (macOS/Homebrew): run mosquitto with the example config (stops the service first if running):
-
-```bash
-brew services stop mosquitto
-mosquitto -c ./mosquitto.conf.example
-```
-
-To run the example config as a service, copy it to Homebrew's mosquitto config directory (path may vary) and start the service:
-
-```bash
-# adjust target path if Homebrew is installed in /usr/local
-cp mosquitto.conf.example /opt/homebrew/etc/mosquitto/mosquitto.conf
-brew services start mosquitto
-```
-
-Note: verify or adjust the ports and websocket settings inside `mosquitto.conf.example` to match your environment (standard MQTT port 1883 and websocket port 9001 are commonly used).
-
-### Password file (mosquitto.passwd)
-
-To enable username/password authentication, create a password file in the same directory as your `mosquitto.conf` (for example `mosquitto.passwd`). Use `mosquitto_passwd` to create or add users and then ensure your config references the file (`password_file mosquitto.passwd`) and disables anonymous access (`allow_anonymous false`).
-
-Create a new password file and add a user:
-
-```bash
-# create new passwd file and add user 'user' (you'll be prompted for a password)
-mosquitto_passwd -c mosquitto.passwd user
-```
-
-```
-password_file mosquitto.passwd
-allow_anonymous false
-```
-
-### Database
-
-Before running the application, you need to start the PostgreSQL database. The project is configured to use
-docker-compose for this.
-
-```bash
-docker-compose up -d
-```
-
-### Running the service
-
-To run the service you can use the following command:
-
-```bash
-./mvnw spring-boot:run
-```
-
-### Testing the service
-
-To test the service you can publish mock data to the broker. The subscribed topic for the sensor-data is
-`customer/{customerId}/location/{locationId}/device/{deviceId}/sensor-data`.
-
-```bash
-mosquitto_pub -h localhost -p 1883 -t "customer/1/location/1/device/1/sensor-data" -m '[{"temperature": 25.5, "humidity": 50.5, "light": 500, "motion": true}]'
-```
-
-This will publish a message to the broker with the topic `customer/1/location/1/device/1/sensor-data` and the given
-payload. The service
-will then receive the message and process it.

@@ -9,14 +9,10 @@ spring:
     password: postgres
 
 mqtt:
-  broker:
-    url: tcp://localhost:1883
-  client:
-    id: mqtt-data-hub-dev
-  username: user
-  password: user
-  topic:
-    sensor-data: customer/+/location/+/device/+/sensor-data
+  broker-url: tcp://localhost:1883
+  credentials:
+    username: user
+    password: user
 
 logging:
   level:

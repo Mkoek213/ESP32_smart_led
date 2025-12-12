@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.karolbystrek</groupId>
     <artifactId>mqtt-data-hub</artifactId>
-    <version>0.0.1</version>
+    <version>1</version>
     <name>mqtt-data-hub</name>
     <description>mqtt-data-hub</description>
     <url/>
@@ -41,6 +41,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.integration</groupId>

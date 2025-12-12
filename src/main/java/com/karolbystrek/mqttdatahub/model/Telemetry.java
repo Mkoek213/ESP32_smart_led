@@ -1,13 +1,7 @@
 package com.karolbystrek.mqttdatahub.model;
 
-import com.karolbystrek.mqttdatahub.dto.SensorDataDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.karolbystrek.mqttdatahub.dto.TelemetryDto;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,12 +14,12 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Table(name = "sensor_data")
+@Table(name = "telemetry")
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SensorData {
+public class Telemetry {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -35,24 +29,24 @@ public class SensorData {
     @JoinColumn(name = "device_id", nullable = false)
     private Device device;
 
-    @Column(nullable = false)
-    private LocalDateTime timestamp;
-
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    private Double humidity;
-    private Boolean motionDetected;
-    private Integer lightLevel;
+    @Column(nullable = false)
+    private Long timestamp;
 
-    public static SensorData createSensorDataFrom(SensorDataDto dto, Device device) {
-        return SensorData.builder()
+    private Boolean motionDetected;
+    private Double temperature;
+    private Double humidity;
+    private Double pressure;
+
+    public static Telemetry createFrom(TelemetryDto dto, Device device) {
+        return Telemetry.builder()
                 .device(device)
                 .timestamp(dto.timestamp())
                 .humidity(dto.humidity())
                 .motionDetected(dto.motionDetected())
-                .lightLevel(dto.lightLevel())
                 .build();
     }
 }

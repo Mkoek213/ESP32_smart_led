@@ -1,13 +1,13 @@
 package com.karolbystrek.mqttdatahub.repository;
 
-import com.karolbystrek.mqttdatahub.model.SensorData;
+import com.karolbystrek.mqttdatahub.model.Telemetry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface SensorDataRepository extends JpaRepository<SensorData, Long> {
+public interface TelemetryRepository extends JpaRepository<Telemetry, Long> {
 
-    List<SensorData> findByDeviceIdIn(List<Long> deviceId);
+    List<Telemetry> findByDeviceIdIn(List<Long> deviceId);
 }
