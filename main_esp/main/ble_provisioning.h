@@ -3,7 +3,10 @@
 
 #include "led_controller.h"
 
-// Inicjalizacja i start BLE provisioning
+// Inicjalizacja serwisów provisioning (wołane raz przy starcie)
+void ble_provisioning_init_services();
+
+// Start BLE provisioning (advertising)
 void ble_provisioning_start(LEDController* led);
 
 // Stop BLE provisioning

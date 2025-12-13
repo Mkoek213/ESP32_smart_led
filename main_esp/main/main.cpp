@@ -18,9 +18,30 @@ extern "C" {
 #include "app_common.h"
 #include "app_mqtt.h"
 #include "app_sntp.h"
+#include "nimble/nimble_port.h"
+#include "nimble/nimble_port_freertos.h"
+#include "host/ble_hs.h"
+#include "services/gap/ble_svc_gap.h"
+#include "services/gatt/ble_svc_gatt.h"
 }
 
 static const char *TAG = "main";
+
+// NimBLE callbacks
+static void on_reset(int reason) {
+    ESP_LOGE(TAG, "BLE stack resetting; reason=%d", reason);
+}
+
+static void on_sync(void) {
+    ESP_LOGI(TAG, "BLE stack synced");
+    xEventGroupSetBits(s_app_event_group, BLE_STACK_READY_BIT);
+}
+
+static void host_task(void *param) {
+    ESP_LOGI(TAG, "BLE host task started");
+    nimble_port_run();
+    nimble_port_freertos_deinit();
+}
 
 // Tracking MQTT/SNTP state - accessible from button monitor task
 static volatile bool mqtt_started = false;
@@ -126,9 +147,31 @@ extern "C" void app_main(void) {
     return;
   }
 
-  // Initialize MQTT client
+  // Inicjalizacja MQTT client
   ESP_LOGI(TAG, "Initializing MQTT...");
   app_mqtt_init();
+
+  // Inicjalizacja BLE Stack (NimBLE)
+  ESP_LOGI(TAG, "Initializing BLE Stack...");
+  ESP_ERROR_CHECK(nimble_port_init());
+  ble_hs_cfg.reset_cb = on_reset;
+  ble_hs_cfg.sync_cb = on_sync;
+  ble_hs_cfg.store_status_cb = ble_store_util_status_rr;
+
+  ble_svc_gap_init();
+  ble_svc_gatt_init();
+  ble_svc_gap_device_name_set("ESP32_LED_Controller"); // Default name, overridden by provisioning or app
+
+  // Zarejestruj serwisy provisioning (muszą być dostępne zawsze)
+  ble_provisioning_init_services();
+  
+  // Start BLE host task
+  nimble_port_freertos_init(host_task);
+
+  // Wait for BLE stack to be ready
+  ESP_LOGI(TAG, "Waiting for BLE stack sync...");
+  xEventGroupWaitBits(s_app_event_group, BLE_STACK_READY_BIT, pdFALSE, pdTRUE, portMAX_DELAY);
+  ESP_LOGI(TAG, "BLE Stack ready");
 
   // Inicjalizacja LED controllera
   LEDController led(LED_GPIO, LED_BLINK_PERIOD_MS);

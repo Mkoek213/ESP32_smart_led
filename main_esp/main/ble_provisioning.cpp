@@ -418,38 +418,14 @@ static int gap_event(struct ble_gap_event *event, void *arg)
     }
 }
 
-static void on_reset(int reason)
-{
-    ESP_LOGE(TAG, "BLE stack resetting; reason=%d", reason);
-}
-
-static void on_sync()
-{
-    int rc = ble_hs_id_infer_auto(0, &s_own_addr_type);
+void ble_provisioning_init_services() {
+    // Rejestracja naszego provisioning service
+    int rc = gatt_svr_init();
     if (rc != 0) {
-        ESP_LOGE(TAG, "ble_hs_id_infer_auto failed: %d", rc);
-        return;
+        ESP_LOGE(TAG, "Failed to init GATT server: %d", rc);
     }
-    
-    uint8_t addr_val[6] = {0};
-    ble_hs_id_copy_addr(s_own_addr_type, addr_val, nullptr);
-    ESP_LOGI(TAG, "BLE addr: %02X:%02X:%02X:%02X:%02X:%02X",
-             addr_val[5], addr_val[4], addr_val[3],
-             addr_val[2], addr_val[1], addr_val[0]);
-    
-    start_advertising();
 }
 
-static void host_task(void *param)
-{
-    (void)param;
-    ESP_LOGI(TAG, "BLE host task started");
-    nimble_port_run();
-    nimble_port_freertos_deinit();
-}
-
-extern "C" void ble_store_config_init(void) {
-}
 
 void ble_provisioning_start(LEDController* led)
 {
@@ -470,31 +446,18 @@ void ble_provisioning_start(LEDController* led)
     s_status = STATUS_READY;
     s_provisioning_active = true;
     
-    // Inicjalizacja NimBLE
-    ESP_ERROR_CHECK(nimble_port_init());
+    // Inicjalizacja NimBLE usunieta - teraz w main.cpp
     
-    ble_hs_cfg.reset_cb = on_reset;
-    ble_hs_cfg.sync_cb = on_sync;
-    ble_hs_cfg.store_status_cb = ble_store_util_status_rr;
-    
-    // Rejestracja wbudowanych serwisów GAP i GATT
-    ble_svc_gap_init();
-    ble_svc_gatt_init();
-    ble_svc_gap_device_name_set(DEVICE_NAME);
-    
-    // Rejestracja naszego provisioning service
-    int rc = gatt_svr_init();
+    // Pobierz typ adresu własnego (potrzebne do advertising)
+    int rc = ble_hs_id_infer_auto(0, &s_own_addr_type);
     if (rc != 0) {
-        ESP_LOGE(TAG, "Failed to init GATT server: %d", rc);
+        ESP_LOGE(TAG, "ble_hs_id_infer_auto failed: %d", rc);
         s_provisioning_active = false;
         return;
     }
-    
-    // Konfiguracja store (minimalna)
-    ble_store_config_init();
-    
-    // Start BLE host task
-    nimble_port_freertos_init(host_task);
+
+    // Start advertising
+    start_advertising();
     
     // Create and start provisioning timeout timer
     s_provisioning_timer = xTimerCreate(
@@ -543,9 +506,6 @@ void ble_provisioning_stop()
     if (s_led) {
         s_led->stop_blinking();
     }
-    
-    // Deinit NimBLE
-    nimble_port_deinit();
     
     ESP_LOGI(TAG, "BLE provisioning stopped");
 }

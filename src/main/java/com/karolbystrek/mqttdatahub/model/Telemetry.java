@@ -45,8 +45,10 @@ public class Telemetry {
         return Telemetry.builder()
                 .device(device)
                 .timestamp(dto.timestamp())
-                .humidity(dto.humidity())
                 .motionDetected(dto.motionDetected())
+                .temperature(dto.temperature())
+                .humidity(dto.humidity())
+                .pressure(dto.pressure())
                 .build();
     }
 }

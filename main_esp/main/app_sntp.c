@@ -20,6 +20,10 @@ static void initialize_sntp(void)
     esp_sntp_setservername(0, "pool.ntp.org");
     esp_sntp_set_time_sync_notification_cb(time_sync_notification_cb);
     esp_sntp_init();
+
+    // Set timezone to Poland (CET/CEST)
+    setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 1);
+    tzset();
 }
 
 void app_sntp_init(void)

@@ -18,7 +18,7 @@
 #define MQTT_USERNAME ""
 #define MQTT_PASSWORD ""
 
-#define SEND_INTERVAL_MS (60 * 1000)
+#define SEND_INTERVAL_MS (300 * 1000)
 #define BATCH_SIZE 50
 
 static const char *TAG = "app_mqtt";
