@@ -2,9 +2,6 @@ package com.karolbystrek.mqttdatahub.service;
 
 import com.karolbystrek.mqttdatahub.dto.TelemetryDto;
 import com.karolbystrek.mqttdatahub.dto.TelemetryResponse;
-import com.karolbystrek.mqttdatahub.model.Customer;
-import com.karolbystrek.mqttdatahub.model.Device;
-import com.karolbystrek.mqttdatahub.model.Location;
 import com.karolbystrek.mqttdatahub.model.Telemetry;
 import com.karolbystrek.mqttdatahub.repository.TelemetryRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +25,9 @@ public class TelemetryService {
 
     @Transactional
     public void save(TelemetryDto dto, Long customerId, Long locationId, Long deviceId) {
-        Customer customer = customerService.getCustomerBy(customerId);
-        Location location = locationService.getLocationBy(locationId, customer);
-        Device device = deviceService.getDeviceBy(deviceId, location);
+        var customer = customerService.getBy(customerId);
+        var location = locationService.getBy(locationId, customer);
+        var device = deviceService.getBy(deviceId, location);
 
         var telemetry = Telemetry.createFrom(dto, device);
 

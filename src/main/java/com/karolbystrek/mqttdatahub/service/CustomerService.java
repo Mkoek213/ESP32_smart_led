@@ -13,7 +13,7 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
 
-    public Customer getCustomerBy(Long customerId) {
+    public Customer getBy(Long customerId) {
         return customerRepository.findById(customerId)
                 .orElseThrow(() -> new IllegalArgumentException(format("Customer with id '%s' not found.", customerId)));
     }

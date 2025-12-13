@@ -14,7 +14,7 @@ public class LocationService {
 
     private final LocationRepository locationRepository;
 
-    public Location getLocationBy(Long locationId, Customer customer) {
+    public Location getBy(Long locationId, Customer customer) {
         return locationRepository.findByIdAndCustomerId(locationId, customer.getId())
                 .orElseThrow(() ->
                         new IllegalArgumentException(format("Location with id '%s' for customer '%s' not found.", locationId, customer.getName()))
