@@ -1,5 +1,7 @@
 idf_component_register(SRCS "main.cpp"
                            "led_controller.cpp"
+                           "ws2812b_controller.cpp"
+                           "hc_sr04.cpp"
                            "wifi_station.cpp"
                            "wifi_config.cpp"
                            "ble_provisioning.cpp"
@@ -8,5 +10,6 @@ idf_component_register(SRCS "main.cpp"
                            "sensor_manager.cpp"
                            "sensor_task.cpp"
                            "app_sntp.c"
-                    PRIV_REQUIRES esp_wifi nvs_flash esp_driver_gpio esp_netif esp_timer bt mqtt esp_pm
+                    REQUIRES esp_driver_gpio esp_driver_rmt esp_driver_gptimer led_strip
+                    PRIV_REQUIRES esp_wifi nvs_flash esp_netif esp_timer bt mqtt esp_pm
                     INCLUDE_DIRS ".")

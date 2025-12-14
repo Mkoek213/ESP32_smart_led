@@ -11,6 +11,8 @@
 #include "sensor_task.h"
 #include "config.h"
 #include "led_controller.h"
+#include "ws2812b_controller.h"
+#include "hc_sr04.h"
 #include "wifi_config.h"
 #include "wifi_station.h"
 
@@ -26,6 +28,12 @@ extern "C" {
 }
 
 static const char *TAG = "main";
+
+// Global LED controller for WS2812B
+static WS2812BController* g_ws2812b = nullptr;
+
+// Global HC-SR04 distance sensor controller
+static HCSR04* g_hc_sr04 = nullptr;
 
 // NimBLE callbacks
 static void on_reset(int reason) {
@@ -46,6 +54,58 @@ static void host_task(void *param) {
 // Tracking MQTT/SNTP state - accessible from button monitor task
 static volatile bool mqtt_started = false;
 static volatile bool sntp_started = false;
+
+// Flag to indicate if animation is running (don't override with status colors in main loop)
+static volatile bool animation_running = false;
+
+// Task reading HC-SR04 distance sensor
+static void distance_sensor_task(void *arg) {
+  HCSR04 *sensor = static_cast<HCSR04 *>(arg);
+
+  const float DETECTION_THRESHOLD_CM = 50.0f;
+  const uint32_t RED_LED_DURATION_MS = 10000;  // 10 seconds
+  
+  // Measure distance every 50ms for ultra-fast detection (20 times per second)
+  while (true) {
+    float distance_cm = sensor->measure_distance_cm();
+
+    if (distance_cm > 0) {
+      ESP_LOGI(TAG, "Distance: %.1f cm (%.1f mm)", distance_cm, distance_cm * 10.0f);
+      
+      // Check if someone is detected (distance < 50cm)
+      if (distance_cm < DETECTION_THRESHOLD_CM) {
+        ESP_LOGI(TAG, "Motion detected! Distance: %.1f cm - Activating red LEDs", distance_cm);
+        
+        // Stop current animation
+        if (g_ws2812b != nullptr) {
+          ESP_LOGI(TAG, "Stopping animation...");
+          g_ws2812b->stop_animation();
+          
+          // Give a moment for the animation task to fully stop and clear
+          vTaskDelay(pdMS_TO_TICKS(100));
+          
+          // Set all 6 LEDs to red
+          ESP_LOGI(TAG, "Setting all LEDs to RED");
+          g_ws2812b->set_all_pixels(255, 0, 0);
+          ESP_LOGI(TAG, "All LEDs set to RED");
+          
+          // Keep red for 10 seconds
+          ESP_LOGI(TAG, "LEDs set to RED for %lu seconds", RED_LED_DURATION_MS / 1000);
+          vTaskDelay(pdMS_TO_TICKS(RED_LED_DURATION_MS));
+          
+          // Turn off LEDs after detection period
+          ESP_LOGI(TAG, "Turning off LEDs");
+          g_ws2812b->clear();
+          g_ws2812b->refresh();
+        }
+      }
+    } else {
+      ESP_LOGW(TAG, "Distance measurement failed");
+    }
+
+    vTaskDelay(pdMS_TO_TICKS(50));  // Read every 50ms
+  }
+}
 
 // Task monitorujący przycisk konfiguracyjny
 static void button_monitor_task(void *arg) {
@@ -176,6 +236,26 @@ extern "C" void app_main(void) {
   // Inicjalizacja LED controllera
   LEDController led(LED_GPIO, LED_BLINK_PERIOD_MS);
 
+  // Inicjalizacja WS2812B LED strip
+  WS2812BController ws2812b(WS2812B_GPIO, WS2812B_NUM_LEDS);
+  if (!ws2812b.init()) {
+    ESP_LOGE(TAG, "Failed to initialize WS2812B LED strip!");
+    return;
+  }
+  g_ws2812b = &ws2812b;
+  
+  // Inicjalizacja HC-SR04 distance sensor
+  HCSR04 hc_sr04(HC_SR04_TRIG_GPIO, HC_SR04_ECHO_GPIO);
+  if (!hc_sr04.init()) {
+    ESP_LOGE(TAG, "Failed to initialize HC-SR04 distance sensor!");
+    return;
+  }
+  g_hc_sr04 = &hc_sr04;
+  
+  // Start color brightness cycling animation - DISABLED (LEDs only turn on when motion detected)
+  // ESP_LOGI(TAG, "Starting LED color brightness cycle");
+  // ws2812b.power_up_animation();  // This will run in a separate task
+
   // Sprawdź czy istnieje zapisana konfiguracja WiFi
   WifiConfig cfg;
   bool has_config = wifi_config_load(cfg);
@@ -211,8 +291,14 @@ extern "C" void app_main(void) {
   // Uruchom task monitorujący przycisk (pozwala na zmianę konfiguracji)
   xTaskCreate(button_monitor_task, "btn_monitor", 4096, &led, 5, NULL);
   
+  // Start HC-SR04 distance sensor reading task
+  xTaskCreate(distance_sensor_task, "distance_sensor", 2048, &hc_sr04, 3, NULL);
+  
   // Start sensor reading task (independent of WiFi connection)
   sensor_reading_task_start();
+  
+  // Mark animation as running - main loop will not override it
+  animation_running = true;
   
   ESP_LOGI(
       TAG,
@@ -221,7 +307,7 @@ extern "C" void app_main(void) {
 
   while (true) {
     if (wifi_station_is_connected()) {
-      // Start SNTP if not already started
+      // WiFi connected - start SNTP if not already started
       if (!sntp_started) {
         ESP_LOGI(TAG, "WiFi connected - starting SNTP...");
         app_sntp_init();
@@ -238,6 +324,7 @@ extern "C" void app_main(void) {
         app_mqtt_start();
         app_mqtt_start_publishing_task();
         mqtt_started = true;
+        ESP_LOGI(TAG, "MQTT started and publishing");
       }
     } else {
       // WiFi disconnected - reset state
@@ -248,6 +335,13 @@ extern "C" void app_main(void) {
       }
     }
 
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    // Main loop monitoring task - animation continues running independently in background
+    // Log WiFi/MQTT status without interrupting LED animation
+    ESP_LOGD(TAG, "WiFi: %s, MQTT: %s, SNTP: %s", 
+             wifi_station_is_connected() ? "connected" : "disconnected",
+             mqtt_started ? "started" : "stopped",
+             sntp_started ? "started" : "stopped");
+
+    vTaskDelay(pdMS_TO_TICKS(5000));  // Check status every 5 seconds instead of 1 second
   }
 }
