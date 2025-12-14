@@ -10,17 +10,24 @@
 
 #include "ble_provisioning.h"
 #include "sensor_task.h"
+#include "sensor_manager.h"
 #include "config.h"
 #include "led_controller.h"
+#include "led_config.h"
 #include "ws2812b_controller.h"
 #include "hc_sr04.h"
 #include "wifi_config.h"
 #include "wifi_station.h"
 
+#include <ctime>
+
 extern "C" {
 #include "app_common.h"
 #include "app_mqtt.h"
 #include "app_sntp.h"
+#include "esp_adc/adc_oneshot.h"
+#include "esp_adc/adc_cali.h"
+#include "esp_adc/adc_cali_scheme.h"
 #include "nimble/nimble_port.h"
 #include "nimble/nimble_port_freertos.h"
 #include "host/ble_hs.h"
@@ -59,93 +66,301 @@ static volatile bool sntp_started = false;
 // Flag to indicate if animation is running (don't override with status colors in main loop)
 static volatile bool animation_running = false;
 
+// ADC handle for photoresistor
+static adc_oneshot_unit_handle_t adc1_handle = NULL;
+
+// Initialize ADC for photoresistor
+static void init_photoresistor_adc() {
+  adc_oneshot_unit_init_cfg_t init_config = {
+    .unit_id = ADC_UNIT_1,
+    .clk_src = ADC_RTC_CLK_SRC_DEFAULT,
+    .ulp_mode = ADC_ULP_MODE_DISABLE,
+  };
+  ESP_ERROR_CHECK(adc_oneshot_new_unit(&init_config, &adc1_handle));
+  
+  adc_oneshot_chan_cfg_t config = {
+    .atten = PHOTORESISTOR_ADC_ATTEN,
+    .bitwidth = PHOTORESISTOR_ADC_BITWIDTH,
+  };
+  ESP_ERROR_CHECK(adc_oneshot_config_channel(adc1_handle, PHOTORESISTOR_ADC_CHANNEL, &config));
+  
+  ESP_LOGI(TAG, "Photoresistor ADC initialized on GPIO%d", PHOTORESISTOR_GPIO);
+}
+
+// Read photoresistor and return ambient light percentage (0-100%)
+static uint8_t read_photoresistor() {
+  int adc_raw = 0;
+  ESP_ERROR_CHECK(adc_oneshot_read(adc1_handle, PHOTORESISTOR_ADC_CHANNEL, &adc_raw));
+  
+  // DEBUG: Log raw ADC value for calibration
+  static int log_counter = 0;
+  if (++log_counter >= 20) {  // Log every ~1 second
+    log_counter = 0;
+    ESP_LOGI(TAG, "Photoresistor RAW ADC: %d (min=%d, max=%d)", 
+             adc_raw, PHOTORESISTOR_MIN_ADC, PHOTORESISTOR_MAX_ADC);
+  }
+  
+  // Map ADC value (0-4095) to percentage (0-100%)
+  // Clamp to calibrated min/max range
+  if (adc_raw < PHOTORESISTOR_MIN_ADC) adc_raw = PHOTORESISTOR_MIN_ADC;
+  if (adc_raw > PHOTORESISTOR_MAX_ADC) adc_raw = PHOTORESISTOR_MAX_ADC;
+  
+  // Linear mapping: (value - min) / (max - min) * 100
+  uint8_t percentage = ((adc_raw - PHOTORESISTOR_MIN_ADC) * 100) / 
+                       (PHOTORESISTOR_MAX_ADC - PHOTORESISTOR_MIN_ADC);
+  
+  return percentage;
+}
+
 // Task reading HC-SR04 distance sensor
 static void distance_sensor_task(void *arg) {
   HCSR04 *sensor = static_cast<HCSR04 *>(arg);
-
-  const float DETECTION_THRESHOLD_CM = 50.0f;
-  const uint32_t LED_DURATION_MS = 30000;  // 30 seconds
+  
+  // Person counting variables - track detection SESSIONS not individual detections
+  static int person_count = 0;
+  static bool in_detection_session = false;  // Track if we're in an active detection session
+  static int64_t last_telemetry_send_time = 0;
+  
+  // LED timer variables
+  static int64_t last_motion_time = 0;        // Last time motion was detected
+  static int64_t led_session_start_time = 0;  // When LED session started
+  static bool leds_on = false;
+  
+  // Store current LED color (set once when LEDs activate, don't change during session)
+  static uint8_t current_led_red = 0;
+  static uint8_t current_led_green = 0;
+  static uint8_t current_led_blue = 0;
   
   // Measure distance every 50ms for ultra-fast detection (20 times per second)
   while (true) {
     float distance_cm = sensor->measure_distance_cm();
+    bool current_motion_detected = false;
 
     if (distance_cm > 0) {
-      ESP_LOGI(TAG, "Distance: %.1f cm (%.1f mm)", distance_cm, distance_cm * 10.0f);
+      // Distance measurement successful (logging disabled to reduce clutter)
       
-      // Check if someone is detected (distance < 50cm)
-      if (distance_cm < DETECTION_THRESHOLD_CM) {
-        // Generate random temperature and humidity for simulation
-        // Temperature range: 19-28°C
-        float temperature = 19.0f + ((float)(esp_random() % 1000) / 100.0f);  // 19.00 - 28.99°C
+      // Get configurable detection threshold
+      float detection_threshold = LEDConfigManager::getInstance().getConfig().distance_threshold_cm;
+      
+      // Check if someone is detected (distance < threshold)
+      if (distance_cm < detection_threshold) {
+        current_motion_detected = true;
         
-        // Humidity range: 30-80%
-        float humidity = 30.0f + ((float)(esp_random() % 5100) / 100.0f);  // 30.00 - 80.99%
+        // Update last motion time (for LED timeout tracking)
+        int64_t current_time = esp_timer_get_time() / 1000;
+        last_motion_time = current_time;
+        
+        // Count person ONLY when starting a NEW detection session
+        if (!in_detection_session) {
+          person_count++;
+          in_detection_session = true;
+          ESP_LOGI(TAG, "New person detected! Total count: %d", person_count);
+          
+          // Start LED session if not already on
+          if (!leds_on) {
+            led_session_start_time = current_time;
+          }
+        }
+        
+        // Generate simulated sensor data
+        float temperature, humidity;
+        
+        #if USE_SIMULATED_SENSORS
+          // Temperature range: 19-28°C
+          temperature = 19.0f + ((float)(esp_random() % 1000) / 100.0f);
+          // Humidity range: 30-80%
+          humidity = 30.0f + ((float)(esp_random() % 5100) / 100.0f);
+        #else
+          // TODO: Read from real sensors when available
+          temperature = 22.0f;
+          humidity = 50.0f;
+        #endif
         
         ESP_LOGI(TAG, "Motion detected! Distance: %.1f cm", distance_cm);
         ESP_LOGI(TAG, "Environmental Data - Temp: %.1f°C, Humidity: %.1f%%", temperature, humidity);
         
-        // Determine LED color based on temperature
-        uint8_t red = 0, green = 0, blue = 0;
-        if (temperature >= 19.0f && temperature < 22.0f) {
-          // Blue for 19-21°C
-          red = 0; green = 0; blue = 255;
-          ESP_LOGI(TAG, "Temperature range: 19-21°C → Color: BLUE");
-        } else if (temperature >= 22.0f && temperature < 25.0f) {
-          // Yellow for 22-24°C
-          red = 255; green = 255; blue = 0;
-          ESP_LOGI(TAG, "Temperature range: 22-24°C → Color: YELLOW");
-        } else if (temperature >= 25.0f && temperature <= 28.0f) {
-          // Green for 25-28°C
-          red = 0; green = 255; blue = 0;
-          ESP_LOGI(TAG, "Temperature range: 25-28°C → Color: GREEN");
+        // Get LED configuration
+        LEDConfigManager& config_manager = LEDConfigManager::getInstance();
+        const LEDConfig& led_config = config_manager.getConfig();
+        
+        // Determine LED color based on CONFIGURABLE humidity thresholds
+        RGBColor color = config_manager.getColorForHumidity(humidity);
+        uint8_t red = color.r;
+        uint8_t green = color.g;
+        uint8_t blue = color.b;
+        
+        ESP_LOGI(TAG, "Humidity-based color: R:%d G:%d B:%d", red, green, blue);
+        
+        // Determine LED brightness based on photoresistor (or manual setting)
+        uint8_t ambient_light_pct;
+        
+        #if USE_REAL_PHOTORESISTOR
+          // Read real photoresistor on GPIO34
+          ambient_light_pct = read_photoresistor();
+        #else
+          // Simulate photoresistor reading (0-100% ambient light)
+          ambient_light_pct = esp_random() % 101;
+        #endif
+        
+        uint8_t brightness = config_manager.getBrightnessForAmbientLight(ambient_light_pct);
+        
+        if (led_config.auto_brightness) {
+          ESP_LOGI(TAG, "Ambient light: %d%% → Auto-brightness: %d%%", 
+                   ambient_light_pct, (brightness * 100) / 255);
         } else {
-          // Fallback - White for out of range
-          red = 255; green = 255; blue = 255;
-          ESP_LOGI(TAG, "Temperature out of range → Color: WHITE");
+          ESP_LOGI(TAG, "Manual brightness: %d%%", (brightness * 100) / 255);
         }
         
-        // Determine LED brightness based on humidity (3 stages)
-        uint8_t brightness = 0;
-        if (humidity < 45.0f) {
-          // Low humidity → High brightness (85%)
-          brightness = 217;  // 85% of 255
-          ESP_LOGI(TAG, "Humidity: %.1f%% (Low) → Brightness: HIGH (85%%)", humidity);
-        } else if (humidity >= 45.0f && humidity < 65.0f) {
-          // Medium humidity → Medium brightness (50%)
-          brightness = 128;  // 50% of 255
-          ESP_LOGI(TAG, "Humidity: %.1f%% (Medium) → Brightness: MEDIUM (50%%)", humidity);
-        } else {
-          // High humidity → Low brightness (20%)
-          brightness = 51;  // 20% of 255
-          ESP_LOGI(TAG, "Humidity: %.1f%% (High) → Brightness: LOW (20%%)", humidity);
-        }
-        
-        // Stop current animation if running
-        if (g_ws2812b != nullptr) {
+        // Activate LEDs if not already on
+        if (g_ws2812b != nullptr && !leds_on) {
           ESP_LOGI(TAG, "Activating LEDs...");
           g_ws2812b->stop_animation();
           
           // Give a moment for the animation task to fully stop and clear
           vTaskDelay(pdMS_TO_TICKS(100));
           
-          // Set all 6 LEDs to calculated color and brightness
-          g_ws2812b->set_all_pixels_brightness(red, green, blue, brightness);
-          ESP_LOGI(TAG, "All LEDs set to R:%d G:%d B:%d at %d%% brightness", 
-                   red, green, blue, (brightness * 100) / 255);
-          
-          // Keep LEDs on for 30 seconds
-          ESP_LOGI(TAG, "LEDs will stay on for %lu seconds", LED_DURATION_MS / 1000);
-          vTaskDelay(pdMS_TO_TICKS(LED_DURATION_MS));
-          
-          // Turn off LEDs after detection period
-          ESP_LOGI(TAG, "Turning off LEDs");
+          // Clear all LEDs first
           g_ws2812b->clear();
+          
+          // Store the color for this session (won't change until LEDs turn off)
+          current_led_red = red;
+          current_led_green = green;
+          current_led_blue = blue;
+          
+          // Set only the configured number of LEDs
+          uint8_t num_leds = led_config.num_leds_active;
+          for (uint8_t i = 0; i < num_leds && i < WS2812B_NUM_LEDS; i++) {
+            g_ws2812b->set_pixel_brightness(i, red, green, blue, brightness);
+          }
           g_ws2812b->refresh();
+          
+          ESP_LOGI(TAG, "%d LEDs set to R:%d G:%d B:%d at %d%% brightness", 
+                   num_leds, red, green, blue, (brightness * 100) / 255);
+          
+          ESP_LOGI(TAG, "LEDs activated (will stay on while motion detected, max 5min)");
+          leds_on = true;
         }
+      } else {
+        // No motion detected
+        current_motion_detected = false;
       }
     } else {
       ESP_LOGW(TAG, "Distance measurement failed");
+    }
+    
+    
+    // Smart LED auto-off logic
+    if (leds_on && g_ws2812b != nullptr) {
+      int64_t current_time = esp_timer_get_time() / 1000;
+      int64_t time_since_motion = current_time - last_motion_time;
+      int64_t session_duration = current_time - led_session_start_time;
+      
+      // Get configurable timeout values
+      const LEDConfig& timeout_config = LEDConfigManager::getInstance().getConfig();
+      
+      // Turn off LEDs if:
+      // 1. No motion for configured timeout, OR
+      // 2. Session exceeded configured maximum duration
+      if (time_since_motion >= timeout_config.no_motion_timeout_ms || 
+          session_duration >= timeout_config.max_on_duration_ms) {
+        
+        if (session_duration >= timeout_config.max_on_duration_ms) {
+          ESP_LOGI(TAG, "Turning off LEDs (max duration %lus reached)", 
+                   (unsigned long)(timeout_config.max_on_duration_ms / 1000));
+        } else {
+          ESP_LOGI(TAG, "Turning off LEDs (%lus of no motion)", 
+                   (unsigned long)(timeout_config.no_motion_timeout_ms / 1000));
+        }
+        
+        g_ws2812b->clear();
+        g_ws2812b->refresh();
+        leds_on = false;
+        
+        // End detection session
+        in_detection_session = false;
+      } else {
+        // LEDs are still on - update brightness dynamically based on ambient light
+        // Update every 1 second (50ms * 20 cycles)
+        static int brightness_update_counter = 0;
+        if (++brightness_update_counter >= 20) {
+          brightness_update_counter = 0;
+          
+          LEDConfigManager& config_mgr = LEDConfigManager::getInstance();
+          const LEDConfig& current_config = config_mgr.getConfig();
+          
+          // Only update if auto-brightness is enabled
+          if (current_config.auto_brightness) {
+            // Read current ambient light
+            uint8_t ambient_light_pct;
+            
+            #if USE_REAL_PHOTORESISTOR
+              // Read real photoresistor
+              ambient_light_pct = read_photoresistor();
+            #else
+              // Simulate
+              ambient_light_pct = esp_random() % 101;
+            #endif
+            
+            // Calculate new brightness based on ambient light
+            uint8_t new_brightness = config_mgr.getBrightnessForAmbientLight(ambient_light_pct);
+            
+            // Update LEDs with new brightness BUT KEEP THE SAME COLOR
+            uint8_t num_leds = current_config.num_leds_active;
+            g_ws2812b->clear();
+            for (uint8_t i = 0; i < num_leds && i < WS2812B_NUM_LEDS; i++) {
+              // Use stored color values (current_led_red/green/blue), only change brightness
+              g_ws2812b->set_pixel_brightness(i, current_led_red, current_led_green, current_led_blue, new_brightness);
+            }
+            g_ws2812b->refresh();
+            
+            ESP_LOGI(TAG, "Updated LED brightness: %d%% (ambient light: %d%%)", 
+                     (new_brightness * 100) / 255, ambient_light_pct);
+          }
+        }
+      }
+    }
+    
+    // Send telemetry periodically
+    int64_t current_time = esp_timer_get_time() / 1000;  // Convert to milliseconds
+    if (last_telemetry_send_time == 0 || 
+        (current_time - last_telemetry_send_time) >= TELEMETRY_SEND_INTERVAL_MS) {
+      
+      // Get current timestamp (use time sync if available, otherwise use uptime)
+      EventBits_t bits = xEventGroupGetBits(s_app_event_group);
+      time_t now;
+      if ((bits & TIME_SYNCED_BIT) != 0) {
+        time(&now);
+        ESP_LOGI(TAG, "Sending telemetry with synced time");
+      } else {
+        // Use system uptime as fallback if time not synced yet
+        now = (time_t)(esp_timer_get_time() / 1000000LL);
+        ESP_LOGW(TAG, "Sending telemetry with uptime (time not synced yet)");
+      }
+      
+      // Generate telemetry data
+      Telemetry data;
+      data.timestamp = (int64_t)now;
+      
+      #if USE_SIMULATED_SENSORS
+        data.temperature = 19.0f + ((float)(esp_random() % 1000) / 100.0f);
+        data.humidity = 30.0f + ((float)(esp_random() % 5100) / 100.0f);
+        data.pressure = 980.0 + (rand() % 40);
+      #else
+        // TODO: Read from real sensors
+        data.temperature = 22.0f;
+        data.humidity = 50.0f;
+        data.pressure = 1013.0f;
+      #endif
+      
+      data.person_count = person_count;
+      
+      SensorManager::getInstance().enqueue(data);
+      ESP_LOGI(TAG, "Telemetry enqueued: Temp=%.1f°C, Humidity=%.1f%%, PersonCount=%d", 
+               data.temperature, data.humidity, data.person_count);
+      
+      // Reset person count after sending
+      person_count = 0;
+      last_telemetry_send_time = current_time;
     }
 
     vTaskDelay(pdMS_TO_TICKS(50));  // Read every 50ms
@@ -297,6 +512,10 @@ extern "C" void app_main(void) {
   }
   g_hc_sr04 = &hc_sr04;
   
+  // Initialize photoresistor ADC
+  ESP_LOGI(TAG, "Initializing photoresistor...");
+  init_photoresistor_adc();
+  
   // Start color brightness cycling animation - DISABLED (LEDs only turn on when motion detected)
   // ESP_LOGI(TAG, "Starting LED color brightness cycle");
   // ws2812b.power_up_animation();  // This will run in a separate task
@@ -339,8 +558,12 @@ extern "C" void app_main(void) {
   // Start HC-SR04 distance sensor reading task
   xTaskCreate(distance_sensor_task, "distance_sensor", 2048, &hc_sr04, 3, NULL);
   
-  // Start sensor reading task (independent of WiFi connection)
+  // Start BLE sensor reading task only if BLE sensor is enabled
+  #if USE_BLE_SENSOR
   sensor_reading_task_start();
+  #else
+  ESP_LOGI(TAG, "BLE sensor disabled - skipping BLE sensor task");
+  #endif
   
   // Mark animation as running - main loop will not override it
   animation_running = true;

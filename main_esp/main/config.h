@@ -12,7 +12,7 @@
 
 // Konfiguracja WS2812B (NeoPixel)
 #define WS2812B_GPIO GPIO_NUM_4  // D4 pin
-#define WS2812B_NUM_LEDS 6
+#define WS2812B_NUM_LEDS 24
 
 // Konfiguracja HC-SR04 Ultrasonic Distance Sensor
 #define HC_SR04_TRIG_GPIO GPIO_NUM_5  // D5 pin (Trigger)
@@ -36,6 +36,26 @@
 #define MQTT_TOPIC_SUFFIX_CMD "/cmd"
 #define MQTT_TOPIC_SUFFIX_RESP "/resp"
 #define MQTT_TOPIC_SUFFIX_ATTRIBUTES "/attributes"
+
+// Sensor Configuration
+#define USE_SIMULATED_SENSORS true   // Simulate temp/humidity (don't have these sensors)
+#define USE_REAL_PHOTORESISTOR true  // Use real photoresistor on GPIO34
+#define USE_BLE_SENSOR false
+#define TELEMETRY_SEND_INTERVAL_MS 30000  // Send telemetry every 30 seconds
+
+// LED Auto-off Configuration
+#define LED_NO_MOTION_TIMEOUT_MS 15000   // Turn off after 15 seconds of no motion
+#define LED_MAX_DURATION_MS 300000       // Maximum 5 minutes on time
+
+// Photoresistor (Light Sensor) Configuration
+#define PHOTORESISTOR_GPIO GPIO_NUM_34   // ADC1_CHANNEL_6, input-only, WiFi-compatible
+#define PHOTORESISTOR_ADC_CHANNEL ADC_CHANNEL_6
+#define PHOTORESISTOR_ADC_ATTEN ADC_ATTEN_DB_12  // 0-3.3V range (updated from deprecated DB_11)
+#define PHOTORESISTOR_ADC_BITWIDTH ADC_BITWIDTH_12  // 12-bit: 0-4095
+
+// Photoresistor calibration values (based on actual measurements)
+#define PHOTORESISTOR_MIN_ADC 3445   // Dark/covered (actual: 3445)
+#define PHOTORESISTOR_MAX_ADC 4095   // Normal daylight (saturated max)
 
 
 #endif

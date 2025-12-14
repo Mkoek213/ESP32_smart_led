@@ -36,19 +36,19 @@ public class Telemetry {
     @Column(nullable = false)
     private Long timestamp;
 
-    private Boolean motionDetected;
     private Double temperature;
     private Double humidity;
     private Double pressure;
+    private Integer personCount;
 
     public static Telemetry createFrom(TelemetryDto dto, Device device) {
         return Telemetry.builder()
                 .device(device)
                 .timestamp(dto.timestamp())
-                .motionDetected(dto.motionDetected())
                 .temperature(dto.temperature())
                 .humidity(dto.humidity())
                 .pressure(dto.pressure())
+                .personCount(dto.personCount())
                 .build();
     }
 }

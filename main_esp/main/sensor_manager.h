@@ -11,7 +11,7 @@ struct Telemetry {
   double temperature;
   double humidity;
   double pressure;
-  bool motion_detected;
+  int person_count;
 };
 
 class SensorManager {

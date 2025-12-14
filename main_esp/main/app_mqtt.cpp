@@ -2,6 +2,7 @@
 #include "sensor_manager.h"
 #include "app_common.h"
 #include "config.h"
+#include "led_config.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -11,14 +12,15 @@
 
 #include "esp_log.h"
 #include "mqtt_client.h"
+#include "cJSON.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-#define BROKER_URI "mqtt://172.20.10.3:1883"
+#define BROKER_URI "mqtt://192.168.0.186:1883"
 #define MQTT_USERNAME ""
 #define MQTT_PASSWORD ""
 
-#define SEND_INTERVAL_MS (300 * 1000)
+#define SEND_INTERVAL_MS (30 * 1000)  // Check and send every 30 seconds (matches telemetry generation)
 #define BATCH_SIZE 50
 
 static const char *TAG = "app_mqtt";
@@ -61,9 +63,136 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         // Check if it is a command
         // Note: Simple check, in real app might need exact match logic
         if (strncmp(event->topic, MQTT_TOPIC_BASE MQTT_TOPIC_SUFFIX_CMD, event->topic_len) == 0) {
-             ESP_LOGI(TAG, "Received message on CMD topic. Logic deferred.");
-             // TODO: Parse JSON and execute command
-        }
+             ESP_LOGI(TAG, "Received command on CMD topic");
+             
+             // Parse JSON command
+             char* json_str = (char*)malloc(event->data_len + 1);
+             if (json_str) {
+                 memcpy(json_str, event->data, event->data_len);
+                 json_str[event->data_len] = '\0';
+                 
+                 cJSON* root = cJSON_Parse(json_str);
+                 if (root) {
+                     cJSON* type = cJSON_GetObjectItem(root, "type");
+                     
+                     if (type && cJSON_IsString(type)) {
+                         if (strcmp(type->valuestring, "SET_CONFIG") == 0) {
+                             // Handle SET_CONFIG command
+                             cJSON* payload = cJSON_GetObjectItem(root, "payload");
+                             if (payload) {
+                                 LEDConfig new_config = LEDConfigManager::getInstance().getConfig();
+                                 
+                                 // Parse humidity thresholds
+                                 cJSON* thresholds = cJSON_GetObjectItem(payload, "humidityThresholds");
+                                 if (thresholds && cJSON_IsArray(thresholds) && cJSON_GetArraySize(thresholds) == 4) {
+                                     for (int i = 0; i < 4; i++) {
+                                         cJSON* item = cJSON_GetArrayItem(thresholds, i);
+                                         if (cJSON_IsNumber(item)) {
+                                             new_config.humidity_thresholds[i] = (float)item->valuedouble;
+                                         }
+                                     }
+                                 }
+                                 
+                                 // Parse colors (hex strings like "FF0000")
+                                cJSON* colors = cJSON_GetObjectItem(payload, "colors");
+                                 if (colors && cJSON_IsArray(colors) && cJSON_GetArraySize(colors) == 3) {
+                                     for (int i = 0; i < 3; i++) {
+                                         cJSON* color_str = cJSON_GetArrayItem(colors, i);
+                                         if (cJSON_IsString(color_str)) {
+                                             unsigned int r, g, b;
+                                             if (sscanf(color_str->valuestring, "%02X%02X%02X", &r, &g, &b) == 3) {
+                                                 new_config.colors[i].r = (uint8_t)r;
+                                                 new_config.colors[i].g = (uint8_t)g;
+                                                 new_config.colors[i].b = (uint8_t)b;
+                                             }
+                                         }
+                                     }
+                                 }
+                                 
+                                 // Parse brightness settings
+                                 cJSON* brightness_pct = cJSON_GetObjectItem(payload, "brightnessPct");
+                                 if (brightness_pct && cJSON_IsNumber(brightness_pct)) {
+                                     new_config.manual_brightness_pct = (uint8_t)brightness_pct->valueint;
+                                 }
+                                 
+                                 cJSON* auto_brightness = cJSON_GetObjectItem(payload, "autobrightness");
+                                 if (auto_brightness && cJSON_IsBool(auto_brightness)) {
+                                     new_config.auto_brightness = cJSON_IsTrue(auto_brightness);
+                                 }
+                                 
+                                 // Parse number of LEDs to activate
+                                 cJSON* num_leds = cJSON_GetObjectItem(payload, "numLeds");
+                                 if (num_leds && cJSON_IsNumber(num_leds)) {
+                                     uint8_t leds = (uint8_t)num_leds->valueint;
+                                     // Clamp to valid range 1-6
+                                     if (leds >= 1 && leds <= 6) {
+                                         new_config.num_leds_active = leds;
+                                     }
+                                 }
+                                 
+                                 // Parse LED timeout settings (in seconds, convert to ms)
+                                 cJSON* no_motion_timeout = cJSON_GetObjectItem(payload, "noMotionTimeoutSec");
+                                 if (no_motion_timeout && cJSON_IsNumber(no_motion_timeout)) {
+                                     uint32_t timeout_sec = (uint32_t)no_motion_timeout->valueint;
+                                     if (timeout_sec > 0 && timeout_sec <= 300) {  // Max 5 minutes
+                                         new_config.no_motion_timeout_ms = timeout_sec * 1000;
+                                     }
+                                 }
+                                 
+                                 cJSON* max_on_duration = cJSON_GetObjectItem(payload, "maxOnDurationSec");
+                                 if (max_on_duration && cJSON_IsNumber(max_on_duration)) {
+                                     uint32_t duration_sec = (uint32_t)max_on_duration->valueint;
+                                     if (duration_sec > 0 && duration_sec <= 600) {  // Max 10 minutes
+                                         new_config.max_on_duration_ms = duration_sec * 1000;
+                                     }
+                                 }
+                                 
+                                 // Parse distance threshold (in cm)
+                                 cJSON* distance_threshold = cJSON_GetObjectItem(payload, "distanceThresholdCm");
+                                 if (distance_threshold && cJSON_IsNumber(distance_threshold)) {
+                                     float threshold = (float)distance_threshold->valuedouble;
+                                     if (threshold > 0.0f && threshold <= 400.0f) {  // Max 4 meters
+                                         new_config.distance_threshold_cm = threshold;
+                                     }
+                                 }
+                                 
+                                 // Apply configuration
+                                 LEDConfigManager::getInstance().setConfig(new_config);
+                                 ESP_LOGI(TAG, "LED configuration updated via MQTT");
+                             }
+                         } else if (strcmp(type->valuestring, "GET_CONFIG") == 0) {
+                             // Handle GET_CONFIG command - publish current config
+                             const LEDConfig& cfg = LEDConfigManager::getInstance().getConfig();
+                             
+                             char response[512];
+                             snprintf(response, sizeof(response),
+                                 "{\"humidityThresholds\":[%.1f,%.1f,%.1f,%.1f],"
+                                 "\"colors\":[\"%02X%02X%02X\",\"%02X%02X%02X\",\"%02X%02X%02X\"],"
+                                 "\"brightnessPct\":%d,\"autobrightness\":%s,\"numLeds\":%d,"
+                                 "\"noMotionTimeoutSec\":%lu,\"maxOnDurationSec\":%lu,"
+                                 "\"distanceThresholdCm\":%.1f}",
+                                 cfg.humidity_thresholds[0], cfg.humidity_thresholds[1],
+                                 cfg.humidity_thresholds[2], cfg.humidity_thresholds[3],
+                                 cfg.colors[0].r, cfg.colors[0].g, cfg.colors[0].b,
+                                 cfg.colors[1].r, cfg.colors[1].g, cfg.colors[1].b,
+                                 cfg.colors[2].r, cfg.colors[2].g, cfg.colors[2].b,
+                                 cfg.manual_brightness_pct,
+                                 cfg.auto_brightness ? "true" : "false",
+                                 cfg.num_leds_active,
+                                 (unsigned long)(cfg.no_motion_timeout_ms / 1000),
+                                 (unsigned long)(cfg.max_on_duration_ms / 1000),
+                                 cfg.distance_threshold_cm);
+                             
+                             esp_mqtt_client_publish(client, MQTT_TOPIC_BASE "/config", response, 0, 1, 0);
+                             ESP_LOGI(TAG, "Published current configuration");
+                         }
+                     }
+                     
+                     cJSON_Delete(root);
+                 }
+                 free(json_str);
+             }
+         }
         break;
 
     case MQTT_EVENT_ERROR:
@@ -106,8 +235,8 @@ static void mqtt_publishing_task(void *pvParameters)
                 for (size_t i = 0; i < batch.size(); ++i) {
                     const auto& item = batch[i];
                     snprintf(buf, sizeof(buf), 
-                        "{\"timestamp\":%" PRIi64 ",\"temperature\":%.1f,\"humidity\":%.1f,\"pressure\":%.1f,\"motionDetected\":%s}",
-                        item.timestamp, item.temperature, item.humidity, item.pressure, item.motion_detected ? "true" : "false");
+                        "{\"timestamp\":%" PRIi64 ",\"temperature\":%.1f,\"humidity\":%.1f,\"pressure\":%.1f,\"personCount\":%d}",
+                        item.timestamp, item.temperature, item.humidity, item.pressure, item.person_count);
                     
                     payload += buf;
                     if (i < batch.size() - 1) {

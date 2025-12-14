@@ -285,8 +285,10 @@ namespace {
 static void sensor_reading_task(void* arg) {
     ESP_LOGI(TAG, "Sensor reading task started");
     
-    // Init semaphore
+    #if USE_BLE_SENSOR
+    // Init semaphore for BLE
     s_ble_sem = xSemaphoreCreateBinary();
+    #endif
 
     // Wait for time sync and BLE stack
     xEventGroupWaitBits(s_app_event_group, TIME_SYNCED_BIT | BLE_STACK_READY_BIT, pdFALSE, pdTRUE, portMAX_DELAY);
@@ -300,7 +302,8 @@ static void sensor_reading_task(void* arg) {
             continue;
         }
 
-        // Start BLE Scan/Read
+        #if USE_BLE_SENSOR
+        // BLE sensor mode - scan for physical BLE device
         ESP_LOGI(TAG, "Starting BLE scan for sensor...");
         start_scan();
 
@@ -315,7 +318,7 @@ static void sensor_reading_task(void* arg) {
                  data.humidity = g_ctx.current_data.humidity;
                  data.temperature = g_ctx.current_data.temperature;
                  data.pressure = 980.0 + (rand() % 40); // Random pressure (sensor doesn't have it)
-                 data.motion_detected = (rand() % 10) == 0; 
+                 data.person_count = 0; // BLE sensor doesn't track person count 
                  
                  SensorManager::getInstance().enqueue(data);
                  ESP_LOGI(TAG, "Data enqueued: T=%.2f H=%.2f", data.temperature, data.humidity);
@@ -329,6 +332,23 @@ static void sensor_reading_task(void* arg) {
                 ble_gap_terminate(g_ctx.conn_handle, BLE_ERR_REM_USER_CONN_TERM);
             }
         }
+        #else
+        // Simulated sensor mode - generate random data
+        ESP_LOGI(TAG, "Generating random sensor data (BLE sensor disabled)...");
+        
+        time_t now;
+        time(&now);
+        Telemetry data;
+        data.timestamp = (int64_t)now;
+        data.temperature = 19.0 + ((float)(rand() % 1000) / 100.0f); // 19-28°C
+        data.humidity = 30.0 + ((float)(rand() % 5100) / 100.0f);    // 30-80%
+        data.pressure = 980.0 + (rand() % 40);                        // 980-1020 hPa
+        data.person_count = 0; // This task doesn't track person count
+        
+        SensorManager::getInstance().enqueue(data);
+        ESP_LOGI(TAG, "Random data enqueued: T=%.2f H=%.2f P=%.1f", 
+                 data.temperature, data.humidity, data.pressure);
+        #endif
 
         vTaskDelay(pdMS_TO_TICKS(SENSOR_READ_INTERVAL_MS));
     }
