@@ -2,6 +2,7 @@
 #include "esp_err.h"
 #include "esp_log.h"
 #include "esp_timer.h"
+#include "esp_random.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "nvs_flash.h"
@@ -63,7 +64,7 @@ static void distance_sensor_task(void *arg) {
   HCSR04 *sensor = static_cast<HCSR04 *>(arg);
 
   const float DETECTION_THRESHOLD_CM = 50.0f;
-  const uint32_t RED_LED_DURATION_MS = 10000;  // 10 seconds
+  const uint32_t LED_DURATION_MS = 30000;  // 30 seconds
   
   // Measure distance every 50ms for ultra-fast detection (20 times per second)
   while (true) {
@@ -74,24 +75,68 @@ static void distance_sensor_task(void *arg) {
       
       // Check if someone is detected (distance < 50cm)
       if (distance_cm < DETECTION_THRESHOLD_CM) {
-        ESP_LOGI(TAG, "Motion detected! Distance: %.1f cm - Activating red LEDs", distance_cm);
+        // Generate random temperature and humidity for simulation
+        // Temperature range: 19-28°C
+        float temperature = 19.0f + ((float)(esp_random() % 1000) / 100.0f);  // 19.00 - 28.99°C
         
-        // Stop current animation
+        // Humidity range: 30-80%
+        float humidity = 30.0f + ((float)(esp_random() % 5100) / 100.0f);  // 30.00 - 80.99%
+        
+        ESP_LOGI(TAG, "Motion detected! Distance: %.1f cm", distance_cm);
+        ESP_LOGI(TAG, "Environmental Data - Temp: %.1f°C, Humidity: %.1f%%", temperature, humidity);
+        
+        // Determine LED color based on temperature
+        uint8_t red = 0, green = 0, blue = 0;
+        if (temperature >= 19.0f && temperature < 22.0f) {
+          // Blue for 19-21°C
+          red = 0; green = 0; blue = 255;
+          ESP_LOGI(TAG, "Temperature range: 19-21°C → Color: BLUE");
+        } else if (temperature >= 22.0f && temperature < 25.0f) {
+          // Yellow for 22-24°C
+          red = 255; green = 255; blue = 0;
+          ESP_LOGI(TAG, "Temperature range: 22-24°C → Color: YELLOW");
+        } else if (temperature >= 25.0f && temperature <= 28.0f) {
+          // Green for 25-28°C
+          red = 0; green = 255; blue = 0;
+          ESP_LOGI(TAG, "Temperature range: 25-28°C → Color: GREEN");
+        } else {
+          // Fallback - White for out of range
+          red = 255; green = 255; blue = 255;
+          ESP_LOGI(TAG, "Temperature out of range → Color: WHITE");
+        }
+        
+        // Determine LED brightness based on humidity (3 stages)
+        uint8_t brightness = 0;
+        if (humidity < 45.0f) {
+          // Low humidity → High brightness (85%)
+          brightness = 217;  // 85% of 255
+          ESP_LOGI(TAG, "Humidity: %.1f%% (Low) → Brightness: HIGH (85%%)", humidity);
+        } else if (humidity >= 45.0f && humidity < 65.0f) {
+          // Medium humidity → Medium brightness (50%)
+          brightness = 128;  // 50% of 255
+          ESP_LOGI(TAG, "Humidity: %.1f%% (Medium) → Brightness: MEDIUM (50%%)", humidity);
+        } else {
+          // High humidity → Low brightness (20%)
+          brightness = 51;  // 20% of 255
+          ESP_LOGI(TAG, "Humidity: %.1f%% (High) → Brightness: LOW (20%%)", humidity);
+        }
+        
+        // Stop current animation if running
         if (g_ws2812b != nullptr) {
-          ESP_LOGI(TAG, "Stopping animation...");
+          ESP_LOGI(TAG, "Activating LEDs...");
           g_ws2812b->stop_animation();
           
           // Give a moment for the animation task to fully stop and clear
           vTaskDelay(pdMS_TO_TICKS(100));
           
-          // Set all 6 LEDs to red
-          ESP_LOGI(TAG, "Setting all LEDs to RED");
-          g_ws2812b->set_all_pixels(255, 0, 0);
-          ESP_LOGI(TAG, "All LEDs set to RED");
+          // Set all 6 LEDs to calculated color and brightness
+          g_ws2812b->set_all_pixels_brightness(red, green, blue, brightness);
+          ESP_LOGI(TAG, "All LEDs set to R:%d G:%d B:%d at %d%% brightness", 
+                   red, green, blue, (brightness * 100) / 255);
           
-          // Keep red for 10 seconds
-          ESP_LOGI(TAG, "LEDs set to RED for %lu seconds", RED_LED_DURATION_MS / 1000);
-          vTaskDelay(pdMS_TO_TICKS(RED_LED_DURATION_MS));
+          // Keep LEDs on for 30 seconds
+          ESP_LOGI(TAG, "LEDs will stay on for %lu seconds", LED_DURATION_MS / 1000);
+          vTaskDelay(pdMS_TO_TICKS(LED_DURATION_MS));
           
           // Turn off LEDs after detection period
           ESP_LOGI(TAG, "Turning off LEDs");
