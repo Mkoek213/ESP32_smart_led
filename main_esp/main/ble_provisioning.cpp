@@ -441,8 +441,18 @@ void ble_provisioning_start(LEDController* led)
     
     ESP_LOGI(TAG, "Starting BLE provisioning...");
     
-    // Reset stanu
-    memset(&s_temp_config, 0, sizeof(s_temp_config));
+    // Load saved config so user can read current SSID via BLE
+    WifiConfig saved_config;
+    if (wifi_config_load(saved_config)) {
+        // Copy saved SSID to temp config (visible via READ)
+        memcpy(&s_temp_config, &saved_config, sizeof(WifiConfig));
+        ESP_LOGI(TAG, "Loaded saved SSID: '%s' (readable via BLE)", s_temp_config.ssid);
+    } else {
+        // No saved config - start empty
+        memset(&s_temp_config, 0, sizeof(s_temp_config));
+        ESP_LOGI(TAG, "No saved config - starting with empty SSID");
+    }
+    
     s_status = STATUS_READY;
     s_provisioning_active = true;
     
