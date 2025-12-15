@@ -16,7 +16,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-#define BROKER_URI "mqtt://192.168.0.186:1883"
+#define BROKER_URI "mqtt://172.20.10.7:1883"
 #define MQTT_USERNAME ""
 #define MQTT_PASSWORD ""
 

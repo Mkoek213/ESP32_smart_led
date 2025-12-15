@@ -11,10 +11,20 @@ static const char* TAG = "sensor_task";
 static const int SENSOR_READ_INTERVAL_MS = 30000; // Read every 30 seconds
 static const int MOTION_CHECK_INTERVAL_MS = 5000; // Check for motion every 5s
 
+#include "esp_log.h"
+#include "esp_event.h"
+#include "freertos/event_groups.h"
+#include "sensor_manager.h"
+#include "config.h"
 #include "ble_provisioning.h"
+#include "bmp280.h"  // For pressure sensor
+#include "person_counter.h"  // Thread-safe person counter
+#include "latest_sensor_data.h"  // Thread-safe latest sensor readings
+
 #include "nimble/nimble_port.h"
 #include "nimble/nimble_port_freertos.h"
 #include "host/ble_hs.h"
+#include "host/ble_gatt.h"
 #include "host/ble_uuid.h"
 #include "host/util/util.h"
 #include "services/gap/ble_svc_gap.h"
@@ -285,10 +295,8 @@ namespace {
 static void sensor_reading_task(void* arg) {
     ESP_LOGI(TAG, "Sensor reading task started");
     
-    #if USE_BLE_SENSOR
     // Init semaphore for BLE
     s_ble_sem = xSemaphoreCreateBinary();
-    #endif
 
     // Wait for time sync and BLE stack
     xEventGroupWaitBits(s_app_event_group, TIME_SYNCED_BIT | BLE_STACK_READY_BIT, pdFALSE, pdTRUE, portMAX_DELAY);
@@ -302,26 +310,30 @@ static void sensor_reading_task(void* arg) {
             continue;
         }
 
-        #if USE_BLE_SENSOR
         // BLE sensor mode - scan for physical BLE device
         ESP_LOGI(TAG, "Starting BLE scan for sensor...");
         start_scan();
 
-        // Wait for completion (timeout 15s)
-        if (xSemaphoreTake(s_ble_sem, pdMS_TO_TICKS(15000)) == pdTRUE) {
+        // Wait for completion (timeout 30s to handle slow BLE connections)
+        if (xSemaphoreTake(s_ble_sem, pdMS_TO_TICKS(30000)) == pdTRUE) {
             // Check if we got valid data
             if (g_ctx.current_data.valid) {
+                 // Update the latest sensor data cache (always available for LED colors)
+                 LatestSensorData::update(g_ctx.current_data.temperature, 
+                                         g_ctx.current_data.humidity);
+                 
                  time_t now;
                  time(&now);
                  Telemetry data;
                  data.timestamp = (int64_t)now;
-                 data.humidity = g_ctx.current_data.humidity;
-                 data.temperature = g_ctx.current_data.temperature;
-                 data.pressure = 980.0 + (rand() % 40); // Random pressure (sensor doesn't have it)
-                 data.person_count = 0; // BLE sensor doesn't track person count 
+                 data.humidity = g_ctx.current_data.humidity;      // From BLE
+                 data.temperature = g_ctx.current_data.temperature; // From BLE
+                 data.pressure = 1013.25f; // Default sea level pressure (BMP280 not connected)
+                 data.person_count = PersonCounter::get_and_reset(); // Thread-safe get and reset
                  
                  SensorManager::getInstance().enqueue(data);
-                 ESP_LOGI(TAG, "Data enqueued: T=%.2f H=%.2f", data.temperature, data.humidity);
+                 ESP_LOGI(TAG, "BLE telemetry: T=%.2f H=%.2f PersonCount=%d", 
+                          data.temperature, data.humidity, data.person_count);
             } else {
                 ESP_LOGW(TAG, "BLE transaction finished but no valid data");
             }
@@ -332,23 +344,6 @@ static void sensor_reading_task(void* arg) {
                 ble_gap_terminate(g_ctx.conn_handle, BLE_ERR_REM_USER_CONN_TERM);
             }
         }
-        #else
-        // Simulated sensor mode - generate random data
-        ESP_LOGI(TAG, "Generating random sensor data (BLE sensor disabled)...");
-        
-        time_t now;
-        time(&now);
-        Telemetry data;
-        data.timestamp = (int64_t)now;
-        data.temperature = 19.0 + ((float)(rand() % 1000) / 100.0f); // 19-28°C
-        data.humidity = 30.0 + ((float)(rand() % 5100) / 100.0f);    // 30-80%
-        data.pressure = 980.0 + (rand() % 40);                        // 980-1020 hPa
-        data.person_count = 0; // This task doesn't track person count
-        
-        SensorManager::getInstance().enqueue(data);
-        ESP_LOGI(TAG, "Random data enqueued: T=%.2f H=%.2f P=%.1f", 
-                 data.temperature, data.humidity, data.pressure);
-        #endif
 
         vTaskDelay(pdMS_TO_TICKS(SENSOR_READ_INTERVAL_MS));
     }

@@ -38,10 +38,8 @@
 #define MQTT_TOPIC_SUFFIX_ATTRIBUTES "/attributes"
 
 // Sensor Configuration
-#define USE_SIMULATED_SENSORS false   // Use real sensors (BMP280)
-#define USE_REAL_PHOTORESISTOR true  // Use real photoresistor on GPIO34
-#define USE_BLE_SENSOR false
-#define TELEMETRY_SEND_INTERVAL_MS 30000  // Send telemetry every 30 seconds
+#define USE_REAL_PHOTORESISTOR 1         // Use real photoresistor on GPIO34
+#define TELEMETRY_SEND_INTERVAL_MS 30000 // Send telemetry every 30 seconds
 
 // LED Auto-off Configuration
 #define LED_NO_MOTION_TIMEOUT_MS 15000   // Turn off after 15 seconds of no motion

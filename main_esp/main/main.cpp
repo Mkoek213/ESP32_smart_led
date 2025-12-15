@@ -16,6 +16,8 @@
 #include "led_config.h"
 #include "ws2812b_controller.h"
 #include "hc_sr04.h"
+#include "person_counter.h"  // Thread-safe person counter
+#include "latest_sensor_data.h"  // Thread-safe latest sensor readings
 #include "wifi_config.h"
 #include "wifi_station.h"
 #include "bmp280.h"
@@ -122,7 +124,6 @@ static void distance_sensor_task(void *arg) {
   HCSR04 *sensor = static_cast<HCSR04 *>(arg);
   
   // Person counting variables - track detection SESSIONS not individual detections
-  static int person_count = 0;
   static bool in_detection_session = false;  // Track if we're in an active detection session
   static int64_t last_telemetry_send_time = 0;
   
@@ -157,9 +158,9 @@ static void distance_sensor_task(void *arg) {
         
         // Count person ONLY when starting a NEW detection session
         if (!in_detection_session) {
-          person_count++;
+          PersonCounter::increment();
           in_detection_session = true;
-          ESP_LOGI(TAG, "New person detected! Total count: %d", person_count);
+          ESP_LOGI(TAG, "New person detected! Total count: %d", PersonCounter::get());
           
           // Start LED session if not already on
           if (!leds_on) {
@@ -167,30 +168,9 @@ static void distance_sensor_task(void *arg) {
           }
         }
         
-        // Generate simulated sensor data
-        float temperature, humidity;
-        
-        #if USE_SIMULATED_SENSORS
-          // Temperature range: 19-28°C
-          temperature = 19.0f + ((float)(esp_random() % 1000) / 100.0f);
-          // Humidity range: 30-80%
-          humidity = 30.0f + ((float)(esp_random() % 5100) / 100.0f);
-        #else
-          // Read from real sensors
-          if (g_bmp280) {
-            float pressure_dummy;
-            float temp_float;
-            if (bmp280_read_temp_pressure(g_bmp280, &temp_float, &pressure_dummy) != ESP_OK) {
-               ESP_LOGW(TAG, "Failed to read BMP280");
-               temperature = 22.0f;
-            } else {
-               temperature = temp_float;
-            }
-          } else {
-            temperature = 22.0f;
-          }
-          humidity = 50.0f; // No humidity sensor
-        #endif
+        // Get latest BLE sensor data for LED color selection
+        float temperature = LatestSensorData::get_temperature();
+        float humidity = LatestSensorData::get_humidity();
         
         ESP_LOGI(TAG, "Motion detected! Distance: %.1f cm", distance_cm);
         ESP_LOGI(TAG, "Environmental Data - Temp: %.1f°C, Humidity: %.1f%%", temperature, humidity);
@@ -336,60 +316,8 @@ static void distance_sensor_task(void *arg) {
       }
     }
     
-    // Send telemetry periodically
-    int64_t current_time = esp_timer_get_time() / 1000;  // Convert to milliseconds
-    if (last_telemetry_send_time == 0 || 
-        (current_time - last_telemetry_send_time) >= TELEMETRY_SEND_INTERVAL_MS) {
-      
-      // Get current timestamp (use time sync if available, otherwise use uptime)
-      EventBits_t bits = xEventGroupGetBits(s_app_event_group);
-      time_t now;
-      if ((bits & TIME_SYNCED_BIT) != 0) {
-        time(&now);
-        ESP_LOGI(TAG, "Sending telemetry with synced time");
-      } else {
-        // Use system uptime as fallback if time not synced yet
-        now = (time_t)(esp_timer_get_time() / 1000000LL);
-        ESP_LOGW(TAG, "Sending telemetry with uptime (time not synced yet)");
-      }
-      
-      // Generate telemetry data
-      Telemetry data;
-      data.timestamp = (int64_t)now;
-      
-      #if USE_SIMULATED_SENSORS
-        data.temperature = 19.0f + ((float)(esp_random() % 1000) / 100.0f);
-        data.humidity = 30.0f + ((float)(esp_random() % 5100) / 100.0f);
-        data.pressure = 980.0 + (rand() % 40);
-      #else
-        // Read from real sensors
-        if (g_bmp280) {
-          float temp, press;
-          if (bmp280_read_temp_pressure(g_bmp280, &temp, &press) != ESP_OK) {
-             ESP_LOGW(TAG, "Failed to read BMP280");
-             data.temperature = 22.0f;
-             data.pressure = 1013.0f;
-          } else {
-             data.temperature = (double)temp;
-             data.pressure = (double)press;
-          }
-        } else {
-          data.temperature = 22.0f;
-          data.pressure = 1013.0f;
-        }
-        data.humidity = 50.0f;
-      #endif
-      
-      data.person_count = person_count;
-      
-      SensorManager::getInstance().enqueue(data);
-      ESP_LOGI(TAG, "Telemetry enqueued: Temp=%.1f°C, Humidity=%.1f%%, PersonCount=%d", 
-               data.temperature, data.humidity, data.person_count);
-      
-      // Reset person count after sending
-      person_count = 0;
-      last_telemetry_send_time = current_time;
-    }
+    // Person count telemetry is now handled by sensor_task every 30 seconds
+    // No duplicate telemetry needed here
 
     vTaskDelay(pdMS_TO_TICKS(50));  // Read every 50ms
   }
@@ -613,15 +541,17 @@ extern "C" void app_main(void) {
   // Uruchom task monitorujący przycisk (pozwala na zmianę konfiguracji)
   xTaskCreate(button_monitor_task, "btn_monitor", 4096, &led, 5, NULL);
   
+  // Initialize thread-safe person counter before starting tasks
+  PersonCounter::init();
+  
+  // Initialize thread-safe latest sensor data cache
+  LatestSensorData::init();
+  
   // Start HC-SR04 distance sensor reading task
   xTaskCreate(distance_sensor_task, "distance_sensor", 2048, &hc_sr04, 3, NULL);
   
-  // Start BLE sensor reading task only if BLE sensor is enabled
-  #if USE_BLE_SENSOR
+  // Start BLE sensor reading task
   sensor_reading_task_start();
-  #else
-  ESP_LOGI(TAG, "BLE sensor disabled - skipping BLE sensor task");
-  #endif
   
   // Mark animation as running - main loop will not override it
   animation_running = true;

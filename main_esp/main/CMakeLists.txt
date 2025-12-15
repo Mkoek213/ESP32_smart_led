@@ -1,4 +1,4 @@
-idf_component_register(SRCS "bmp280.c" "motion_detector.cpp" "led_config.cpp" "main.cpp"
+idf_component_register(SRCS "latest_sensor_data.cpp" "person_counter.cpp" "bmp280.c" "motion_detector.cpp" "led_config.cpp" "main.cpp"
                            "led_controller.cpp"
                            "ws2812b_controller.cpp"
                            "hc_sr04.cpp"
