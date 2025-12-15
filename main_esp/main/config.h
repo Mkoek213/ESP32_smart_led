@@ -38,7 +38,7 @@
 #define MQTT_TOPIC_SUFFIX_ATTRIBUTES "/attributes"
 
 // Sensor Configuration
-#define USE_SIMULATED_SENSORS true   // Simulate temp/humidity (don't have these sensors)
+#define USE_SIMULATED_SENSORS false   // Use real sensors (BMP280)
 #define USE_REAL_PHOTORESISTOR true  // Use real photoresistor on GPIO34
 #define USE_BLE_SENSOR false
 #define TELEMETRY_SEND_INTERVAL_MS 30000  // Send telemetry every 30 seconds
@@ -57,5 +57,10 @@
 #define PHOTORESISTOR_MIN_ADC 3445   // Dark/covered (actual: 3445)
 #define PHOTORESISTOR_MAX_ADC 4095   // Normal daylight (saturated max)
 
+// BMP280 I2C Configuration
+#define I2C_MASTER_SCL_IO GPIO_NUM_22
+#define I2C_MASTER_SDA_IO GPIO_NUM_21
+#define I2C_MASTER_FREQ_HZ 100000
+#define I2C_MASTER_NUM I2C_NUM_0
 
 #endif

@@ -18,6 +18,8 @@
 #include "hc_sr04.h"
 #include "wifi_config.h"
 #include "wifi_station.h"
+#include "bmp280.h"
+#include "driver/i2c_master.h"
 
 #include <ctime>
 
@@ -42,6 +44,9 @@ static WS2812BController* g_ws2812b = nullptr;
 
 // Global HC-SR04 distance sensor controller
 static HCSR04* g_hc_sr04 = nullptr;
+
+// Global BMP280 handle
+static bmp280_handle_t g_bmp280 = NULL;
 
 // NimBLE callbacks
 static void on_reset(int reason) {
@@ -171,9 +176,20 @@ static void distance_sensor_task(void *arg) {
           // Humidity range: 30-80%
           humidity = 30.0f + ((float)(esp_random() % 5100) / 100.0f);
         #else
-          // TODO: Read from real sensors when available
-          temperature = 22.0f;
-          humidity = 50.0f;
+          // Read from real sensors
+          if (g_bmp280) {
+            float pressure_dummy;
+            float temp_float;
+            if (bmp280_read_temp_pressure(g_bmp280, &temp_float, &pressure_dummy) != ESP_OK) {
+               ESP_LOGW(TAG, "Failed to read BMP280");
+               temperature = 22.0f;
+            } else {
+               temperature = temp_float;
+            }
+          } else {
+            temperature = 22.0f;
+          }
+          humidity = 50.0f; // No humidity sensor
         #endif
         
         ESP_LOGI(TAG, "Motion detected! Distance: %.1f cm", distance_cm);
@@ -346,10 +362,22 @@ static void distance_sensor_task(void *arg) {
         data.humidity = 30.0f + ((float)(esp_random() % 5100) / 100.0f);
         data.pressure = 980.0 + (rand() % 40);
       #else
-        // TODO: Read from real sensors
-        data.temperature = 22.0f;
+        // Read from real sensors
+        if (g_bmp280) {
+          float temp, press;
+          if (bmp280_read_temp_pressure(g_bmp280, &temp, &press) != ESP_OK) {
+             ESP_LOGW(TAG, "Failed to read BMP280");
+             data.temperature = 22.0f;
+             data.pressure = 1013.0f;
+          } else {
+             data.temperature = (double)temp;
+             data.pressure = (double)press;
+          }
+        } else {
+          data.temperature = 22.0f;
+          data.pressure = 1013.0f;
+        }
         data.humidity = 50.0f;
-        data.pressure = 1013.0f;
       #endif
       
       data.person_count = person_count;
@@ -515,6 +543,36 @@ extern "C" void app_main(void) {
   // Initialize photoresistor ADC
   ESP_LOGI(TAG, "Initializing photoresistor...");
   init_photoresistor_adc();
+
+  // Initialize I2C and BMP280
+  ESP_LOGI(TAG, "Initializing BMP280...");
+  i2c_master_bus_config_t i2c_mst_config = {
+      .i2c_port = -1,
+      .sda_io_num = I2C_MASTER_SDA_IO,
+      .scl_io_num = I2C_MASTER_SCL_IO,
+      .clk_source = I2C_CLK_SRC_DEFAULT,
+      .glitch_ignore_cnt = 7,
+      .intr_priority = 0,
+      .trans_queue_depth = 0,
+      .flags = {
+          .enable_internal_pullup = 1,
+      },
+  };
+  
+  i2c_master_bus_handle_t bus_handle;
+  esp_err_t err = i2c_new_master_bus(&i2c_mst_config, &bus_handle);
+  if (err != ESP_OK) {
+      ESP_LOGE(TAG, "Failed to create I2C bus: %s", esp_err_to_name(err));
+  } else {
+      bmp280_config_t bmp_conf = BMP280_CONFIG_DEFAULT();
+      err = bmp280_init(bus_handle, &bmp_conf, &g_bmp280);
+      if (err != ESP_OK) {
+          ESP_LOGE(TAG, "Failed to initialize BMP280: %s", esp_err_to_name(err));
+          g_bmp280 = NULL;
+      } else {
+          ESP_LOGI(TAG, "BMP280 initialized successfully");
+      }
+  }
   
   // Start color brightness cycling animation - DISABLED (LEDs only turn on when motion detected)
   // ESP_LOGI(TAG, "Starting LED color brightness cycle");
