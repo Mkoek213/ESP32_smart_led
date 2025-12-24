@@ -52,7 +52,7 @@
 #define PHOTORESISTOR_ADC_BITWIDTH ADC_BITWIDTH_12  // 12-bit: 0-4095
 
 // Photoresistor calibration values (based on actual measurements)
-#define PHOTORESISTOR_MIN_ADC 3445   // Dark/covered (actual: 3445)
+#define PHOTORESISTOR_MIN_ADC 1700   // Dark/covered (measured ~1711)
 #define PHOTORESISTOR_MAX_ADC 4095   // Normal daylight (saturated max)
 
 // BMP280 I2C Configuration

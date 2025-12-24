@@ -99,13 +99,9 @@ static uint8_t read_photoresistor() {
   int adc_raw = 0;
   ESP_ERROR_CHECK(adc_oneshot_read(adc1_handle, PHOTORESISTOR_ADC_CHANNEL, &adc_raw));
   
-  // DEBUG: Log raw ADC value for calibration
-  static int log_counter = 0;
-  if (++log_counter >= 20) {  // Log every ~1 second
-    log_counter = 0;
-    ESP_LOGI(TAG, "Photoresistor RAW ADC: %d (min=%d, max=%d)", 
-             adc_raw, PHOTORESISTOR_MIN_ADC, PHOTORESISTOR_MAX_ADC);
-  }
+  // DEBUG: Log removal for less spam (moved to periodic task)
+  // static int log_counter = 0;
+  // if (++log_counter >= 20) { ... }
   
   // Map ADC value (0-4095) to percentage (0-100%)
   // Clamp to calibrated min/max range
@@ -172,8 +168,8 @@ static void distance_sensor_task(void *arg) {
         float temperature = LatestSensorData::get_temperature();
         float humidity = LatestSensorData::get_humidity();
         
-        ESP_LOGI(TAG, "Motion detected! Distance: %.1f cm", distance_cm);
-        ESP_LOGI(TAG, "Environmental Data - Temp: %.1f°C, Humidity: %.1f%%", temperature, humidity);
+        ESP_LOGD(TAG, "Motion detected! Distance: %.1f cm", distance_cm);
+        ESP_LOGD(TAG, "Environmental Data - Temp: %.1f°C, Humidity: %.1f%%", temperature, humidity);
         
         // Get LED configuration
         LEDConfigManager& config_manager = LEDConfigManager::getInstance();
@@ -185,7 +181,7 @@ static void distance_sensor_task(void *arg) {
         uint8_t green = color.g;
         uint8_t blue = color.b;
         
-        ESP_LOGI(TAG, "Humidity-based color: R:%d G:%d B:%d", red, green, blue);
+        ESP_LOGD(TAG, "Humidity-based color: R:%d G:%d B:%d", red, green, blue);
         
         // Determine LED brightness based on photoresistor (or manual setting)
         uint8_t ambient_light_pct;
@@ -201,10 +197,10 @@ static void distance_sensor_task(void *arg) {
         uint8_t brightness = config_manager.getBrightnessForAmbientLight(ambient_light_pct);
         
         if (led_config.auto_brightness) {
-          ESP_LOGI(TAG, "Ambient light: %d%% → Auto-brightness: %d%%", 
+          ESP_LOGD(TAG, "Ambient light: %d%% → Auto-brightness: %d%%", 
                    ambient_light_pct, (brightness * 100) / 255);
         } else {
-          ESP_LOGI(TAG, "Manual brightness: %d%%", (brightness * 100) / 255);
+          ESP_LOGD(TAG, "Manual brightness: %d%%", (brightness * 100) / 255);
         }
         
         // Activate LEDs if not already on
@@ -230,7 +226,7 @@ static void distance_sensor_task(void *arg) {
           }
           g_ws2812b->refresh();
           
-          ESP_LOGI(TAG, "%d LEDs set to R:%d G:%d B:%d at %d%% brightness", 
+          ESP_LOGD(TAG, "%d LEDs set to R:%d G:%d B:%d at %d%% brightness", 
                    num_leds, red, green, blue, (brightness * 100) / 255);
           
           ESP_LOGI(TAG, "LEDs activated (will stay on while motion detected, max 5min)");
@@ -492,6 +488,23 @@ extern "C" void app_main(void) {
   if (err != ESP_OK) {
       ESP_LOGE(TAG, "Failed to create I2C bus: %s", esp_err_to_name(err));
   } else {
+      ESP_LOGI(TAG, "I2C bus created. Checking BMP280 addresses...");
+      const uint8_t addrs[] = {0x76, 0x77};
+      bool found = false;
+      for (uint8_t addr : addrs) {
+          esp_err_t probe_err = i2c_master_probe(bus_handle, addr, 50);
+          if (probe_err == ESP_OK) {
+              ESP_LOGI(TAG, "Found I2C device at address 0x%02x", addr);
+              found = true;
+          } else {
+              ESP_LOGW(TAG, "No device at 0x%02x (Error: %s)", addr, esp_err_to_name(probe_err));
+          }
+      }
+      if (!found) {
+          ESP_LOGE(TAG, "No I2C devices found at standard BMP280 addresses! Check wiring/pull-ups.");
+      }
+      ESP_LOGI(TAG, "I2C check complete.");
+
       bmp280_config_t bmp_conf = BMP280_CONFIG_DEFAULT();
       err = bmp280_init(bus_handle, &bmp_conf, &g_bmp280);
       if (err != ESP_OK) {
@@ -551,7 +564,7 @@ extern "C" void app_main(void) {
   xTaskCreate(distance_sensor_task, "distance_sensor", 2048, &hc_sr04, 3, NULL);
   
   // Start BLE sensor reading task
-  sensor_reading_task_start();
+  sensor_reading_task_start(g_bmp280);
   
   // Mark animation as running - main loop will not override it
   animation_running = true;

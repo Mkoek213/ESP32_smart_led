@@ -9,6 +9,7 @@ static const char* TAG = "LatestSensorData";
 void* LatestSensorData::mutex = nullptr;
 float LatestSensorData::temperature = 22.0f;
 float LatestSensorData::humidity = 50.0f;
+float LatestSensorData::pressure = 1013.25f;
 bool LatestSensorData::data_available = false;
 
 void LatestSensorData::init() {
@@ -22,7 +23,7 @@ void LatestSensorData::init() {
     }
 }
 
-void LatestSensorData::update(float temp, float humid) {
+void LatestSensorData::update(float temp, float humid, float press) {
     if (mutex == nullptr) {
         ESP_LOGE(TAG, "LatestSensorData not initialized!");
         return;
@@ -32,9 +33,10 @@ void LatestSensorData::update(float temp, float humid) {
     if (xSemaphoreTake(sem, portMAX_DELAY) == pdTRUE) {
         temperature = temp;
         humidity = humid;
+        pressure = press;
         data_available = true;
         xSemaphoreGive(sem);
-        ESP_LOGI(TAG, "Updated: T=%.2f°C H=%.2f%%", temp, humid);
+        ESP_LOGI(TAG, "Updated: T=%.2f°C H=%.2f%% P=%.2fhPa", temp, humid, press);
     }
 }
 
@@ -63,6 +65,21 @@ float LatestSensorData::get_humidity() {
     SemaphoreHandle_t sem = static_cast<SemaphoreHandle_t>(mutex);
     if (xSemaphoreTake(sem, portMAX_DELAY) == pdTRUE) {
         result = humidity;
+        xSemaphoreGive(sem);
+    }
+    return result;
+}
+
+float LatestSensorData::get_pressure() {
+    if (mutex == nullptr) {
+        ESP_LOGE(TAG, "LatestSensorData not initialized!");
+        return 1013.25f;
+    }
+    
+    float result = 1013.25f;
+    SemaphoreHandle_t sem = static_cast<SemaphoreHandle_t>(mutex);
+    if (xSemaphoreTake(sem, portMAX_DELAY) == pdTRUE) {
+        result = pressure;
         xSemaphoreGive(sem);
     }
     return result;

@@ -19,8 +19,9 @@ public:
      * @brief Update with new sensor readings (thread-safe)
      * @param temp Temperature in Celsius
      * @param humid Humidity in percentage
+     * @param pressure Pressure in hPa
      */
-    static void update(float temp, float humid);
+    static void update(float temp, float humid, float pressure);
     
     /**
      * @brief Get latest temperature (thread-safe)
@@ -33,6 +34,12 @@ public:
      * @return Humidity in percentage, or 50.0 if never updated
      */
     static float get_humidity();
+
+    /**
+     * @brief Get latest pressure (thread-safe)
+     * @return Pressure in hPa, or 1013.25 if never updated
+     */
+    static float get_pressure();
     
     /**
      * @brief Check if data has been received at least once
@@ -44,6 +51,7 @@ private:
     static void* mutex;  // SemaphoreHandle_t
     static float temperature;
     static float humidity;
+    static float pressure;
     static bool data_available;
 };
 

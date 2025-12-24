@@ -77,6 +77,7 @@ namespace {
 
     static TargetContext g_ctx;
     static SemaphoreHandle_t s_ble_sem = nullptr;
+    static bmp280_handle_t g_bmp_handle = NULL;
 
     void reset_context() {
         g_ctx = TargetContext{};
@@ -320,20 +321,11 @@ static void sensor_reading_task(void* arg) {
             if (g_ctx.current_data.valid) {
                  // Update the latest sensor data cache (always available for LED colors)
                  LatestSensorData::update(g_ctx.current_data.temperature, 
-                                         g_ctx.current_data.humidity);
-                 
-                 time_t now;
-                 time(&now);
-                 Telemetry data;
-                 data.timestamp = (int64_t)now;
-                 data.humidity = g_ctx.current_data.humidity;      // From BLE
-                 data.temperature = g_ctx.current_data.temperature; // From BLE
-                 data.pressure = 1013.25f; // Default sea level pressure (BMP280 not connected)
-                 data.person_count = PersonCounter::get_and_reset(); // Thread-safe get and reset
-                 
-                 SensorManager::getInstance().enqueue(data);
-                 ESP_LOGI(TAG, "BLE telemetry: T=%.2f H=%.2f PersonCount=%d", 
-                          data.temperature, data.humidity, data.person_count);
+                                         g_ctx.current_data.humidity,
+                                         1013.25f); // Use default until we read real pressure
+
+                 ESP_LOGI(TAG, "BLE Data: T=%.2f H=%.2f", 
+                          g_ctx.current_data.temperature, g_ctx.current_data.humidity);
             } else {
                 ESP_LOGW(TAG, "BLE transaction finished but no valid data");
             }
@@ -345,11 +337,55 @@ static void sensor_reading_task(void* arg) {
             }
         }
 
+        // Read pressure from BMP280 (Independent of BLE)
+        float pressure = 1013.25f;
+        if (g_bmp_handle != NULL) {
+            esp_err_t err = bmp280_read_pressure(g_bmp_handle, &pressure);
+            if (err == ESP_OK) {
+                ESP_LOGI(TAG, "Read Pressure: %.2f hPa", pressure);
+            } else {
+                ESP_LOGW(TAG, "Failed to read pressure: %d", err);
+                pressure = 1013.25f; // Fallback
+            }
+        }
+
+        // Update LatestSensorData with pressure (and potentially latest temp/humidity if valid)
+        if (g_ctx.current_data.valid) {
+             LatestSensorData::update(g_ctx.current_data.temperature, 
+                                     g_ctx.current_data.humidity,
+                                     pressure);
+        } else {
+             // If BLE failed, we update pressure but keep old temp/humidity
+             LatestSensorData::update(LatestSensorData::get_temperature(), 
+                                     LatestSensorData::get_humidity(),
+                                     pressure);
+        }
+
+        // Send telemetry if we have ANY valid data (BLE or Pressure)
+        // We will send telemetry if either:
+        // 1. BLE data was valid this cycle
+        // 2. We have pressure data (which we always try towards)
+        // 3. We have cached data
+        
+        // For consistency, let's always send telemetry every cycle, using latest available data
+        time_t now;
+        time(&now);
+        Telemetry data;
+        data.timestamp = (int64_t)now;
+        data.humidity = LatestSensorData::get_humidity();
+        data.temperature = LatestSensorData::get_temperature();
+        data.pressure = pressure;
+        data.person_count = PersonCounter::get_and_reset();
+
+        SensorManager::getInstance().enqueue(data);
+        ESP_LOGI(TAG, "Telemetry enqueued: T=%.2f H=%.2f P=%.2f PersonCount=%d", 
+                 data.temperature, data.humidity, data.pressure, data.person_count);
         vTaskDelay(pdMS_TO_TICKS(SENSOR_READ_INTERVAL_MS));
     }
 }
 
-void sensor_reading_task_start(void) {
+void sensor_reading_task_start(bmp280_handle_t bmp_handle) {
+    g_bmp_handle = bmp_handle;
     xTaskCreate(sensor_reading_task, "sensor_read", 4096, NULL, 5, NULL);
 }
 
