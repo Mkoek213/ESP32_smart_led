@@ -1,5 +1,5 @@
 services:
-  database:
+  postgres:
     image: postgres:17-alpine
     container_name: iot-postgres
     environment:
@@ -7,45 +7,48 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: iot-db
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - ./postgres/data:/var/lib/postgresql/data
     networks:
       - iot-network
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: [ 'CMD-SHELL', 'pg_isready -U postgres' ]
       interval: 5s
       timeout: 5s
       retries: 5
 
-  mqtt-broker:
+  mosquitto:
     image: eclipse-mosquitto:2.0
     container_name: iot-mosquitto
     ports:
-      - "1883:1883"
-      - "9001:9001"
+      - '1883:1883'
+      - '9001:9001'
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
     networks:
       - iot-network
 
   backend:
-    build: .
+    build: ./backend
     container_name: iot-backend
     depends_on:
-      database:
+      postgres:
         condition: service_healthy
-      mqtt-broker:
+      mosquitto:
         condition: service_started
     ports:
-      - "8080:8080"
+      - '8080:8080'
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/iot-db
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/iot-db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      MQTT_BROKER-URL: tcp://mqtt-broker:1883
+      MQTT_BROKER-URL: tcp://mosquitto:1883
       MQTT_CREDENTIALS_USERNAME: ""
       MQTT_CREDENTIALS_PASSWORD: ""
+      JWT_SECRET-KEY: aiob+gN3NyYErzgX/3w0tw3ySC4wU+w6erPyoHuFS/4= # Example key
+      JWT_EXPIRATION-MS: 3600000 # 1 hour
     networks:
       - iot-network
 
