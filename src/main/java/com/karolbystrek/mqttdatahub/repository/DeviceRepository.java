@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface DeviceRepository extends JpaRepository<Device, Long> {
     Optional<Device> findByIdAndLocationId(Long id, Long locationId);
 
-    boolean existsByIdAndLocationCustomerId(Long deviceId, Long customerId);
+    boolean existsByIdAndLocationUserId(Long deviceId, Long userId);
 }

@@ -8,7 +8,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
 
-import static com.karolbystrek.mqttdatahub.model.TopicType.*;
+import static com.karolbystrek.mqttdatahub.model.TopicType.CMD;
+import static com.karolbystrek.mqttdatahub.model.TopicType.STATUS;
+import static com.karolbystrek.mqttdatahub.model.TopicType.TELEMETRY;
+import static java.lang.Long.parseLong;
 
 @Component
 public class TopicParser {
@@ -30,9 +33,9 @@ public class TopicParser {
         };
 
         return new ParsedTopic(
-                Long.parseLong(matcher.group(1)),
-                Long.parseLong(matcher.group(2)),
-                Long.parseLong(matcher.group(3)),
+                parseLong(matcher.group(1)),
+                parseLong(matcher.group(2)),
+                parseLong(matcher.group(3)),
                 type
         );
     }
@@ -41,10 +44,9 @@ public class TopicParser {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ParsedTopic {
-        private Long customerId;
+        private Long userId;
         private Long locationId;
         private Long deviceId;
         private TopicType type;
     }
 }
-

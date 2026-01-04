@@ -53,7 +53,7 @@ public class MqttIngestionService {
 
             telemetryDtos.forEach(telemetryDto -> telemetryService.save(
                     telemetryDto,
-                    parsedTopic.getCustomerId(),
+                    parsedTopic.getUserId(),
                     parsedTopic.getLocationId(),
                     parsedTopic.getDeviceId()
             ));
@@ -63,14 +63,14 @@ public class MqttIngestionService {
     }
 
     private void handleStatus(String payload, TopicParser.ParsedTopic parsedTopic) {
-        log.info("Device status update - Customer: {}, Location: {}, Device: {}, Status: {}",
-                parsedTopic.getCustomerId(),
+        log.info("Device status update - User: {}, Location: {}, Device: {}, Status: {}",
+                parsedTopic.getUserId(),
                 parsedTopic.getLocationId(),
                 parsedTopic.getDeviceId(),
                 payload);
 
         deviceService.updateDeviceStatus(
-                parsedTopic.getCustomerId(),
+                parsedTopic.getUserId(),
                 parsedTopic.getLocationId(),
                 parsedTopic.getDeviceId(),
                 payload

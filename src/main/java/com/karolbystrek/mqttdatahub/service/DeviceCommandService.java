@@ -15,8 +15,8 @@ public class DeviceCommandService {
     private final MqttGateway mqttGateway;
     private final ObjectMapper objectMapper;
 
-    public void sendCommand(Long customerId, Long locationId, Long deviceId, Object commandPayload) {
-        String topic = String.format("customer/%d/location/%d/device/%d/cmd", customerId, locationId, deviceId);
+    public void sendCommand(Long userId, Long locationId, Long deviceId, Object commandPayload) {
+        var topic = String.format("customer/%d/location/%d/device/%d/cmd", userId, locationId, deviceId);
 
         try {
             String payloadJson = objectMapper.writeValueAsString(commandPayload);
@@ -28,4 +28,3 @@ public class DeviceCommandService {
         }
     }
 }
-

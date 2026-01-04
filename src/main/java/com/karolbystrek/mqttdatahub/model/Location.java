@@ -35,8 +35,8 @@ public class Location {
     private String name;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @OneToMany(mappedBy = "location", fetch = LAZY, cascade = ALL)
     private Set<Device> devices;

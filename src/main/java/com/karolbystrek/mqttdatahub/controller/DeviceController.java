@@ -26,7 +26,7 @@ public class DeviceController {
     @GetMapping("/{deviceId}/status")
     public ResponseEntity<DeviceStatusResponse> getDeviceStatus(@PathVariable Long deviceId) {
         log.info("Received request to get status for deviceId: {}", deviceId);
-        Device device = deviceService.getBy(deviceId);
+        Device device = deviceService.getDeviceBy(deviceId);
 
         return ResponseEntity.ok(new DeviceStatusResponse(
                 device.getId(),
@@ -35,4 +35,3 @@ public class DeviceController {
         ));
     }
 }
-
