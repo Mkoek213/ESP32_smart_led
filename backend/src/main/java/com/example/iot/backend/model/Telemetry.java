@@ -1,6 +1,5 @@
 package com.example.iot.backend.model;
 
-import com.example.iot.backend.dto.TelemetryDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -46,15 +45,4 @@ public class Telemetry {
     private Double humidity;
     private Double pressure;
     private Integer personCount;
-
-    public static Telemetry createFrom(TelemetryDto dto, Device device) {
-        return Telemetry.builder()
-                .device(device)
-                .timestamp(dto.timestamp())
-                .temperature(dto.temperature())
-                .humidity(dto.humidity())
-                .pressure(dto.pressure())
-                .personCount(dto.personCount())
-                .build();
-    }
 }

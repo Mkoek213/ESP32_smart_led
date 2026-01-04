@@ -9,8 +9,9 @@ public record TelemetryDto(
         Double temperature,
         Double humidity,
         Double pressure,
-        Integer personCount) {
-    public static TelemetryDto createFrom(Telemetry telemetry) {
+        Integer personCount
+) {
+    public static TelemetryDto from(Telemetry telemetry) {
         return TelemetryDto.builder()
                 .timestamp(telemetry.getTimestamp())
                 .temperature(telemetry.getTemperature())

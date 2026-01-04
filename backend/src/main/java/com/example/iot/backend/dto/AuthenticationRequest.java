@@ -7,5 +7,4 @@ public record AuthenticationRequest(
         @Email @NotBlank String email,
         @NotBlank String password
 ) {
-
 }

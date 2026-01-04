@@ -4,7 +4,6 @@ import com.example.iot.backend.dto.AuthenticationRequest;
 import com.example.iot.backend.dto.AuthenticationResponse;
 import com.example.iot.backend.dto.RegisterRequest;
 import com.example.iot.backend.jwt.JwtService;
-import com.example.iot.backend.model.Role;
 import com.example.iot.backend.model.User;
 import com.example.iot.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,6 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.password()))
                 .firstName(request.firstName())
                 .lastName(request.lastName())
-                .role(Role.ROLE_USER)
                 .build();
         userRepository.save(user);
         var token = jwtService.generateToken(user);
