@@ -1,6 +1,6 @@
 package com.example.iot.backend.mqtt;
 
-import com.example.iot.backend.dto.TelemetryDto;
+import com.example.iot.backend.dto.telemetry.TelemetryDto;
 import com.example.iot.backend.service.DeviceService;
 import com.example.iot.backend.service.TelemetryService;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -1,6 +1,6 @@
 package com.example.iot.backend.controller;
 
-import com.example.iot.backend.dto.Command;
+import com.example.iot.backend.dto.command.CommandRequest;
 import com.example.iot.backend.service.CommandService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class CommandController {
     @PreAuthorize("authorizationService.canAccessDevice(principal, #deviceId)")
     public ResponseEntity<Void> sendCommand(
             @PathVariable Long deviceId,
-            @RequestBody Command request,
+            @RequestBody CommandRequest request,
             Principal principal
     ) {
         log.info("Received command request for device {}: {}", deviceId, request);

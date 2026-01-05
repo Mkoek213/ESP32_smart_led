@@ -1,8 +1,8 @@
 package com.example.iot.backend.service;
 
 
-import com.example.iot.backend.dto.TelemetryDto;
-import com.example.iot.backend.dto.TelemetryResponse;
+import com.example.iot.backend.dto.telemetry.TelemetryDto;
+import com.example.iot.backend.dto.telemetry.TelemetryResponse;
 import com.example.iot.backend.model.Telemetry;
 import com.example.iot.backend.repository.DeviceRepository;
 import com.example.iot.backend.repository.TelemetryRepository;
@@ -28,7 +28,7 @@ public class TelemetryService {
     public void saveTelemetry(TelemetryDto dto, Long deviceId) {
         var device = deviceRepository.findById(deviceId)
                 .orElseThrow();
-        
+
         var telemetry = Telemetry.builder()
                 .device(device)
                 .timestamp(dto.timestamp())
@@ -44,7 +44,7 @@ public class TelemetryService {
     public Map<Long, List<TelemetryResponse>> getTelemetry(Long userId) {
         var telemetry = telemetryRepository.findAllByDevice_Location_User_Id(userId);
         return telemetry.stream()
-                .map(TelemetryResponse::from)
+                .map(TelemetryResponse::toTelemetryResponse)
                 .collect(groupingBy(TelemetryResponse::deviceId));
     }
 }

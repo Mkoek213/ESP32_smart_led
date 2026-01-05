@@ -1,8 +1,8 @@
 package com.example.iot.backend.service;
 
-import com.example.iot.backend.dto.AuthenticationRequest;
-import com.example.iot.backend.dto.AuthenticationResponse;
-import com.example.iot.backend.dto.RegisterRequest;
+import com.example.iot.backend.dto.auth.AuthenticationRequest;
+import com.example.iot.backend.dto.auth.AuthenticationResponse;
+import com.example.iot.backend.dto.auth.RegisterRequest;
 import com.example.iot.backend.jwt.JwtService;
 import com.example.iot.backend.model.User;
 import com.example.iot.backend.repository.UserRepository;

@@ -1,6 +1,6 @@
 package com.example.iot.backend.service;
 
-import com.example.iot.backend.dto.device.CreateDeviceRequest;
+import com.example.iot.backend.dto.device.DeviceCreateRequest;
 import com.example.iot.backend.dto.device.DeviceResponse;
 import com.example.iot.backend.model.Device;
 import com.example.iot.backend.repository.DeviceRepository;
@@ -21,11 +21,11 @@ public class DeviceService {
     public DeviceResponse getDevice(Long deviceId) {
         var device = deviceRepository.findById(deviceId)
                 .orElseThrow();
-        return DeviceResponse.from(device);
+        return DeviceResponse.toDeviceResponse(device);
     }
 
     @Transactional
-    public DeviceResponse createDevice(CreateDeviceRequest request) {
+    public DeviceResponse createDevice(DeviceCreateRequest request) {
         var location = locationRepository.findById(request.locationId())
                 .orElseThrow();
         var device = Device.builder()
@@ -34,7 +34,7 @@ public class DeviceService {
                 .build();
 
         deviceRepository.save(device);
-        return DeviceResponse.from(device);
+        return DeviceResponse.toDeviceResponse(device);
     }
 
     @Transactional

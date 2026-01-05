@@ -1,8 +1,8 @@
-package com.example.iot.backend.dto;
+package com.example.iot.backend.dto.command;
 
 import java.util.Map;
 
-public record Command(
+public record CommandRequest(
         String type,
         Map<String, Object> payload
 ) {

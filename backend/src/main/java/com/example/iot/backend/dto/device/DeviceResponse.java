@@ -13,7 +13,7 @@ public record DeviceResponse(
         LocalDateTime updatedAt,
         Long locationId
 ) {
-    public static DeviceResponse from(Device device) {
+    public static DeviceResponse toDeviceResponse(Device device) {
         return DeviceResponse.builder()
                 .id(device.getId())
                 .name(device.getName())

@@ -1,6 +1,6 @@
 package com.example.iot.backend.controller;
 
-import com.example.iot.backend.dto.TelemetryResponse;
+import com.example.iot.backend.dto.telemetry.TelemetryResponse;
 import com.example.iot.backend.service.TelemetryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ public class TelemetryController {
 
     private final TelemetryService telemetryService;
 
-    @PostMapping(value = "/{userId}", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/{userId}")
     public Map<Long, List<TelemetryResponse>> get(@PathVariable Long userId) {
         log.info("Received request to get telemetry for user with id {}", userId);
         return telemetryService.getTelemetry(userId);

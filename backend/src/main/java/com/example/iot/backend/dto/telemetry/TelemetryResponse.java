@@ -1,4 +1,4 @@
-package com.example.iot.backend.dto;
+package com.example.iot.backend.dto.telemetry;
 
 import com.example.iot.backend.model.Telemetry;
 import lombok.Builder;
@@ -9,7 +9,7 @@ public record TelemetryResponse(
         Long deviceId,
         TelemetryDto payload
 ) {
-    public static TelemetryResponse from(Telemetry data) {
+    public static TelemetryResponse toTelemetryResponse(Telemetry data) {
         return TelemetryResponse.builder()
                 .id(data.getId())
                 .deviceId(data.getDevice().getId())

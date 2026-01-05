@@ -1,4 +1,4 @@
-package com.example.iot.backend.dto;
+package com.example.iot.backend.dto.auth;
 
 import lombok.Builder;
 

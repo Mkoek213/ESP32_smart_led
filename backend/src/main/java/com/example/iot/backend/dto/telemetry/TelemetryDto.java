@@ -1,4 +1,4 @@
-package com.example.iot.backend.dto;
+package com.example.iot.backend.dto.telemetry;
 
 import com.example.iot.backend.model.Telemetry;
 import lombok.Builder;
