@@ -1,0 +1,55 @@
+### login
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "passwordpassword"
+}
+
+> {%
+    client.global.set("auth_token", response.body.token);
+%}
+
+### register
+POST http://localhost:8080/api/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "passwordpassword",
+  "firstName": "John",
+  "lastName": "Doe"
+}
+
+> {%
+    client.global.set("auth_token", response.body.token);
+%}
+
+### add location
+POST http://localhost:8080/api/locations
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}}
+
+{
+  "name": "New Location"
+}
+
+### get all locations
+GET http://localhost:8080/api/locations
+Authorization: Bearer {{auth_token}}}
+
+
+### add device
+POST http://localhost:8080/api/devices
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}}
+
+{
+  "locationId": 1,
+  "name": "New Device"
+}
+
+### get all devices
+GET http://localhost:8080/api/devices
+Authorization: Bearer {{auth_token}}}

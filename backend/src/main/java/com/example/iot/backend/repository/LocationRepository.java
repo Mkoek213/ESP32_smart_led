@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
-    boolean existsByIdAndUserEmail(Long locationId, String userEmail);
-
     List<Location> findAllByUserId(Long userId);
 
     Optional<Location> findByIdAndUserId(Long locationId, Long userId);

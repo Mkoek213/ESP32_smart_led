@@ -1,6 +1,7 @@
 package com.example.iot.backend.mqtt;
 
 import com.example.iot.backend.dto.telemetry.TelemetryDto;
+import com.example.iot.backend.model.Device;
 import com.example.iot.backend.service.DeviceService;
 import com.example.iot.backend.service.TelemetryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -69,11 +70,10 @@ public class MqttIngestionService {
                 parsedTopic.getDeviceId(),
                 payload);
 
-        deviceService.updateDeviceStatus(
+        deviceService.setDeviceStatus(
                 parsedTopic.getUserId(),
-                parsedTopic.getLocationId(),
                 parsedTopic.getDeviceId(),
-                payload
+                Device.Status.valueOf(payload)
         );
     }
 }

@@ -9,5 +9,7 @@ import java.util.List;
 @Repository
 public interface TelemetryRepository extends JpaRepository<Telemetry, Long> {
 
-    List<Telemetry> findAllByDevice_Location_User_Id(Long userId);
+    List<Telemetry> findAllByDeviceLocationUserIdAndTimestampBetween(Long userId, Long startTimestamp, Long endTimestamp);
+
+    List<Telemetry> findAllByDeviceIdAndTimestampBetween(Long deviceId, Long startTimestamp, Long endTimestamp);
 }

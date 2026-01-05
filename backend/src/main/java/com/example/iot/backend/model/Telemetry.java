@@ -30,6 +30,13 @@ public class Telemetry {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private Long timestamp;
+    private Double temperature;
+    private Double humidity;
+    private Double pressure;
+    private Integer personCount;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "device_id", nullable = false)
     private Device device;
@@ -37,12 +44,4 @@ public class Telemetry {
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private Long timestamp;
-
-    private Double temperature;
-    private Double humidity;
-    private Double pressure;
-    private Integer personCount;
 }

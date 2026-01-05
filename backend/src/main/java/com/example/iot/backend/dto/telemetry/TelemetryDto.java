@@ -11,7 +11,7 @@ public record TelemetryDto(
         Double pressure,
         Integer personCount
 ) {
-    public static TelemetryDto from(Telemetry telemetry) {
+    public static TelemetryDto toTelemetryDto(Telemetry telemetry) {
         return TelemetryDto.builder()
                 .timestamp(telemetry.getTimestamp())
                 .temperature(telemetry.getTemperature())

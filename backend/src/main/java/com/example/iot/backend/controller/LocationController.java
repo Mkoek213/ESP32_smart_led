@@ -2,6 +2,7 @@ package com.example.iot.backend.controller;
 
 import com.example.iot.backend.dto.location.LocationCreateRequest;
 import com.example.iot.backend.dto.location.LocationResponse;
+import com.example.iot.backend.dto.location.LocationUpdateRequest;
 import com.example.iot.backend.model.User;
 import com.example.iot.backend.service.LocationService;
 import jakarta.validation.Valid;
@@ -46,7 +47,7 @@ public class LocationController {
     }
 
     @PutMapping("/{locationId}")
-    public LocationResponse updateLocation(@PathVariable Long locationId, @RequestBody @Valid LocationCreateRequest request, @AuthenticationPrincipal UserDetails userDetails) {
+    public LocationResponse updateLocation(@PathVariable Long locationId, @RequestBody @Valid LocationUpdateRequest request, @AuthenticationPrincipal UserDetails userDetails) {
         return locationService.updateLocation(getUserId(userDetails), locationId, request);
     }
 
@@ -55,7 +56,6 @@ public class LocationController {
     public void deleteLocation(@PathVariable Long locationId, @AuthenticationPrincipal UserDetails userDetails) {
         locationService.deleteLocation(getUserId(userDetails), locationId);
     }
-
 
     private Long getUserId(UserDetails userDetails) {
         if (userDetails instanceof User user) {

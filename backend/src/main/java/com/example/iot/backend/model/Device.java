@@ -56,6 +56,7 @@ public class Device {
 
     public enum Status {
         ONLINE,
-        OFFLINE
+        OFFLINE,
+        UNKNOWN
     }
 }

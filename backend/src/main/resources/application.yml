@@ -1,6 +1,13 @@
 spring:
   application:
     name: iot-backend
+
 server:
   servlet:
     context-path: /api
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

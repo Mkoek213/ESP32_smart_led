@@ -6,14 +6,14 @@ import lombok.Builder;
 @Builder
 public record TelemetryResponse(
         Long id,
-        Long deviceId,
-        TelemetryDto payload
+        TelemetryDto payload,
+        Long deviceId
 ) {
     public static TelemetryResponse toTelemetryResponse(Telemetry data) {
         return TelemetryResponse.builder()
                 .id(data.getId())
                 .deviceId(data.getDevice().getId())
-                .payload(TelemetryDto.from(data))
+                .payload(TelemetryDto.toTelemetryDto(data))
                 .build();
     }
 }

@@ -1,37 +1,44 @@
 package com.example.iot.backend.controller;
 
 import com.example.iot.backend.dto.command.CommandRequest;
+import com.example.iot.backend.model.User;
 import com.example.iot.backend.service.CommandService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.security.Principal;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/commands")
+@RequestMapping("/commands")
 @RequiredArgsConstructor
 public class CommandController {
 
     private final CommandService commandService;
-    ;
 
     @PostMapping("/{deviceId}")
-    @PreAuthorize("authorizationService.canAccessDevice(principal, #deviceId)")
-    public ResponseEntity<Void> sendCommand(
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void sendCommand(
             @PathVariable Long deviceId,
-            @RequestBody CommandRequest request,
-            Principal principal
+            @RequestBody CommandRequest command,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        log.info("Received command request for device {}: {}", deviceId, request);
-        commandService.sendCommand(deviceId, request);
-        return ResponseEntity.accepted().build();
+        Long userId = getUserId(userDetails);
+        log.info("User {} is sending {} command to device {}", userId, command.type(), deviceId);
+        commandService.sendCommand(userId, deviceId, command);
+    }
+
+    private Long getUserId(UserDetails userDetails) {
+        if (userDetails instanceof User user) {
+            return user.getId();
+        }
+        throw new IllegalStateException("Authentication principal is not of type User");
     }
 }

@@ -2,6 +2,7 @@ package com.example.iot.backend.service;
 
 import com.example.iot.backend.dto.location.LocationCreateRequest;
 import com.example.iot.backend.dto.location.LocationResponse;
+import com.example.iot.backend.dto.location.LocationUpdateRequest;
 import com.example.iot.backend.model.Location;
 import com.example.iot.backend.repository.LocationRepository;
 import com.example.iot.backend.repository.UserRepository;
@@ -11,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.example.iot.backend.exception.ResourceNotFoundException.throwResourceNotFound;
+import static com.example.iot.backend.exception.ResourceNotFoundException.resourceNotFound;
 
 @RequiredArgsConstructor
 @Service
@@ -47,9 +48,9 @@ public class LocationService {
     }
 
     @Transactional
-    public LocationResponse updateLocation(Long userId, Long locationId, LocationCreateRequest request) {
+    public LocationResponse updateLocation(Long userId, Long locationId, LocationUpdateRequest request) {
         var location = locationRepository.findByIdAndUserId(locationId, userId)
-                .orElseThrow(() -> throwResourceNotFound(Location.class));
+                .orElseThrow(() -> resourceNotFound(Location.class));
 
         location.setName(request.name());
 
@@ -59,7 +60,7 @@ public class LocationService {
     @Transactional
     public void deleteLocation(Long userId, Long locationId) {
         var location = locationRepository.findByIdAndUserId(locationId, userId)
-                .orElseThrow(() -> throwResourceNotFound(Location.class));
+                .orElseThrow(() -> resourceNotFound(Location.class));
 
         locationRepository.delete(location);
     }
