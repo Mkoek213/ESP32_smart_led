@@ -35,16 +35,25 @@ public class Device {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 17)
+    private String macAddress;
+
+    @Column(nullable = false)
+    private String proofOfPossession;
+
+    @Column(nullable = false)
     private String name;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "location_id", nullable = false)
+    @JoinColumn(name = "location_id")
     private Location location;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private Status status = Status.OFFLINE;
+
+    @Column(nullable = false)
+    private String hardwareId;
 
     @UpdateTimestamp
     @Column(nullable = false)
@@ -57,6 +66,7 @@ public class Device {
     public enum Status {
         ONLINE,
         OFFLINE,
+        UNCLAIMED,
         UNKNOWN
     }
 }

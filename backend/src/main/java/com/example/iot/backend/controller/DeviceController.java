@@ -1,6 +1,6 @@
 package com.example.iot.backend.controller;
 
-import com.example.iot.backend.dto.device.DeviceCreateRequest;
+import com.example.iot.backend.dto.device.DeviceClaimRequest;
 import com.example.iot.backend.dto.device.DeviceResponse;
 import com.example.iot.backend.dto.device.DeviceUpdateRequest;
 import com.example.iot.backend.model.User;
@@ -39,12 +39,6 @@ public class DeviceController {
         return deviceService.getAllDevices(getUserId(userDetails));
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public DeviceResponse createDevice(@RequestBody @Valid DeviceCreateRequest request, @AuthenticationPrincipal UserDetails userDetails) {
-        return deviceService.createDevice(getUserId(userDetails), request);
-    }
-
     @PutMapping("/{deviceId}")
     public DeviceResponse updateDevice(@PathVariable Long deviceId, @RequestBody @Valid DeviceUpdateRequest request, @AuthenticationPrincipal UserDetails userDetails) {
         return deviceService.updateDevice(getUserId(userDetails), deviceId, request);
@@ -54,6 +48,18 @@ public class DeviceController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteDevice(@PathVariable Long deviceId, @AuthenticationPrincipal UserDetails userDetails) {
         deviceService.deleteDevice(getUserId(userDetails), deviceId);
+    }
+
+    @PostMapping("/claim")
+    @ResponseStatus(HttpStatus.CREATED)
+    public DeviceResponse claimDevice(@RequestBody @Valid DeviceClaimRequest request, @AuthenticationPrincipal UserDetails userDetails) {
+        return deviceService.claimDevice(getUserId(userDetails), request);
+    }
+
+    @DeleteMapping("/{deviceId}/unbind")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void unbindDevice(@PathVariable Long deviceId, @AuthenticationPrincipal UserDetails userDetails) {
+        deviceService.unbindDevice(getUserId(userDetails), deviceId);
     }
 
     private Long getUserId(UserDetails userDetails) {
