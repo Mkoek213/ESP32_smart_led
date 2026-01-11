@@ -48,7 +48,7 @@ services:
       MQTT_CREDENTIALS_USERNAME: ""
       MQTT_CREDENTIALS_PASSWORD: ""
       JWT_SECRET-KEY: aiob+gN3NyYErzgX/3w0tw3ySC4wU+w6erPyoHuFS/4= # Example key
-      JWT_EXPIRATION-MS: 3600000 # 1 hour
+      JWT_EXPIRATION-MS: 86400000 # 24 hours
     networks:
       - iot-network
 

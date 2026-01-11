@@ -86,6 +86,7 @@ public class DeviceService {
                         .macAddress(request.macAddress())
                         .proofOfPossession(request.proofOfPossession())
                         .status(UNCLAIMED)
+                        .hardwareId(java.util.UUID.randomUUID().toString()) // Generate a random hardware ID for new devices
                         .build());
 
         if (!device.getProofOfPossession().equals(request.proofOfPossession())) {
