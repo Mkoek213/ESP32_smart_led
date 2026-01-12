@@ -218,16 +218,20 @@ namespace {
         // Our task logic calls start_scan every loop. 
         // We should ensure we are clean.
         
-        if (g_ctx.connecting || g_ctx.conn_handle != BLE_HS_CONN_HANDLE_NONE) return;
+                if (g_ctx.connecting || g_ctx.conn_handle != BLE_HS_CONN_HANDLE_NONE) return;
 
         uint8_t own_addr_type;
         ble_hs_id_infer_auto(0, &own_addr_type);
         
-        struct ble_gap_disc_params params = {0};
-        params.passive = 0; // Active scan
-        params.itvl = 0;
-        params.window = 0;
-        params.filter_duplicates = 1;
+        struct ble_gap_disc_params params = {
+            .itvl = 0,
+            .window = 0,
+            .filter_policy = 0,
+            .limited = 0,
+            .passive = 0,  // Active scan
+            .filter_duplicates = 1,
+            .disable_observer_mode = 0
+        };
 
         ble_gap_disc(own_addr_type, 10000, &params, gap_event, nullptr);
         ESP_LOGI(BLE_TAG, "Scanning...");

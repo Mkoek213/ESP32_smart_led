@@ -29,6 +29,8 @@ extern "C" {
 #include "app_common.h"
 #include "app_mqtt.h"
 #include "app_sntp.h"
+#include "ota_update.h"
+#include "http_server.h"
 #include "esp_adc/adc_oneshot.h"
 #include "esp_adc/adc_cali.h"
 #include "esp_adc/adc_cali_scheme.h"
@@ -76,6 +78,68 @@ static volatile bool animation_running = false;
 // ADC handle for photoresistor
 static adc_oneshot_unit_handle_t adc1_handle = NULL;
 
+// Forward declarations
+static uint8_t read_photoresistor(void);
+
+// HTTP Server Callbacks
+static void http_on_led_control(uint8_t red, uint8_t green, uint8_t blue, uint8_t brightness) {
+    ESP_LOGI(TAG, "HTTP LED Control: R:%d G:%d B:%d Brightness:%d", red, green, blue, brightness);
+    
+    if (g_ws2812b != nullptr) {
+        g_ws2812b->stop_animation();
+        vTaskDelay(pdMS_TO_TICKS(100));
+        g_ws2812b->clear();
+        
+        // Set all LEDs to requested color
+        const LEDConfig& led_config = LEDConfigManager::getInstance().getConfig();
+        uint8_t num_leds = led_config.num_leds_active;
+        for (uint8_t i = 0; i < num_leds && i < WS2812B_NUM_LEDS; i++) {
+            g_ws2812b->set_pixel_brightness(i, red, green, blue, brightness);
+        }
+        g_ws2812b->refresh();
+        
+        ESP_LOGI(TAG, "LEDs updated via HTTP API");
+    }
+}
+
+static void http_on_config_update(const char* json_config) {
+    ESP_LOGI(TAG, "HTTP Config Update: %s", json_config);
+    // Parse and apply configuration updates
+    // Could update LEDConfig, sensor thresholds, etc.
+}
+
+static const char* http_get_status(void) {
+    static char status_json[512];
+    
+    // Get latest sensor data
+    float temperature = LatestSensorData::get_temperature();
+    float humidity = LatestSensorData::get_humidity();
+    int person_count = PersonCounter::get();
+    
+    // Read photoresistor
+    uint8_t ambient_light = read_photoresistor();
+    
+    // Build JSON status
+    snprintf(status_json, sizeof(status_json),
+        "{"
+        "\"temperature\":%.1f,"
+        "\"humidity\":%.1f,"
+        "\"personCount\":%d,"
+        "\"ambientLight\":%d,"
+        "\"wifiConnected\":%s,"
+        "\"firmwareVersion\":\"%s\""
+        "}",
+        temperature,
+        humidity,
+        person_count,
+        ambient_light,
+        wifi_station_is_connected() ? "true" : "false",
+        ota_get_current_version()
+    );
+    
+    return status_json;
+}
+
 // Initialize ADC for photoresistor
 static void init_photoresistor_adc() {
   adc_oneshot_unit_init_cfg_t init_config = {
@@ -121,7 +185,6 @@ static void distance_sensor_task(void *arg) {
   
   // Person counting variables - track detection SESSIONS not individual detections
   static bool in_detection_session = false;  // Track if we're in an active detection session
-  static int64_t last_telemetry_send_time = 0;
   
   // LED timer variables
   static int64_t last_motion_time = 0;        // Last time motion was detected
@@ -136,7 +199,6 @@ static void distance_sensor_task(void *arg) {
   // Measure distance every 50ms for ultra-fast detection (20 times per second)
   while (true) {
     float distance_cm = sensor->measure_distance_cm();
-    bool current_motion_detected = false;
 
     if (distance_cm > 0) {
       // Distance measurement successful (logging disabled to reduce clutter)
@@ -146,8 +208,6 @@ static void distance_sensor_task(void *arg) {
       
       // Check if someone is detected (distance < threshold)
       if (distance_cm < detection_threshold) {
-        current_motion_detected = true;
-        
         // Update last motion time (for LED timeout tracking)
         int64_t current_time = esp_timer_get_time() / 1000;
         last_motion_time = current_time;
@@ -233,8 +293,8 @@ static void distance_sensor_task(void *arg) {
           leds_on = true;
         }
       } else {
-        // No motion detected
-        current_motion_detected = false;
+        // No motion detected - end detection session when no longer in range
+        in_detection_session = false;
       }
     } else {
       ESP_LOGW(TAG, "Distance measurement failed");
@@ -480,6 +540,7 @@ extern "C" void app_main(void) {
       .trans_queue_depth = 0,
       .flags = {
           .enable_internal_pullup = 1,
+          .allow_pd = false,
       },
   };
   
@@ -561,10 +622,22 @@ extern "C" void app_main(void) {
   LatestSensorData::init();
   
   // Start HC-SR04 distance sensor reading task
-  xTaskCreate(distance_sensor_task, "distance_sensor", 2048, &hc_sr04, 3, NULL);
+  xTaskCreate(distance_sensor_task, "distance_sensor", 4096, &hc_sr04, 3, NULL);
   
   // Start BLE sensor reading task
   sensor_reading_task_start(g_bmp280);
+  
+  // Initialize OTA update system
+  ESP_LOGI(TAG, "Initializing OTA update system...");
+  ota_update_init();
+  
+  // Register HTTP server callbacks
+  http_server_callbacks_t http_callbacks = {
+    .on_led_control = http_on_led_control,
+    .on_config_update = http_on_config_update,
+    .get_status = http_get_status
+  };
+  http_server_register_callbacks(&http_callbacks);
   
   // Mark animation as running - main loop will not override it
   animation_running = true;
@@ -594,6 +667,17 @@ extern "C" void app_main(void) {
         app_mqtt_start_publishing_task();
         mqtt_started = true;
         ESP_LOGI(TAG, "MQTT started and publishing");
+        
+        // Start HTTP REST API server
+        ESP_LOGI(TAG, "Starting HTTP REST API server...");
+        http_server_start();
+        
+        // Mark current boot as valid (OTA rollback protection)
+        ota_mark_boot_valid();
+        
+        // Start OTA update background task
+        ESP_LOGI(TAG, "Starting OTA update background task...");
+        ota_start_update_task(BACKEND_URL);
       }
     } else {
       // WiFi disconnected - reset state
@@ -601,6 +685,9 @@ extern "C" void app_main(void) {
         ESP_LOGI(TAG, "WiFi disconnected - resetting MQTT/SNTP state");
         mqtt_started = false;
         sntp_started = false;
+        
+        // Stop HTTP server when WiFi is down
+        http_server_stop();
       }
     }
 

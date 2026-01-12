@@ -25,13 +25,11 @@ public class CommandService {
         var device = deviceRepository.findByIdAndLocationUserId(deviceId, userId)
                 .orElseThrow(() -> resourceNotFound(Device.class));
 
-        var locationId = device.getLocation().getId();
-
-        var topic = String.format("customer/%d/location/%d/device/%d/cmd", userId, locationId, deviceId);
+        var topic = String.format("smart-led/device/%s/cmd", device.getMacAddress());
 
         try {
             String jsonPayload = objectMapper.writeValueAsString(command);
-            log.debug("Publishing to topic [{}]: {}", topic, jsonPayload);
+            log.info("Publishing to topic [{}]: {}", topic, jsonPayload);
             mqttPublisher.publish(jsonPayload, topic);
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize command payload for device {}", deviceId, e);

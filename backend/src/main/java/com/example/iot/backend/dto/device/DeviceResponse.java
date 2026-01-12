@@ -11,8 +11,7 @@ public record DeviceResponse(
         String name,
         String status,
         LocalDateTime updatedAt,
-        Long locationId
-) {
+        Long locationId) {
     public static DeviceResponse toDeviceResponse(Device device) {
         return DeviceResponse.builder()
                 .id(device.getId())

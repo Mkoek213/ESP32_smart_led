@@ -19,6 +19,9 @@ import static com.example.iot.backend.model.Device.Status.OFFLINE;
 import static com.example.iot.backend.model.Device.Status.ONLINE;
 import static com.example.iot.backend.model.Device.Status.UNCLAIMED;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DeviceService {
@@ -28,6 +31,7 @@ public class DeviceService {
     private final DeviceRepository deviceRepository;
     private final LocationRepository locationRepository;
     private final CommandService commandService;
+    private final com.example.iot.backend.repository.TelemetryRepository telemetryRepository;
 
     @Transactional(readOnly = true)
     public DeviceResponse getDevice(Long userId, Long deviceId) {
@@ -52,8 +56,21 @@ public class DeviceService {
 
     @Transactional
     public void deleteDevice(Long userId, Long deviceId) {
-        var device = getDeviceOrThrow(userId, deviceId);
-        deviceRepository.delete(device);
+        log.info("Attempting to delete device {} for user {}", deviceId, userId);
+        try {
+            var device = getDeviceOrThrow(userId, deviceId);
+
+            // Explicitly fetch and delete telemetry to ensure cascading works
+            var telemetryData = telemetryRepository.findAllByDeviceIdAndTimestampBetween(deviceId, 0L, Long.MAX_VALUE);
+            log.info("Found {} telemetry records to delete", telemetryData.size());
+            telemetryRepository.deleteAll(telemetryData);
+
+            deviceRepository.delete(device);
+            log.info("Device deleted successfully");
+        } catch (Exception e) {
+            log.error("Error deleting device", e);
+            throw e;
+        }
     }
 
     @Transactional
@@ -61,6 +78,15 @@ public class DeviceService {
         var device = getDeviceOrThrow(userId, deviceId);
         device.setStatus(deviceStatus);
         deviceRepository.save(device);
+    }
+
+    @Transactional
+    public void setDeviceStatus(String macAddress, Device.Status deviceStatus) {
+        deviceRepository.findByMacAddress(macAddress)
+                .ifPresent(device -> {
+                    device.setStatus(deviceStatus);
+                    deviceRepository.save(device);
+                });
     }
 
     @Transactional
@@ -86,7 +112,8 @@ public class DeviceService {
                         .macAddress(request.macAddress())
                         .proofOfPossession(request.proofOfPossession())
                         .status(UNCLAIMED)
-                        .hardwareId(java.util.UUID.randomUUID().toString()) // Generate a random hardware ID for new devices
+                        .hardwareId(java.util.UUID.randomUUID().toString()) // Generate a random hardware ID for new
+                                                                            // devices
                         .build());
 
         if (!device.getProofOfPossession().equals(request.proofOfPossession())) {
@@ -94,7 +121,8 @@ public class DeviceService {
         }
 
         if (device.getStatus().equals(ONLINE)) {
-            throw new IllegalStateException("Device is currently online and cannot be claimed. Perform a factory reset first.");
+            throw new IllegalStateException(
+                    "Device is currently online and cannot be claimed. Perform a factory reset first.");
         }
 
         device.setLocation(location);
@@ -102,6 +130,11 @@ public class DeviceService {
         device.setStatus(OFFLINE);
 
         return DeviceResponse.toDeviceResponse(deviceRepository.save(device));
+    }
+
+    @Transactional
+    public void controlDevice(Long userId, Long deviceId, CommandRequest command) {
+        commandService.sendCommand(userId, deviceId, command);
     }
 
     private Device getDeviceOrThrow(Long userId, Long deviceId) {

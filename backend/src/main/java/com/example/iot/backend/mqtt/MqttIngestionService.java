@@ -6,6 +6,7 @@ import com.example.iot.backend.service.DeviceService;
 import com.example.iot.backend.service.TelemetryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,28 +53,44 @@ public class MqttIngestionService {
             List<TelemetryDto> telemetryDtos = objectMapper.readValue(payload, new TypeReference<>() {
             });
 
-            log.info("Received {} telemetry items for deviceId: {}", telemetryDtos.size(), parsedTopic.getDeviceId());
+            log.info("Received {} telemetry items for device macAddress: {}", telemetryDtos.size(),
+                    parsedTopic.getMacAddress());
 
             telemetryDtos.forEach(telemetryDto -> telemetryService.saveTelemetry(
                     telemetryDto,
-                    parsedTopic.getDeviceId()
-            ));
+                    parsedTopic.getMacAddress()));
         } catch (JsonProcessingException e) {
             log.error("Failed to parse telemetry payload: {}", payload, e);
         }
     }
 
     private void handleStatus(String payload, ParsedTopic parsedTopic) {
-        log.info("Device status update - User: {}, Location: {}, Device: {}, Status: {}",
-                parsedTopic.getUserId(),
-                parsedTopic.getLocationId(),
-                parsedTopic.getDeviceId(),
+        log.info("Device status update - Device MAC: {}, Raw Status Payload: {}",
+                parsedTopic.getMacAddress(),
                 payload);
 
-        deviceService.setDeviceStatus(
-                parsedTopic.getUserId(),
-                parsedTopic.getDeviceId(),
-                Device.Status.valueOf(payload)
-        );
+        try {
+            // Parse the JSON payload to extract the state value
+            JsonNode rootNode = objectMapper.readTree(payload);
+            JsonNode stateNode = rootNode.get("state");
+
+            if (stateNode != null && stateNode.isTextual()) {
+                String statusStr = stateNode.asText().toUpperCase();
+                Device.Status status = Device.Status.valueOf(statusStr);
+
+                log.info("Setting device {} status to {}", parsedTopic.getMacAddress(), status);
+
+                deviceService.setDeviceStatus(
+                        parsedTopic.getMacAddress(),
+                        status);
+            } else {
+                log.error("Invalid status payload format: 'state' field not found or not a string. Payload: {}",
+                        payload);
+            }
+        } catch (JsonProcessingException e) {
+            log.error("Failed to parse status JSON payload: {}", payload, e);
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid device status value in payload: {}", payload, e);
+        }
     }
 }

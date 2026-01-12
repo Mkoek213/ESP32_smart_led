@@ -7,10 +7,14 @@
 // Maksymalne długości dla SSID i hasła
 constexpr size_t WIFI_SSID_MAX_LEN = 32;
 constexpr size_t WIFI_PASS_MAX_LEN = 64;
+constexpr size_t MQTT_ID_MAX_LEN = 36; // Max length for UUIDs or other IDs
 
 struct WifiConfig {
     char ssid[WIFI_SSID_MAX_LEN + 1];
     char password[WIFI_PASS_MAX_LEN + 1];
+    char customerId[MQTT_ID_MAX_LEN + 1];
+    char locationId[MQTT_ID_MAX_LEN + 1];
+    char deviceId[MQTT_ID_MAX_LEN + 1];
 };
 
 // Inicjalizacja NVS dla wifi config

@@ -25,8 +25,7 @@ public class TelemetryController {
     public Map<Long, List<TelemetryResponse>> getAllTelemetry(
             @RequestParam(required = false) Long start,
             @RequestParam(required = false) Long end,
-            @AuthenticationPrincipal UserDetails userDetails
-    ) {
+            @AuthenticationPrincipal UserDetails userDetails) {
         return telemetryService.getUserTelemetry(getUserId(userDetails), start, end);
     }
 
@@ -35,9 +34,15 @@ public class TelemetryController {
             @PathVariable Long deviceId,
             @RequestParam(required = false) Long start,
             @RequestParam(required = false) Long end,
-            @AuthenticationPrincipal UserDetails userDetails
-    ) {
+            @AuthenticationPrincipal UserDetails userDetails) {
         return telemetryService.getDeviceTelemetry(getUserId(userDetails), deviceId, start, end);
+    }
+
+    @GetMapping("/{deviceId}/latest")
+    public com.example.iot.backend.dto.telemetry.TelemetryDto getLatestTelemetry(
+            @PathVariable Long deviceId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return telemetryService.getLatestTelemetry(getUserId(userDetails), deviceId);
     }
 
     private Long getUserId(UserDetails userDetails) {

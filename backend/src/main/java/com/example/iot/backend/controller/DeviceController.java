@@ -1,5 +1,6 @@
 package com.example.iot.backend.controller;
 
+import com.example.iot.backend.dto.command.CommandRequest;
 import com.example.iot.backend.dto.device.DeviceClaimRequest;
 import com.example.iot.backend.dto.device.DeviceResponse;
 import com.example.iot.backend.dto.device.DeviceUpdateRequest;
@@ -21,10 +22,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
 @RequestMapping("/devices")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = { org.springframework.web.bind.annotation.RequestMethod.GET,
+        org.springframework.web.bind.annotation.RequestMethod.POST,
+        org.springframework.web.bind.annotation.RequestMethod.PUT,
+        org.springframework.web.bind.annotation.RequestMethod.DELETE,
+        org.springframework.web.bind.annotation.RequestMethod.OPTIONS })
 public class DeviceController {
 
     private final DeviceService deviceService;
@@ -40,7 +47,8 @@ public class DeviceController {
     }
 
     @PutMapping("/{deviceId}")
-    public DeviceResponse updateDevice(@PathVariable Long deviceId, @RequestBody @Valid DeviceUpdateRequest request, @AuthenticationPrincipal UserDetails userDetails) {
+    public DeviceResponse updateDevice(@PathVariable Long deviceId, @RequestBody @Valid DeviceUpdateRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
         return deviceService.updateDevice(getUserId(userDetails), deviceId, request);
     }
 
@@ -52,7 +60,8 @@ public class DeviceController {
 
     @PostMapping("/claim")
     @ResponseStatus(HttpStatus.CREATED)
-    public DeviceResponse claimDevice(@RequestBody @Valid DeviceClaimRequest request, @AuthenticationPrincipal UserDetails userDetails) {
+    public DeviceResponse claimDevice(@RequestBody @Valid DeviceClaimRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
         return deviceService.claimDevice(getUserId(userDetails), request);
     }
 
@@ -60,6 +69,13 @@ public class DeviceController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void unbindDevice(@PathVariable Long deviceId, @AuthenticationPrincipal UserDetails userDetails) {
         deviceService.unbindDevice(getUserId(userDetails), deviceId);
+    }
+
+    @PostMapping("/{deviceId}/control")
+    @ResponseStatus(HttpStatus.OK)
+    public void controlDevice(@PathVariable Long deviceId, @RequestBody @Valid CommandRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        deviceService.controlDevice(getUserId(userDetails), deviceId, request);
     }
 
     private Long getUserId(UserDetails userDetails) {

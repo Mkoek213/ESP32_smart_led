@@ -6,7 +6,7 @@ const getHeaders = () => {
         'Content-Type': 'application/json',
     };
     if (token) {
-        headers['Authorization'] = `Bearer ${token}`; 
+        headers['Authorization'] = `Bearer ${token}`;
     }
     return headers;
 };
@@ -63,7 +63,7 @@ export const api = {
             return res.json();
         },
         get: async (id) => {
-             const res = await fetch(`${BASE_URL}/locations/${id}`, {
+            const res = await fetch(`${BASE_URL}/locations/${id}`, {
                 headers: getHeaders()
             });
             if (!res.ok) throw new Error('Failed to fetch location');
@@ -71,11 +71,11 @@ export const api = {
         },
         delete: async (id) => {
             const res = await fetch(`${BASE_URL}/locations/${id}`, {
-               method: 'DELETE',
-               headers: getHeaders()
-           });
-           if (!res.ok) throw new Error('Failed to delete location');
-       }
+                method: 'DELETE',
+                headers: getHeaders()
+            });
+            if (!res.ok) throw new Error('Failed to delete location');
+        }
     },
     devices: {
         list: async () => {
@@ -122,28 +122,57 @@ export const api = {
             return res.json();
         },
         control: async (id, type, payload) => {
-             const res = await fetch(`${BASE_URL}/commands/${id}`, {
+            const res = await fetch(`${BASE_URL}/devices/${id}/control`, {
                 method: 'POST',
                 headers: getHeaders(),
                 body: JSON.stringify({ type, payload })
             });
-             if (!res.ok) throw new Error('Failed to send command');
+            if (!res.ok) throw new Error('Failed to send command');
         },
         remove: async (id) => {
-             const res = await fetch(`${BASE_URL}/devices/${id}`, {
+            const res = await fetch(`${BASE_URL}/devices/${id}`, {
                 method: 'DELETE',
                 headers: getHeaders()
             });
-             if (!res.ok) throw new Error('Failed to delete device');
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(`Failed to delete device: ${res.status} ${res.statusText} - ${text}`);
+            }
         }
     },
     telemetry: {
         getLatest: async (deviceId) => {
-             const res = await fetch(`${BASE_URL}/telemetry/${deviceId}/latest`, {
+            const res = await fetch(`${BASE_URL}/telemetry/${deviceId}/latest`, {
                 headers: getHeaders()
             });
-            if (!res.ok) return null; // Telemetry might be empty
-            return res.json();
+            if (!res.ok) return null;
+
+            // Handle empty body (200 OK but no content)
+            const text = await res.text();
+            return text ? JSON.parse(text) : null;
+        }
+    },
+    firmware: {
+        upload: async (file, version) => {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('version', version);
+
+            const headers = getHeaders();
+            delete headers['Content-Type']; // Let browser set boundary for FormData
+            delete headers['Authorization']; // Upload is public, avoid token validation issues
+
+            const res = await fetch(`${BASE_URL}/firmware/upload`, {
+                method: 'POST',
+                headers: headers,
+                body: formData
+            });
+
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(text || 'Firmware upload failed');
+            }
+            return res.text();
         }
     }
 };

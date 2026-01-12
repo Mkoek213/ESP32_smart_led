@@ -1,6 +1,5 @@
 package com.example.iot.backend.service;
 
-
 import com.example.iot.backend.dto.telemetry.TelemetryDto;
 import com.example.iot.backend.dto.telemetry.TelemetryResponse;
 import com.example.iot.backend.model.Device;
@@ -32,8 +31,7 @@ public class TelemetryService {
         long[] range = resolveTimeRange(start, end);
 
         return telemetryRepository.findAllByDeviceLocationUserIdAndTimestampBetween(
-                        userId, range[0], range[1]
-                ).stream()
+                userId, range[0], range[1]).stream()
                 .map(TelemetryResponse::toTelemetryResponse)
                 .collect(groupingBy(TelemetryResponse::deviceId));
     }
@@ -47,15 +45,30 @@ public class TelemetryService {
         long[] range = resolveTimeRange(start, end);
 
         return telemetryRepository.findAllByDeviceIdAndTimestampBetween(
-                        deviceId, range[0], range[1]
-                ).stream()
+                deviceId, range[0], range[1]).stream()
                 .map(TelemetryResponse::toTelemetryResponse)
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public TelemetryDto getLatestTelemetry(Long userId, Long deviceId) {
+        if (!deviceRepository.existsByIdAndLocationUserId(deviceId, userId)) {
+            throw resourceNotFound(Device.class);
+        }
+
+        return telemetryRepository.findFirstByDeviceIdOrderByTimestampDesc(deviceId)
+                .map(TelemetryDto::toTelemetryDto)
+                .orElse(null);
+    }
+
     @Transactional
-    public void saveTelemetry(TelemetryDto dto, Long deviceId) {
-        var device = deviceRepository.getReferenceById(deviceId);
+    public void saveTelemetry(TelemetryDto dto, String macAddress) {
+        log.info("Saving telemetry for MAC: '{}'", macAddress);
+        var device = deviceRepository.findByMacAddress(macAddress)
+                .orElseThrow(() -> {
+                    log.error("Device not found for MAC: '{}'", macAddress);
+                    return resourceNotFound(Device.class);
+                });
 
         var telemetry = Telemetry.builder()
                 .device(device)
@@ -66,12 +79,13 @@ public class TelemetryService {
                 .personCount(dto.personCount())
                 .build();
 
-        telemetryRepository.save(telemetry);
+        var saved = telemetryRepository.saveAndFlush(telemetry);
+        log.info("Telemetry saved. Database ID: {}", saved.getId());
     }
 
     private long[] resolveTimeRange(Long start, Long end) {
         long startTimestamp = (start == null) ? Instant.now().toEpochMilli() : start;
         long endTimestamp = (end == null) ? Instant.now().toEpochMilli() : end;
-        return new long[]{startTimestamp, endTimestamp};
+        return new long[] { startTimestamp, endTimestamp };
     }
 }

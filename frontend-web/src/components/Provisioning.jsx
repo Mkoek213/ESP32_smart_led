@@ -1,104 +1,233 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../api/client';
 
 // UUIDs from ble_provisioning.cpp
-const SERVICE_UUID = "12345678-9abc-def0-1234-56789abcdef0";
-const CHR_SSID = "12345678-9abc-def0-1234-56789abcdef1";
-const CHR_PASS = "12345678-9abc-def0-1234-56789abcdef2";
-const CHR_CMD  = "12345678-9abc-def0-1234-56789abcdef4"; // Write 0x01 to save
+const SERVICE_UUID = "f0debc9a-7856-3412-f0de-bc9a78563412";
+const CHR_MAC = "e0debc9a-7856-3412-f0de-bc9a78563412";
+const CHR_POP = "e1debc9a-7856-3412-f0de-bc9a78563412";
+const CHR_SSID = "f1debc9a-7856-3412-f0de-bc9a78563412";
+const CHR_PASS = "f2debc9a-7856-3412-f0de-bc9a78563412";
+const CHR_STATUS = "f3debc9a-7856-3412-f0de-bc9a78563412";
+const CHR_CMD = "f4debc9a-7856-3412-f0de-bc9a78563412";
+const CHR_IDS = "f5debc9a-7856-3412-f0de-bc9a78563412";
 
 export default function Provisioning() {
-  const [device, setDevice] = useState(null);
-  const [ssid, setSsid] = useState('');
-  const [password, setPassword] = useState('');
-  const [status, setStatus] = useState('Idle');
-  const navigate = useNavigate();
+    const [device, setDevice] = useState(null);
+    const [macAddress, setMacAddress] = useState('');
+    const [pop, setPop] = useState('');
+    const [ssid, setSsid] = useState('');
+    const [password, setPassword] = useState('');
+    const [customerId, setCustomerId] = useState('1'); // Defaulting to 1 as per backend schema
+    const [locationId, setLocationId] = useState('');
+    const [deviceName, setDeviceName] = useState('');
+    const [locations, setLocations] = useState([]);
+    const [status, setStatus] = useState('Idle');
+    const navigate = useNavigate();
 
-  const connect = async () => {
-    try {
-        if (!navigator.bluetooth) {
-            alert("Bluetooth not supported. Use Bluefy browser on iOS.");
+    // Load locations on mount
+    React.useEffect(() => {
+        api.locations.list()
+            .then(setLocations)
+            .catch(err => console.error('Failed to load locations:', err));
+    }, []);
+
+    const connect = async () => {
+        try {
+            if (!navigator.bluetooth) {
+                alert("Bluetooth not supported. Use Bluefy browser on iOS or Chrome on Android.");
+                return;
+            }
+
+            setStatus('Scanning...');
+            const dev = await navigator.bluetooth.requestDevice({
+                filters: [{ services: [SERVICE_UUID] }],
+                optionalServices: [SERVICE_UUID]
+            });
+
+            const server = await dev.gatt.connect();
+            setDevice(server);
+            setStatus('Connected - Reading device info...');
+
+            // Read MAC Address and PoP
+            const service = await server.getPrimaryService(SERVICE_UUID);
+
+            // Read MAC (6 bytes)
+            const macChr = await service.getCharacteristic(CHR_MAC);
+            const macValue = await macChr.readValue();
+            const macBytes = new Uint8Array(macValue.buffer);
+            const macStr = Array.from(macBytes).map(b => b.toString(16).padStart(2, '0').toUpperCase()).join(':');
+            setMacAddress(macStr);
+
+            // Read PoP (32 bytes)
+            const popChr = await service.getCharacteristic(CHR_POP);
+            const popValue = await popChr.readValue();
+            const popBytes = new Uint8Array(popValue.buffer);
+            const popHex = Array.from(popBytes).map(b => b.toString(16).padStart(2, '0')).join('');
+            setPop(popHex);
+
+            setStatus('Ready to Configure');
+            console.log('Device MAC:', macStr);
+            console.log('Device PoP:', popHex);
+        } catch (e) {
+            console.error(e);
+            setStatus(`Error: ${e.message}`);
+        }
+    };
+
+    const sendCreds = async () => {
+        if (!device) return;
+        if (!locationId || !deviceName) {
+            setStatus('Please select location and enter device name');
             return;
         }
 
-        setStatus('Scanning...');
-        const dev = await navigator.bluetooth.requestDevice({
-            filters: [{ name: 'LED_WiFi_Config' }],
-            optionalServices: [SERVICE_UUID]
-        });
+        try {
+            setStatus('Writing WiFi Config...');
+            const service = await device.getPrimaryService(SERVICE_UUID);
 
-        const server = await dev.gatt.connect();
-        setDevice(server);
-        setStatus('Connected');
-    } catch (e) {
-        console.error(e);
-        setStatus(`Error: ${e.message}`);
-    }
-  };
+            const enc = new TextEncoder();
 
-  const sendCreds = async () => {
-    if (!device) return;
-    try {
-        setStatus('Writing Config...');
-        const service = await device.getPrimaryService(SERVICE_UUID);
-        
-        const enc = new TextEncoder();
+            // Write SSID
+            const ssidChr = await service.getCharacteristic(CHR_SSID);
+            await ssidChr.writeValue(enc.encode(ssid));
 
-        // Write SSID
-        const ssidChr = await service.getCharacteristic(CHR_SSID);
-        await ssidChr.writeValue(enc.encode(ssid));
+            // Write Password
+            const passChr = await service.getCharacteristic(CHR_PASS);
+            await passChr.writeValue(enc.encode(password));
 
-        // Write Password
-        const passChr = await service.getCharacteristic(CHR_PASS);
-        await passChr.writeValue(enc.encode(password));
+            // Write IDs
+            const idsChr = await service.getCharacteristic(CHR_IDS);
+            // Use MAC Address as the Device ID in the topic structure
+            // This ensures the backend can look up the device by MAC address
+            const idsPayload = `${customerId},${locationId},${macAddress}`;
+            await idsChr.writeValue(enc.encode(idsPayload));
 
-        // Write Save Command (0x01)
-        const cmdChr = await service.getCharacteristic(CHR_CMD);
-        await cmdChr.writeValue(new Uint8Array([0x01]));
+            // Write Save Command (0x01) - this will cause the device to disconnect and reboot
+            const cmdChr = await service.getCharacteristic(CHR_CMD);
+            await cmdChr.writeValue(new Uint8Array([0x01]));
 
-        setStatus('Sent! Device should reboot.');
-        setTimeout(() => {
-            if (device.connected) device.disconnect();
-            navigate('/');
-        }, 2000);
+            // The device will disconnect automatically. We can disconnect from the client-side too.
+            if (device.connected) {
+                device.disconnect();
+            }
 
-    } catch (e) {
-        console.error(e);
-        setStatus(`Write Error: ${e.message}`);
-    }
-  };
+            setStatus('Config sent! Waiting for device to connect to WiFi...');
 
-  return (
-    <div className="space-y-6">
-        <h2 className="text-xl font-bold">WiFi Setup</h2>
-        <div className="bg-yellow-50 p-4 rounded text-sm text-yellow-800">
-            Ensure you are using <b>Bluefy</b> (iOS) or Chrome (Android/Desktop) with Bluetooth enabled.
-        </div>
+            // Wait for device to reboot and connect to WiFi
+            await new Promise(resolve => setTimeout(resolve, 10000));
 
-        {!device ? (
-            <button onClick={connect} className="w-full bg-blue-600 text-white p-4 rounded-xl font-bold text-lg">
-                Scan for Device
-            </button>
-        ) : (
-            <div className="space-y-4 animate-in fade-in">
-                <div className="text-green-600 font-bold text-center">Connected to LED Config!</div>
-                
-                <div>
-                   <label className="block text-sm font-bold">WiFi SSID</label>
-                   <input className="w-full border p-2 rounded" value={ssid} onChange={e => setSsid(e.target.value)} />
-                </div>
-                <div>
-                   <label className="block text-sm font-bold">WiFi Password</label>
-                   <input className="w-full border p-2 rounded" type="password" value={password} onChange={e => setPassword(e.target.value)} />
-                </div>
+            // Claim device with backend
+            try {
+                setStatus('Claiming device with backend...');
+                await api.devices.claim({
+                    macAddress: macAddress,
+                    proofOfPossession: pop,
+                    locationId: parseInt(locationId),
+                    name: deviceName
+                });
 
-                <button onClick={sendCreds} className="w-full bg-green-600 text-white p-3 rounded font-bold">
-                    Save to Device
-                </button>
+                setStatus('Device claimed successfully!');
+                setTimeout(() => {
+                    navigate('/');
+                }, 2000);
+            } catch (claimError) {
+                setStatus(`Claiming failed: ${claimError.message}`);
+                console.error('Claim error:', claimError);
+            }
+
+        } catch (e) {
+            console.error(e);
+            // The disconnect might throw an error, which is expected.
+            if (e.message.includes("disconnected")) {
+                setStatus('Config sent! Waiting for device to connect to WiFi...');
+                // Wait for device to reboot and connect to WiFi
+                await new Promise(resolve => setTimeout(resolve, 10000));
+
+                // Claim device with backend
+                try {
+                    setStatus('Claiming device with backend...');
+                    await api.devices.claim({
+                        macAddress: macAddress,
+                        proofOfPossession: pop,
+                        locationId: parseInt(locationId),
+                        name: deviceName
+                    });
+
+                    setStatus('Device claimed successfully!');
+                    setTimeout(() => {
+                        navigate('/');
+                    }, 2000);
+                } catch (claimError) {
+                    setStatus(`Claiming failed: ${claimError.message}`);
+                    console.error('Claim error:', claimError);
+                }
+            } else {
+                setStatus(`Error: ${e.message}`);
+            }
+        }
+    };
+
+    return (
+        <div className="space-y-6">
+            <h2 className="text-xl font-bold">Device Setup & Claiming v2 (MAC Fix)</h2>
+            <div className="bg-yellow-50 p-4 rounded text-sm text-yellow-800">
+                Ensure you are using <b>Bluefy</b> (iOS) or Chrome (Android/Desktop) with Bluetooth enabled.
             </div>
-        )}
 
-        <div className="text-center text-gray-500 font-mono text-sm">Status: {status}</div>
-    </div>
-  );
+            {!device ? (
+                <button onClick={connect} className="w-full bg-blue-600 text-white p-4 rounded-xl font-bold text-lg">
+                    Scan for Device
+                </button>
+            ) : (
+                <div className="space-y-4 animate-in fade-in">
+                    <div className="text-green-600 font-bold text-center">Connected!</div>
+
+                    {/* Device Info */}
+                    {macAddress && (
+                        <div className="bg-gray-100 p-3 rounded text-sm">
+                            <div><strong>MAC:</strong> {macAddress}</div>
+                            <div className="text-xs text-gray-600 break-all"><strong>PoP:</strong> {pop}</div>
+                        </div>
+                    )}
+
+                    {/* WiFi Credentials */}
+                    <div>
+                        <label className="block text-sm font-bold">WiFi SSID</label>
+                        <input className="w-full border p-2 rounded" value={ssid} onChange={e => setSsid(e.target.value)} />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-bold">WiFi Password</label>
+                        <input className="w-full border p-2 rounded" type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                    </div>
+
+                    {/* Customer ID (hidden for now, can be exposed if needed) */}
+                    <input type="hidden" value={customerId} onChange={e => setCustomerId(e.target.value)} />
+
+                    {/* Location Selection */}
+                    <div>
+                        <label className="block text-sm font-bold">Location</label>
+                        <select className="w-full border p-2 rounded" value={locationId} onChange={e => setLocationId(e.target.value)}>
+                            <option value="">Select location...</option>
+                            {locations.map(loc => (
+                                <option key={loc.id} value={loc.id}>{loc.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Device Name */}
+                    <div>
+                        <label className="block text-sm font-bold">Device Name</label>
+                        <input className="w-full border p-2 rounded" value={deviceName} onChange={e => setDeviceName(e.target.value)} />
+                    </div>
+
+                    <button onClick={sendCreds} className="w-full bg-green-600 text-white p-4 rounded-xl font-bold text-lg">
+                        Save &amp; Claim
+                    </button>
+                </div>
+            )}
+
+            <div className="text-center text-gray-500 font-mono text-sm">Status: {status}</div>
+        </div>
+    );
 }

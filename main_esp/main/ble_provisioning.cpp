@@ -6,6 +6,11 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/timers.h"
+#include "esp_system.h"
+#include "esp_mac.h"
+#include "esp_random.h"
+#include "nvs_flash.h"
+#include "nvs.h"
 
 extern "C" {
     #include "nimble/nimble_port.h"
@@ -26,10 +31,27 @@ static const char* DEVICE_NAME = "LED_WiFi_Config";
 // Provisioning timeout (60 seconds)
 #define PROVISIONING_TIMEOUT_MS 60000
 
+// NVS keys for PoP storage
+#define NVS_NAMESPACE_DEVICE "device"
+#define NVS_KEY_POP "pop"
+#define POP_LENGTH 32
+
 // uuid dla provisioning service
 static ble_uuid128_t UUID_PROV_SVC = BLE_UUID128_INIT(
     0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0,
     0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0
+);
+
+// uuid dla charakterystyki MAC ADDRESS (read)
+static ble_uuid128_t UUID_CHR_MAC = BLE_UUID128_INIT(
+    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0,
+    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xe0
+);
+
+// uuid dla charakterystyki PROOF OF POSSESSION (read)
+static ble_uuid128_t UUID_CHR_POP = BLE_UUID128_INIT(
+    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0,
+    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xe1
 );
 
 // uuid dla charakterystyki SSID (write)
@@ -54,6 +76,30 @@ static ble_uuid128_t UUID_CHR_STATUS = BLE_UUID128_INIT(
 static ble_uuid128_t UUID_CHR_CMD = BLE_UUID128_INIT(
     0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0,
     0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf4
+);
+
+// uuid dla charakterystyki CUSTOMER_ID (write)
+static ble_uuid128_t UUID_CHR_CUSTOMER_ID = BLE_UUID128_INIT(
+    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0,
+    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf5
+);
+
+// uuid dla charakterystyki LOCATION_ID (write)
+static ble_uuid128_t UUID_CHR_LOCATION_ID = BLE_UUID128_INIT(
+    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0,
+    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf6
+);
+
+// uuid dla charakterystyki DEVICE_ID (write)
+static ble_uuid128_t UUID_CHR_DEVICE_ID = BLE_UUID128_INIT(
+    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0,
+    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf7
+);
+
+// uuid dla charakterystyki IDS (write)
+static ble_uuid128_t UUID_CHR_IDS = BLE_UUID128_INIT(
+    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0,
+    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf5
 );
 
 static LEDController* s_led = nullptr;
@@ -102,6 +148,84 @@ static void notify_status_if_possible()
 static int gap_event(struct ble_gap_event *event, void *arg);
 static void start_advertising();
 
+// ========== MAC Address & Proof of Possession Functions ==========
+
+// Get device MAC address
+void ble_provisioning_get_mac_address(uint8_t mac[6]) {
+    esp_read_mac(mac, ESP_MAC_WIFI_STA);
+}
+
+// Generate or load Proof of Possession (PoP)
+bool ble_provisioning_get_pop(uint8_t pop[32]) {
+    nvs_handle_t handle;
+    esp_err_t err;
+    
+    // Try to open NVS
+    err = nvs_open(NVS_NAMESPACE_DEVICE, NVS_READWRITE, &handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to open NVS for PoP: %s", esp_err_to_name(err));
+        return false;
+    }
+    
+    // Try to read existing PoP
+    size_t required_size = POP_LENGTH;
+    err = nvs_get_blob(handle, NVS_KEY_POP, pop, &required_size);
+    
+    if (err == ESP_OK && required_size == POP_LENGTH) {
+        // PoP exists, return it
+        ESP_LOGI(TAG, "Loaded existing PoP from NVS");
+        nvs_close(handle);
+        return true;
+    }
+    
+    // Generate new PoP (first boot)
+    ESP_LOGI(TAG, "Generating new PoP (first boot)");
+    esp_fill_random(pop, POP_LENGTH);
+    
+    // Save to NVS
+    err = nvs_set_blob(handle, NVS_KEY_POP, pop, POP_LENGTH);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to save PoP: %s", esp_err_to_name(err));
+        nvs_close(handle);
+        return false;
+    }
+    
+    err = nvs_commit(handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to commit PoP: %s", esp_err_to_name(err));
+        nvs_close(handle);
+        return false;
+    }
+    
+    nvs_close(handle);
+    
+    // Log PoP in hex for debugging
+    ESP_LOGI(TAG, "PoP generated and saved:");
+    ESP_LOG_BUFFER_HEX(TAG, pop, POP_LENGTH);
+    
+    return true;
+}
+
+// Factory reset - wipe WiFi credentials and return to unclaimed state
+void ble_provisioning_factory_reset() {
+    ESP_LOGW(TAG, "Factory reset initiated - wiping all credentials");
+    
+    // Wipe WiFi config
+    wifi_config_erase();
+    
+    // Note: We DO NOT wipe PoP - it persists across factory resets
+    // The backend uses PoP to validate the device, so it should remain constant
+    // Only a full flash erase would reset the PoP
+    
+    ESP_LOGI(TAG, "Factory reset complete - device ready for re-provisioning");
+    
+    // Restart device to apply changes
+    vTaskDelay(pdMS_TO_TICKS(1000));
+    esp_restart();
+}
+
+// ========== End MAC & PoP Functions ==========
+
 // callback dla dostępu do charakterystyk GATT
 static int gatt_chr_access_cb(uint16_t conn_handle,
                               uint16_t attr_handle,
@@ -113,6 +237,36 @@ static int gatt_chr_access_cb(uint16_t conn_handle,
     (void)arg;
 
     const ble_uuid_t* uuid = ctxt->chr->uuid;
+    
+    // odczyt MAC ADDRESS
+    if (ble_uuid_cmp(uuid, &UUID_CHR_MAC.u) == 0) {
+        if (ctxt->op == BLE_GATT_ACCESS_OP_READ_CHR) {
+            uint8_t mac[6];
+            ble_provisioning_get_mac_address(mac);
+            ESP_LOGI(TAG, "Client reading MAC: %02X:%02X:%02X:%02X:%02X:%02X",
+                     mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+            int rc = os_mbuf_append(ctxt->om, mac, 6);
+            return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+        }
+        return BLE_ATT_ERR_UNLIKELY;
+    }
+    
+    // odczyt PROOF OF POSSESSION
+    if (ble_uuid_cmp(uuid, &UUID_CHR_POP.u) == 0) {
+        if (ctxt->op == BLE_GATT_ACCESS_OP_READ_CHR) {
+            uint8_t pop[POP_LENGTH];
+            if (ble_provisioning_get_pop(pop)) {
+                ESP_LOGI(TAG, "Client reading PoP");
+                ESP_LOG_BUFFER_HEX(TAG, pop, POP_LENGTH);
+                int rc = os_mbuf_append(ctxt->om, pop, POP_LENGTH);
+                return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+            } else {
+                ESP_LOGE(TAG, "Failed to get PoP");
+                return BLE_ATT_ERR_UNLIKELY;
+            }
+        }
+        return BLE_ATT_ERR_UNLIKELY;
+    }
     
     // ustawianie SSID
     if (ble_uuid_cmp(uuid, &UUID_CHR_SSID.u) == 0) {
@@ -171,7 +325,7 @@ static int gatt_chr_access_cb(uint16_t conn_handle,
     }
     
     // wpisywanie COMMAND
-    // komendy: 0x01 = SAVE, 0x02 = RESET, czyli wpisujesz HEX 01 albo 02 w zależności od komendy
+    // komendy: 0x01 = SAVE, 0x02 = RESET (clear config), 0x03 = FACTORY_RESET (unbind device)
     if (ble_uuid_cmp(uuid, &UUID_CHR_CMD.u) == 0) {
         if (ctxt->op == BLE_GATT_ACCESS_OP_WRITE_CHR) {
             uint8_t cmd = 0;
@@ -212,7 +366,7 @@ static int gatt_chr_access_cb(uint16_t conn_handle,
                 }
                 return 0;
             }
-            else if (cmd == 0x02) { // komenda na reset
+            else if (cmd == 0x02) { // komenda na reset config (clear WiFi only)
                 wifi_config_erase();
                 memset(&s_temp_config, 0, sizeof(s_temp_config));
                 s_status = STATUS_READY;
@@ -220,8 +374,82 @@ static int gatt_chr_access_cb(uint16_t conn_handle,
                 ESP_LOGI(TAG, "WiFi config erased");
                 return 0;
             }
+            else if (cmd == 0x03) { // komenda na factory reset (unbind device)
+                ESP_LOGW(TAG, "Factory reset command received from backend");
+                s_status = STATUS_READY;
+                notify_status_if_possible();
+                
+                // Give time for status notification to be sent
+                vTaskDelay(pdMS_TO_TICKS(200));
+                
+                // Terminate BLE connection
+                if (s_conn_handle != BLE_HS_CONN_HANDLE_NONE) {
+                    ble_gap_terminate(s_conn_handle, BLE_ERR_REM_USER_CONN_TERM);
+                }
+                
+                // Perform factory reset (wipes WiFi, restarts device)
+                ble_provisioning_factory_reset();
+                return 0;
+            }
             
             return BLE_ATT_ERR_UNLIKELY;
+        }
+        return BLE_ATT_ERR_UNLIKELY;
+    }
+
+    // obsluga zapisu IDS
+    if (ble_uuid_cmp(uuid, &UUID_CHR_IDS.u) == 0) {
+        if (ctxt->op == BLE_GATT_ACCESS_OP_WRITE_CHR) {
+            uint16_t len = OS_MBUF_PKTLEN(ctxt->om);
+            
+            // Max length check
+            if (len >= sizeof(s_temp_config.customerId) + sizeof(s_temp_config.locationId) + sizeof(s_temp_config.deviceId) + 2) {
+                ESP_LOGE(TAG, "IDs payload too long: %d", len);
+                return BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN;
+            }
+
+            char buf[128];
+            if (len >= sizeof(buf)) {
+                 ESP_LOGE(TAG, "IDs payload too large for buffer");
+                 return BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN;
+            }
+            os_mbuf_copydata(ctxt->om, 0, len, buf);
+            buf[len] = '\0';
+            
+            ESP_LOGI(TAG, "Received IDs payload: '%s'", buf);
+
+            // Parse "customerId,locationId,deviceId"
+            char* token = strtok(buf, ",");
+            if (token) {
+                strncpy(s_temp_config.customerId, token, sizeof(s_temp_config.customerId) - 1);
+                s_temp_config.customerId[sizeof(s_temp_config.customerId) - 1] = '\0';
+            } else {
+                ESP_LOGE(TAG, "Failed to parse customerId");
+                return BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN;
+            }
+
+            token = strtok(NULL, ",");
+            if (token) {
+                strncpy(s_temp_config.locationId, token, sizeof(s_temp_config.locationId) - 1);
+                s_temp_config.locationId[sizeof(s_temp_config.locationId) - 1] = '\0';
+            } else {
+                ESP_LOGE(TAG, "Failed to parse locationId");
+                return BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN;
+            }
+
+            token = strtok(NULL, ",");
+            if (token) {
+                strncpy(s_temp_config.deviceId, token, sizeof(s_temp_config.deviceId) - 1);
+                s_temp_config.deviceId[sizeof(s_temp_config.deviceId) - 1] = '\0';
+            } else {
+                ESP_LOGE(TAG, "Failed to parse deviceId");
+                return BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN;
+            }
+
+            ESP_LOGI(TAG, "Parsed IDs: Customer='%s', Location='%s', Device='%s'", 
+                s_temp_config.customerId, s_temp_config.locationId, s_temp_config.deviceId);
+
+            return 0;
         }
         return BLE_ATT_ERR_UNLIKELY;
     }
@@ -229,19 +457,33 @@ static int gatt_chr_access_cb(uint16_t conn_handle,
     return BLE_ATT_ERR_UNLIKELY;
 }
 
-static struct ble_gatt_chr_def prov_chrs[5];
+static struct ble_gatt_chr_def prov_chrs[8];
 static struct ble_gatt_svc_def gatt_svcs[2];
 
 // Descriptors for characteristics (User Description)
+static const char* desc_mac = "Device MAC Address";
+static const char* desc_pop = "Proof of Possession";
 static const char* desc_ssid = "WiFi SSID";
 static const char* desc_pass = "WiFi Password";
 static const char* desc_status = "Provisioning Status";
 static const char* desc_cmd = "Command";
+static const char* desc_ids = "Device IDs (JSON)";
 
 // Static UUIDs for descriptors (CUD - Characteristic User Description, 0x2901)
 static const ble_uuid16_t UUID_CUD = BLE_UUID16_INIT(0x2901);
 
 // Descriptor access callbacks
+static int desc_mac_access(uint16_t, uint16_t, struct ble_gatt_access_ctxt *ctxt, void*) {
+    ESP_LOGI(TAG, "Reading MAC descriptor");
+    int rc = os_mbuf_append(ctxt->om, desc_mac, strlen(desc_mac));
+    return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+}
+
+static int desc_pop_access(uint16_t, uint16_t, struct ble_gatt_access_ctxt *ctxt, void*) {
+    ESP_LOGI(TAG, "Reading PoP descriptor");
+    int rc = os_mbuf_append(ctxt->om, desc_pop, strlen(desc_pop));
+    return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+}
 static int desc_ssid_access(uint16_t, uint16_t, struct ble_gatt_access_ctxt *ctxt, void*) {
     ESP_LOGI(TAG, "Reading SSID descriptor");
     int rc = os_mbuf_append(ctxt->om, desc_ssid, strlen(desc_ssid));
@@ -266,17 +508,38 @@ static int desc_cmd_access(uint16_t, uint16_t, struct ble_gatt_access_ctxt *ctxt
     return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
 }
 
+static int desc_ids_access(uint16_t, uint16_t, struct ble_gatt_access_ctxt *ctxt, void*) {
+    ESP_LOGI(TAG, "Reading IDs descriptor");
+    int rc = os_mbuf_append(ctxt->om, desc_ids, strlen(desc_ids));
+    return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+}
+
 // Descriptor definitions - will be filled at runtime
+static struct ble_gatt_dsc_def mac_dsc[2];
+static struct ble_gatt_dsc_def pop_dsc[2];
 static struct ble_gatt_dsc_def ssid_dsc[2];
 static struct ble_gatt_dsc_def pass_dsc[2];
 static struct ble_gatt_dsc_def status_dsc[2];
 static struct ble_gatt_dsc_def cmd_dsc[2];
+static struct ble_gatt_dsc_def ids_dsc[2];
 
 static int gatt_svr_init()
 {
     memset(prov_chrs, 0, sizeof(prov_chrs));
 
     // Fill descriptor definitions at runtime
+    memset(mac_dsc, 0, sizeof(mac_dsc));
+    mac_dsc[0].uuid = &UUID_CUD.u;
+    mac_dsc[0].att_flags = BLE_ATT_F_READ;
+    mac_dsc[0].access_cb = desc_mac_access;
+    mac_dsc[0].arg = nullptr;
+    
+    memset(pop_dsc, 0, sizeof(pop_dsc));
+    pop_dsc[0].uuid = &UUID_CUD.u;
+    pop_dsc[0].att_flags = BLE_ATT_F_READ;
+    pop_dsc[0].access_cb = desc_pop_access;
+    pop_dsc[0].arg = nullptr;
+    
     memset(ssid_dsc, 0, sizeof(ssid_dsc));
     ssid_dsc[0].uuid = &UUID_CUD.u;
     ssid_dsc[0].att_flags = BLE_ATT_F_READ;
@@ -302,26 +565,56 @@ static int gatt_svr_init()
     cmd_dsc[0].access_cb = desc_cmd_access;
     cmd_dsc[0].arg = nullptr;
 
-    prov_chrs[0].uuid = &UUID_CHR_SSID.u;
+    memset(ids_dsc, 0, sizeof(ids_dsc));
+    ids_dsc[0].uuid = &UUID_CUD.u;
+    ids_dsc[0].att_flags = BLE_ATT_F_READ;
+    ids_dsc[0].access_cb = desc_ids_access;
+    ids_dsc[0].arg = nullptr;
+
+    // Characteristic 0: MAC Address (READ only)
+    prov_chrs[0].uuid = &UUID_CHR_MAC.u;
     prov_chrs[0].access_cb = gatt_chr_access_cb;
-    prov_chrs[0].flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ;
-    prov_chrs[0].descriptors = ssid_dsc;
+    prov_chrs[0].flags = BLE_GATT_CHR_F_READ;
+    prov_chrs[0].descriptors = mac_dsc;
 
-    prov_chrs[1].uuid = &UUID_CHR_PASS.u;
+    // Characteristic 1: Proof of Possession (READ only)
+    prov_chrs[1].uuid = &UUID_CHR_POP.u;
     prov_chrs[1].access_cb = gatt_chr_access_cb;
-    prov_chrs[1].flags = BLE_GATT_CHR_F_WRITE;
-    prov_chrs[1].descriptors = pass_dsc;
+    prov_chrs[1].flags = BLE_GATT_CHR_F_READ;
+    prov_chrs[1].descriptors = pop_dsc;
 
-    prov_chrs[2].uuid = &UUID_CHR_STATUS.u;
+    // Characteristic 2: SSID (READ/WRITE)
+    prov_chrs[2].uuid = &UUID_CHR_SSID.u;
     prov_chrs[2].access_cb = gatt_chr_access_cb;
-    prov_chrs[2].flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_NOTIFY;
-    prov_chrs[2].val_handle = &s_status_val_handle; // store val handle for notify
-    prov_chrs[2].descriptors = status_dsc;
+    prov_chrs[2].flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ;
+    prov_chrs[2].descriptors = ssid_dsc;
 
-    prov_chrs[3].uuid = &UUID_CHR_CMD.u;
+    // Characteristic 3: Password (WRITE only)
+    prov_chrs[3].uuid = &UUID_CHR_PASS.u;
     prov_chrs[3].access_cb = gatt_chr_access_cb;
     prov_chrs[3].flags = BLE_GATT_CHR_F_WRITE;
-    prov_chrs[3].descriptors = cmd_dsc;
+    prov_chrs[3].descriptors = pass_dsc;
+
+    // Characteristic 4: Status (READ/NOTIFY)
+    prov_chrs[4].uuid = &UUID_CHR_STATUS.u;
+    prov_chrs[4].access_cb = gatt_chr_access_cb;
+    prov_chrs[4].flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_NOTIFY;
+    prov_chrs[4].val_handle = &s_status_val_handle; // store val handle for notify
+    prov_chrs[4].descriptors = status_dsc;
+
+    // Characteristic 5: Command (WRITE only)
+    prov_chrs[5].uuid = &UUID_CHR_CMD.u;
+    prov_chrs[5].access_cb = gatt_chr_access_cb;
+    prov_chrs[5].flags = BLE_GATT_CHR_F_WRITE;
+    prov_chrs[5].descriptors = cmd_dsc;
+    
+    // Characteristic 6: IDs (WRITE only)
+    prov_chrs[6].uuid = &UUID_CHR_IDS.u;
+    prov_chrs[6].access_cb = gatt_chr_access_cb;
+    prov_chrs[6].flags = BLE_GATT_CHR_F_WRITE;
+    prov_chrs[6].descriptors = ids_dsc;
+
+    // Characteristic 7: Terminator (already zeroed)
 
 
     memset(gatt_svcs, 0, sizeof(gatt_svcs));
@@ -347,21 +640,57 @@ static int gatt_svr_init()
 static void start_advertising()
 {
     struct ble_hs_adv_fields fields;
+    struct ble_hs_adv_fields scan_rsp_fields;
+    int rc;
+
+    // Stop advertising if it's already active
+    if (ble_gap_adv_active()) {
+        ESP_LOGW(TAG, "Advertising is already active, stopping it first.");
+        rc = ble_gap_adv_stop();
+        if (rc != 0) {
+            ESP_LOGE(TAG, "Failed to stop advertising; rc=%d", rc);
+            // We can try to continue, but it might fail
+        }
+    }
+
+    /**
+     *  Set the advertisement data included in advertisement packets:
+     *  - Flags
+     *  - Advertising tx power
+     *  - Device name
+     */
     memset(&fields, 0, sizeof(fields));
-    
+
     fields.flags = BLE_HS_ADV_F_DISC_GEN | BLE_HS_ADV_F_BREDR_UNSUP;
     fields.tx_pwr_lvl_is_present = 1;
     fields.tx_pwr_lvl = BLE_HS_ADV_TX_PWR_LVL_AUTO;
+
     fields.name = (uint8_t *)DEVICE_NAME;
     fields.name_len = strlen(DEVICE_NAME);
     fields.name_is_complete = 1;
-    
-    int rc = ble_gap_adv_set_fields(&fields);
+
+    rc = ble_gap_adv_set_fields(&fields);
     if (rc != 0) {
-        ESP_LOGE(TAG, "ble_gap_adv_set_fields failed: %d", rc);
+        ESP_LOGE(TAG, "Error setting advertisement data; rc=%d", rc);
         return;
     }
-    
+
+    /**
+     *  Set the scan response data included in scan response packets:
+     *  - Complete 128-bit service UUID
+     */
+    memset(&scan_rsp_fields, 0, sizeof(scan_rsp_fields));
+    scan_rsp_fields.uuids128 = &UUID_PROV_SVC;
+    scan_rsp_fields.num_uuids128 = 1;
+    scan_rsp_fields.uuids128_is_complete = 1;
+
+    rc = ble_gap_adv_rsp_set_fields(&scan_rsp_fields);
+    if (rc != 0) {
+        ESP_LOGE(TAG, "Error setting scan response data; rc=%d", rc);
+        return;
+    }
+
+    /* Begin advertising */
     struct ble_gap_adv_params adv_params;
     memset(&adv_params, 0, sizeof(adv_params));
     adv_params.conn_mode = BLE_GAP_CONN_MODE_UND;

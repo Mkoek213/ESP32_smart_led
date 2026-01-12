@@ -11,6 +11,8 @@ idf_component_register(SRCS "latest_sensor_data.cpp" "person_counter.cpp" "bmp28
                            "sensor_manager.cpp"
                            "sensor_task.cpp"
                            "app_sntp.c"
-                    REQUIRES esp_driver_gpio esp_driver_rmt esp_driver_gptimer led_strip esp_driver_i2c
-                    PRIV_REQUIRES esp_wifi nvs_flash esp_netif esp_timer bt mqtt esp_pm json esp_adc
+                           "ota_update.c"
+                           "http_server.cpp"
+                    REQUIRES esp_driver_gpio esp_driver_rmt esp_driver_gptimer led_strip esp_driver_i2c esp_http_server esp_https_ota
+                    PRIV_REQUIRES esp_wifi nvs_flash esp_netif esp_timer bt mqtt esp_pm json esp_adc app_update
                     INCLUDE_DIRS ".")

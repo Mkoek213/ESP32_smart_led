@@ -15,7 +15,7 @@ import static java.lang.Long.parseLong;
 @Component
 public class MqttTopicParser {
 
-    private static final Pattern TOPIC_PATTERN = Pattern.compile("^/?customer/(\\d+)/location/(\\d+)/device/(\\d+)/(telemetry|status|cmd)$");
+    private static final Pattern TOPIC_PATTERN = Pattern.compile("^smart-led/device/([^/]+)/(telemetry|status|cmd)$");
 
     public ParsedTopic parse(String topic) {
         var matcher = TOPIC_PATTERN.matcher(topic);
@@ -23,7 +23,7 @@ public class MqttTopicParser {
             throw new IllegalArgumentException("Invalid topic format: " + topic);
         }
 
-        String suffix = matcher.group(4);
+        String suffix = matcher.group(2);
         MqttTopicType type = switch (suffix) {
             case "telemetry" -> TELEMETRY;
             case "status" -> STATUS;
@@ -32,20 +32,15 @@ public class MqttTopicParser {
         };
 
         return new ParsedTopic(
-                parseLong(matcher.group(1)),
-                parseLong(matcher.group(2)),
-                parseLong(matcher.group(3)),
-                type
-        );
+                matcher.group(1),
+                type);
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ParsedTopic {
-        private Long userId;
-        private Long locationId;
-        private Long deviceId;
+        private String macAddress;
         private MqttTopicType type;
     }
 }
