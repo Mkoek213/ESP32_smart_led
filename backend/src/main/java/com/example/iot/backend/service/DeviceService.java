@@ -66,6 +66,7 @@ public class DeviceService {
             telemetryRepository.deleteAll(telemetryData);
 
             deviceRepository.delete(device);
+            deviceRepository.flush();
             log.info("Device deleted successfully");
         } catch (Exception e) {
             log.error("Error deleting device", e);

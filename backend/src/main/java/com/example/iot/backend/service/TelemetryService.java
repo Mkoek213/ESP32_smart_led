@@ -70,9 +70,11 @@ public class TelemetryService {
                     return resourceNotFound(Device.class);
                 });
 
+        log.info("Resolved Device ID: {} for MAC: {}", device.getId(), macAddress);
+
         var telemetry = Telemetry.builder()
                 .device(device)
-                .device(device)
+
                 .timestamp(isValidTimestamp(dto.timestamp()) ? dto.timestamp() : Instant.now().toEpochMilli())
                 .temperature(dto.temperature())
                 .humidity(dto.humidity())

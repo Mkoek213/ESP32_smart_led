@@ -375,7 +375,32 @@ static void distance_sensor_task(void *arg) {
     // Person count telemetry is now handled by sensor_task every 30 seconds
     // No duplicate telemetry needed here
 
-    vTaskDelay(pdMS_TO_TICKS(50));  // Read every 50ms
+    // Check for idle timeout (5 seconds) to enter power saving mode
+    int64_t time_since_motion_ms = esp_timer_get_time() / 1000 - last_motion_time;
+    
+    // Default loop delay (Active mode)
+    int loop_delay_ms = 50; 
+    
+    // Dynamic Polling Logic (State Machine)
+    static bool in_idle_mode = false;
+
+    if (!leds_on && time_since_motion_ms > 5000) {
+        // Idle Mode (Condition met)
+        if (!in_idle_mode) {
+            ESP_LOGI(TAG, "No activity for 5s. Entering low-power idle mode (Polling: 500ms)");
+            in_idle_mode = true;
+        }
+        loop_delay_ms = 500; 
+    } else {
+        // Active Mode (Condition met)
+        if (in_idle_mode) {
+            ESP_LOGI(TAG, "Activity detected. Waking up to active mode (Polling: 50ms)");
+            in_idle_mode = false;
+        }
+        loop_delay_ms = 50;
+    }
+
+    vTaskDelay(pdMS_TO_TICKS(loop_delay_ms));  // Dynamic delay
   }
 }
 
@@ -472,6 +497,18 @@ extern "C" void app_main(void) {
     ESP_LOGE(TAG, "Failed to create event group!");
     return;
   }
+
+  // Initialize Power Management for Energy Saving
+  // This allows Automatic Light Sleep when CPU is idle (during our 500ms delays)
+  #if CONFIG_PM_ENABLE
+  esp_pm_config_t pm_config = {
+      .max_freq_mhz = 240,
+      .min_freq_mhz = 80,
+      .light_sleep_enable = true
+  };
+  ESP_ERROR_CHECK(esp_pm_configure(&pm_config));
+  ESP_LOGI(TAG, "Power Management enabled (Auto Light Sleep)");
+  #endif
 
   // Inicjalizacja NVS
   if (!wifi_config_nvs_init()) {

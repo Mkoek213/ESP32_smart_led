@@ -56,9 +56,15 @@ public class MqttIngestionService {
             log.info("Received {} telemetry items for device macAddress: {}", telemetryDtos.size(),
                     parsedTopic.getMacAddress());
 
-            telemetryDtos.forEach(telemetryDto -> telemetryService.saveTelemetry(
-                    telemetryDto,
-                    parsedTopic.getMacAddress()));
+            log.info("Processing telemetry for MAC: {}", parsedTopic.getMacAddress());
+
+            telemetryDtos.forEach(telemetryDto -> {
+                try {
+                    telemetryService.saveTelemetry(telemetryDto, parsedTopic.getMacAddress());
+                } catch (Exception e) {
+                    log.error("Error saving telemetry for MAC {}: {}", parsedTopic.getMacAddress(), e.getMessage());
+                }
+            });
         } catch (JsonProcessingException e) {
             log.error("Failed to parse telemetry payload: {}", payload, e);
         }
