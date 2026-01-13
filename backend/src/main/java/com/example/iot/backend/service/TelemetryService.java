@@ -72,7 +72,8 @@ public class TelemetryService {
 
         var telemetry = Telemetry.builder()
                 .device(device)
-                .timestamp(dto.timestamp())
+                .device(device)
+                .timestamp(isValidTimestamp(dto.timestamp()) ? dto.timestamp() : Instant.now().toEpochMilli())
                 .temperature(dto.temperature())
                 .humidity(dto.humidity())
                 .pressure(dto.pressure())
@@ -81,6 +82,11 @@ public class TelemetryService {
 
         var saved = telemetryRepository.saveAndFlush(telemetry);
         log.info("Telemetry saved. Database ID: {}", saved.getId());
+    }
+
+    private boolean isValidTimestamp(Long timestamp) {
+        // Check if timestamp is after Jan 1, 2020
+        return timestamp != null && timestamp > 1577836800000L;
     }
 
     private long[] resolveTimeRange(Long start, Long end) {

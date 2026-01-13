@@ -21,8 +21,8 @@ public class MqttConfiguration {
 
     private static final String CLIENT_ID = "iot-backend";
     private static final String[] INBOUND_TOPICS = {
-            "customer/+/location/+/device/+/telemetry",
-            "customer/+/location/+/device/+/status"
+            "smart-led/device/+/telemetry",
+            "smart-led/device/+/status"
     };
     private static final int COMPLETION_TIMEOUT = 5000;
     private static final int QOS = 1;
@@ -32,7 +32,7 @@ public class MqttConfiguration {
     @Bean
     public MqttConnectOptions mqttConnectOptions() {
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setServerURIs(new String[]{mqttProperties.getBrokerUrl()});
+        options.setServerURIs(new String[] { mqttProperties.getBrokerUrl() });
         options.setUserName(mqttProperties.getCredentials().getUsername());
         options.setPassword(mqttProperties.getCredentials().getPassword().toCharArray());
         options.setCleanSession(false);

@@ -303,8 +303,8 @@ static void sensor_reading_task(void* arg) {
     // Init semaphore for BLE
     s_ble_sem = xSemaphoreCreateBinary();
 
-    // Wait for time sync and BLE stack
-    xEventGroupWaitBits(s_app_event_group, TIME_SYNCED_BIT | BLE_STACK_READY_BIT, pdFALSE, pdTRUE, portMAX_DELAY);
+    // Wait for BLE stack (Time sync is optional, we will check it in the loop)
+    xEventGroupWaitBits(s_app_event_group, BLE_STACK_READY_BIT, pdFALSE, pdTRUE, portMAX_DELAY);
     ESP_LOGI(TAG, "Sync complete, starting loop");
 
     while (true) {

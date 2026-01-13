@@ -234,13 +234,12 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
 
 static void mqtt_publishing_task(void *pvParameters) {
   while (1) {
-    // Check connection
+    // Check connection (Time sync is optional)
     EventBits_t bits = xEventGroupWaitBits(
-        s_app_event_group, WIFI_CONNECTED_BIT | TIME_SYNCED_BIT, pdFALSE,
+        s_app_event_group, WIFI_CONNECTED_BIT, pdFALSE,
         pdTRUE, pdMS_TO_TICKS(1000));
 
-    if ((bits & (WIFI_CONNECTED_BIT | TIME_SYNCED_BIT)) ==
-        (WIFI_CONNECTED_BIT | TIME_SYNCED_BIT)) {
+    if (bits & WIFI_CONNECTED_BIT) {
       // Connected, drain the queue
       while (!SensorManager::getInstance().empty()) {
         std::vector<Telemetry> batch =
