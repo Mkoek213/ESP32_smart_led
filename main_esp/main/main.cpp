@@ -622,7 +622,7 @@ extern "C" void app_main(void) {
   LatestSensorData::init();
   
   // Start HC-SR04 distance sensor reading task
-  xTaskCreate(distance_sensor_task, "distance_sensor", 4096, &hc_sr04, 3, NULL);
+  xTaskCreatePinnedToCore(distance_sensor_task, "distance_sensor", 4096, &hc_sr04, 3, NULL, 1);
   
   // Start BLE sensor reading task
   sensor_reading_task_start(g_bmp280);

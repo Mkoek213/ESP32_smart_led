@@ -100,14 +100,14 @@ void HCSR04::deinit() {
     }
 }
 
-void HCSR04::send_trigger_pulse() {
+void IRAM_ATTR HCSR04::send_trigger_pulse() {
     // HC-SR04 requires a 10 microsecond pulse on TRIG pin
     gpio_set_level(trig_pin, 1);
     esp_rom_delay_us(10);  // 10 microsecond pulse
     gpio_set_level(trig_pin, 0);
 }
 
-uint32_t HCSR04::wait_for_echo() {
+uint32_t IRAM_ATTR HCSR04::wait_for_echo() {
     // Wait for rising edge (timeout in milliseconds)
     int64_t timeout_start = esp_timer_get_time() / 1000;  // Convert to ms
     
@@ -157,7 +157,7 @@ float HCSR04::echo_time_to_distance_cm(uint32_t echo_time_us) {
     return distance;
 }
 
-float HCSR04::measure_distance_cm() {
+float IRAM_ATTR HCSR04::measure_distance_cm() {
     // Send trigger pulse
     send_trigger_pulse();
     

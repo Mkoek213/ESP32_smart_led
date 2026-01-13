@@ -41,7 +41,7 @@ void LEDConfigManager::initDefaultConfig() {
   config_.auto_brightness = true;
   
   // Default: Use all 6 LEDs
-  config_.num_leds_active = 6;
+  config_.num_leds_active = 5;
   
   // Default timeout settings
   config_.no_motion_timeout_ms = 15000;   // 15 seconds

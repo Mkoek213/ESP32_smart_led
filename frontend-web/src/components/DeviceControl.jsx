@@ -11,7 +11,11 @@ export default function DeviceControl() {
     // Configuration State
     const [config, setConfig] = useState({
         colors: ["FF0000", "00FF00", "0000FF"],
-        humidityThresholds: [30.0, 50.0, 70.0, 90.0]
+        humidityThresholds: [30.0, 50.0, 70.0, 90.0],
+        numLeds: 5,
+        autobrightness: true,
+        brightnessPct: 80,
+        distanceThresholdCm: 50.0
     });
 
     useEffect(() => {
@@ -41,7 +45,11 @@ export default function DeviceControl() {
             if (!device) return;
             await api.devices.control(id, 'SET_CONFIG', {
                 colors: config.colors,
-                humidityThresholds: config.humidityThresholds
+                humidityThresholds: config.humidityThresholds,
+                numLeds: config.numLeds,
+                autobrightness: config.autobrightness,
+                brightnessPct: config.brightnessPct,
+                distanceThresholdCm: config.distanceThresholdCm
             });
             alert('Configuration sent!');
         } catch (e) { alert('Failed to send config'); }
@@ -131,6 +139,57 @@ export default function DeviceControl() {
                             />
                         ))}
                     </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="text-sm font-bold block mb-2">Number of LEDs (1-5)</label>
+                        <input
+                            type="number"
+                            min="1"
+                            max="5"
+                            className="border p-2 rounded w-full"
+                            value={config.numLeds}
+                            onChange={(e) => setConfig({ ...config, numLeds: parseInt(e.target.value) })}
+                        />
+                    </div>
+                    <div>
+                        <label className="text-sm font-bold block mb-2">Detection Distance (cm)</label>
+                        <input
+                            type="number"
+                            min="10"
+                            max="400"
+                            className="border p-2 rounded w-full"
+                            value={config.distanceThresholdCm}
+                            onChange={(e) => setConfig({ ...config, distanceThresholdCm: parseFloat(e.target.value) })}
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                        <input
+                            type="checkbox"
+                            checked={config.autobrightness}
+                            onChange={(e) => setConfig({ ...config, autobrightness: e.target.checked })}
+                            className="h-4 w-4"
+                        />
+                        <label className="text-sm font-bold">Auto Brightness (Photoresistor)</label>
+                    </div>
+
+                    {!config.autobrightness && (
+                        <div>
+                            <label className="text-sm font-bold block mb-2">Manual Brightness ({config.brightnessPct}%)</label>
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                className="w-full"
+                                value={config.brightnessPct}
+                                onChange={(e) => setConfig({ ...config, brightnessPct: parseInt(e.target.value) })}
+                            />
+                        </div>
+                    )}
                 </div>
 
                 <button onClick={sendConfig} className="w-full bg-blue-600 text-white p-3 rounded font-bold">

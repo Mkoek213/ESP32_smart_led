@@ -199,6 +199,38 @@ esp_err_t ota_update_from_url(const char *url) {
   return ESP_OK;
 }
 
+static bool is_version_newer(const char *current, const char *target) {
+  if (current == NULL || target == NULL)
+    return false;
+
+  int v1_major = 0, v1_minor = 0, v1_patch = 0;
+  int v2_major = 0, v2_minor = 0, v2_patch = 0;
+
+  // Parse current version (supports X, X.Y, X.Y.Z)
+  sscanf(current, "%d.%d.%d", &v1_major, &v1_minor, &v1_patch);
+
+  // Parse target version
+  sscanf(target, "%d.%d.%d", &v2_major, &v2_minor, &v2_patch);
+
+  ESP_LOGD(TAG, "Comparing versions: Current(%d.%d.%d) vs Target(%d.%d.%d)",
+           v1_major, v1_minor, v1_patch, v2_major, v2_minor, v2_patch);
+
+  if (v2_major > v1_major)
+    return true;
+  if (v2_major < v1_major)
+    return false;
+
+  if (v2_minor > v1_minor)
+    return true;
+  if (v2_minor < v1_minor)
+    return false;
+
+  if (v2_patch > v1_patch)
+    return true;
+
+  return false;
+}
+
 bool ota_check_and_update(const char *backend_url, const char *device_mac) {
   ESP_LOGI(TAG, "Checking for firmware updates...");
 
@@ -298,7 +330,16 @@ bool ota_check_and_update(const char *backend_url, const char *device_mac) {
   ESP_LOGI(TAG, "New firmware available!");
   ESP_LOGI(TAG, "  Current version: %s", FIRMWARE_VERSION);
   ESP_LOGI(TAG, "  New version: %s", new_version);
+  ESP_LOGI(TAG, "  New version: %s", new_version);
   ESP_LOGI(TAG, "  Download URL: %s", download_url);
+
+  // Check if the new version is actually newer
+  if (!is_version_newer(FIRMWARE_VERSION, new_version)) {
+    ESP_LOGW(TAG, "Ignoring version %s (Current: %s). Update skipped.",
+             new_version, FIRMWARE_VERSION);
+    cJSON_Delete(root);
+    return false;
+  }
 
   // Perform OTA update
   esp_err_t ret = ota_update_from_url(download_url);

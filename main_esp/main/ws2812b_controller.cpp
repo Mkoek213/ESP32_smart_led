@@ -23,6 +23,7 @@ bool WS2812BController::init() {
     led_strip_rmt_config_t rmt_config = {
         .clk_src = RMT_CLK_SRC_DEFAULT,
         .resolution_hz = 10 * 1000 * 1000,
+        .mem_block_symbols = 128,
     };
 
     esp_err_t err = led_strip_new_rmt_device(&strip_config, &rmt_config, &led_strip_);
@@ -67,7 +68,7 @@ void WS2812BController::refresh() {
 void WS2812BController::power_up_animation(uint32_t duration_ms) {
     if (animation_task_ == nullptr) {
         stop_animation_ = false;
-        xTaskCreate(animation_task_entry, "ws2812b_anim", 2048, this, 5, &animation_task_);
+        xTaskCreatePinnedToCore(animation_task_entry, "ws2812b_anim", 2048, this, 5, &animation_task_, 1);
     }
 }
 
@@ -81,7 +82,7 @@ void WS2812BController::stop_animation() {
 void WS2812BController::restart_animation() {
     if (animation_task_ == nullptr) {
         stop_animation_ = false;
-        xTaskCreate(animation_task_entry, "ws2812b_anim", 2048, this, 5, &animation_task_);
+        xTaskCreatePinnedToCore(animation_task_entry, "ws2812b_anim", 2048, this, 5, &animation_task_, 1);
     }
 }
 

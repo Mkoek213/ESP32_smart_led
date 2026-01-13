@@ -3,6 +3,7 @@
 
 #include "driver/gpio.h"
 #include "driver/gptimer.h"
+#include "esp_attr.h"
 
 /**
  * @brief HC-SR04 Ultrasonic Distance Sensor Controller
@@ -34,7 +35,7 @@ public:
      * @brief Measure distance in centimeters
      * @return Distance in cm, or -1 if measurement failed
      */
-    float measure_distance_cm();
+    float measure_distance_cm() IRAM_ATTR;
     
     /**
      * @brief Measure distance in millimeters
@@ -70,13 +71,13 @@ private:
     /**
      * @brief Send trigger pulse to sensor
      */
-    void send_trigger_pulse();
+    void send_trigger_pulse() IRAM_ATTR;
     
     /**
      * @brief Wait for echo pulse with timeout (polling-based)
      * @return Echo time in microseconds, or 0 if timeout
      */
-    uint32_t wait_for_echo();
+    uint32_t wait_for_echo() IRAM_ATTR;
     
     /**
      * @brief Convert echo time to distance in cm

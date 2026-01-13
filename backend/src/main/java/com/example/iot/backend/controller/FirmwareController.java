@@ -42,7 +42,7 @@ public class FirmwareController {
     @GetMapping("/check")
     public ResponseEntity<?> checkForUpdate(@RequestParam("version") String currentVersion) {
         FirmwareUpdate latest = firmwareService.getLatestFirmware();
-        if (latest != null && !latest.getVersion().equals(currentVersion)) {
+        if (latest != null && com.example.iot.backend.util.VersionUtils.isNewer(currentVersion, latest.getVersion())) {
             log.info("New firmware available: {} (Current: {})", latest.getVersion(), currentVersion);
             String url = org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/firmware/download/{version}")
@@ -50,7 +50,7 @@ public class FirmwareController {
                     .toUriString();
             return ResponseEntity.ok().body(new FirmwareUpdateResponse(latest.getVersion(), url));
         }
-        return ResponseEntity.status(304).build(); // Not Modified
+        return ResponseEntity.status(204).build(); // No Content
     }
 
     @GetMapping("/download/{version}")

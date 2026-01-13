@@ -12,7 +12,7 @@
 
 // Konfiguracja WS2812B (NeoPixel)
 #define WS2812B_GPIO GPIO_NUM_4 // D4 pin
-#define WS2812B_NUM_LEDS 24
+#define WS2812B_NUM_LEDS 5
 
 // Konfiguracja HC-SR04 Ultrasonic Distance Sensor
 #define HC_SR04_TRIG_GPIO GPIO_NUM_5  // D5 pin (Trigger)
