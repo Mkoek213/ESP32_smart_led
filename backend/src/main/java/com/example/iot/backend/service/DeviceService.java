@@ -60,10 +60,9 @@ public class DeviceService {
         try {
             var device = getDeviceOrThrow(userId, deviceId);
 
-            // Explicitly fetch and delete telemetry to ensure cascading works
-            var telemetryData = telemetryRepository.findAllByDeviceIdAndTimestampBetween(deviceId, 0L, Long.MAX_VALUE);
-            log.info("Found {} telemetry records to delete", telemetryData.size());
-            telemetryRepository.deleteAll(telemetryData);
+            // Delete telemetry directly
+            log.info("Deleting telemetry records for device {}", deviceId);
+            telemetryRepository.deleteAllByDeviceId(deviceId);
 
             deviceRepository.delete(device);
             deviceRepository.flush();
@@ -108,9 +107,12 @@ public class DeviceService {
         var location = locationRepository.findByIdAndUserId(request.locationId(), userId)
                 .orElseThrow(() -> resourceNotFound(Location.class));
 
-        var device = deviceRepository.findByMacAddress(request.macAddress())
+        // Sanitize MAC address to ensure consistency
+        String macAddress = request.macAddress().trim().toUpperCase();
+
+        var device = deviceRepository.findByMacAddressIgnoreCase(macAddress)
                 .orElseGet(() -> Device.builder()
-                        .macAddress(request.macAddress())
+                        .macAddress(macAddress) // Use sanitized MAC
                         .proofOfPossession(request.proofOfPossession())
                         .status(UNCLAIMED)
                         .hardwareId(java.util.UUID.randomUUID().toString()) // Generate a random hardware ID for new

@@ -16,5 +16,7 @@ public interface TelemetryRepository extends JpaRepository<Telemetry, Long> {
 
     java.util.Optional<Telemetry> findFirstByDeviceIdOrderByTimestampDesc(Long deviceId);
 
-    void deleteAllByDeviceId(Long deviceId);
+    @org.springframework.data.jpa.repository.Modifying(clearAutomatically = true, flushAutomatically = true)
+    @org.springframework.data.jpa.repository.Query("DELETE FROM Telemetry t WHERE t.device.id = :deviceId")
+    void deleteAllByDeviceId(@org.springframework.data.repository.query.Param("deviceId") Long deviceId);
 }

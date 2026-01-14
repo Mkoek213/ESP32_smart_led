@@ -64,9 +64,9 @@ public class TelemetryService {
     @Transactional
     public void saveTelemetry(TelemetryDto dto, String macAddress) {
         log.info("Saving telemetry for MAC: '{}'", macAddress);
-        var device = deviceRepository.findByMacAddress(macAddress)
+        var device = deviceRepository.findByMacAddressIgnoreCase(macAddress)
                 .orElseThrow(() -> {
-                    log.error("Device not found for MAC: '{}'", macAddress);
+                    log.error("Device not found for MAC: '{}' (Case Insensitive Lookup)", macAddress);
                     return resourceNotFound(Device.class);
                 });
 

@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .cors(withDefaults()) // Enable CORS
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/login", "/register", "/firmware/**").permitAll()
+                        .requestMatchers("/login", "/register", "/firmware/**", "/error").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)

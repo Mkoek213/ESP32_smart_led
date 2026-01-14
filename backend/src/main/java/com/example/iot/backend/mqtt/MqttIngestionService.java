@@ -32,7 +32,7 @@ public class MqttIngestionService {
 
     @ServiceActivator(inputChannel = "mqttInboundChannel")
     public void handleMessage(@Payload String payload, @Header(RECEIVED_TOPIC) String topic) {
-        log.debug("Received message on topic {}: {}", topic, payload);
+        log.info("MQTT INGEST: Received message on topic {}: {}", topic, payload);
 
         try {
             ParsedTopic parsedTopic = mqttTopicParser.parse(topic);
