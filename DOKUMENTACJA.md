@@ -94,7 +94,7 @@ Urządzenie montowane w pomieszczeniach magazynowych, gdzie:
 **Parametry:**
 - Zakres ciśnienia: 300-1100 hPa
 - Dokładność: ±1 hPa
-- Odczyt: Co 30 sekund (w taksku `sensor_reading_task`)
+- Odczyt: Co 30 sekund (w tasku `sensor_reading_task`)
 
 ---
 
