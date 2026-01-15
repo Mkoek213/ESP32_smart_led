@@ -457,6 +457,24 @@ Urządzenie montowane w pomieszczeniach magazynowych, gdzie:
 #define FIRMWARE_VERSION "29.0"
 ```
 
+### 4.5 ESP32 Flash Encryption
+W systemie wdrożono sprzętowe szyfrowanie pamięci Flash Encryption (AES-256). Cały firmware (Bootloader, Tablica partycji oraz Aplikacja) został zaszyfrowany unikalnym kluczem prywatnym zapisanym w bezpiecznikach eFuse procesora.
+
+#### 4.5.1 Stan zabezpieczeń urządzenia:
+1. **Klucz prywatny**: Zaszyty na stałe w `BLOCK1` eFuse.
+2. **Ochorna Odczytu (RD_DIS)**: Aktywna, klucz jest niewidoczny dla oprogramowania, dostęp ma wyłącznie sprzętowy silnik AES.
+3. **Integralność**: Każda próba wgrania niezaszyfrowanego kodu lub kodu zaszyfrowanego innym kluczem skutkuje blokadą startu procesora.
+
+#### 4.5.2 Wynik próby nieautoryzowanego odczytu
+Poniżej znajduje się zrzut (dump) pamięci flash z adresu 0x20000. Ze względu na aktywną enkrypcję, fizyczny odczyt kości pamięci zwraca jedynie nieczytelny szum:
+```plain
+00000000  73 a9 00 e5 86 b6 37 5b  cf 31 24 2d 9d 7e 56 ba  |s.....7[.1$-.~V.|
+00000010  52 cc e5 a3 30 ce 74 15  13 b1 3f 6f 1f b3 f0 e2  |R...0.t...?o....|
+00000020  33 ca f4 55 df 9f fc 83  2c c0 af ae 06 8c 40 5d  |3..U....,.....@]|
+00000030  a5 84 66 8a 21 18 2b 51  1a 3e 5d e9 18 4f 66 d9  |..f.!.+Q.>]..Of.|
+00000040  9a 1e 7b cd 30 69 0c a0  72 39 48 df 4f 26 25 44  |..{.0i..r9H.O&%D|
+00000050  fd d1 dc 5c 52 b0 21 dc  76 54 12 6d 6d cb c3 7f  |...\R.!.vT.mm...|
+```
 
 ---
 
