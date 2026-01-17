@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Switch, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 
-const DEFAULT_HOST = 'http://192.168.18.30:8080';
+const DEFAULT_HOST = 'http://172.20.10.7:8080';
 
 export default function DashboardScreen({ onNavigateProvision }) {
   const [host, setHost] = useState(DEFAULT_HOST);

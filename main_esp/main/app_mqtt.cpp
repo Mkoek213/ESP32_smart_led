@@ -17,12 +17,12 @@
 #include "freertos/task.h"
 #include "mqtt_client.h"
 
-#define BROKER_URI "mqtt://192.168.0.186:1883"
+#define BROKER_URI "mqtt://172.20.10.7:1883"
 #define MQTT_USERNAME ""
 #define MQTT_PASSWORD ""
 
 #define SEND_INTERVAL_MS                                                       \
-  (30 * 1000) // Check and send every 30 seconds (matches telemetry generation)
+  (5 * 1000) // Check and send every 5 seconds (matches telemetry generation)
 #define BATCH_SIZE 50
 
 static const char *TAG = "app_mqtt";
