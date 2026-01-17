@@ -30,9 +30,11 @@
         "android.permission.BLUETOOTH_ADMIN",
         "android.permission.BLUETOOTH_CONNECT",
         "android.permission.BLUETOOTH_SCAN",
-        "android.permission.ACCESS_FINE_LOCATION"
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION"
       ],
       "package": "com.mkoek213.smartled",
+      "usesCleartextTraffic": true,
       "edgeToEdgeEnabled": true
     },
     "web": {
@@ -54,6 +56,11 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4e84a924-ce2a-4e28-a7fe-e1c004dc0c65"
+      }
+    }
   }
 }

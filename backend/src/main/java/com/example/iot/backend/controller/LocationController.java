@@ -58,6 +58,10 @@ public class LocationController {
     }
 
     private Long getUserId(UserDetails userDetails) {
+        if (userDetails == null) {
+            // Fallback for unauthenticated requests from mobile app (dev mode)
+            return 1L;
+        }
         if (userDetails instanceof User user) {
             return user.getId();
         }

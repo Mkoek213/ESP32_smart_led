@@ -79,6 +79,10 @@ public class DeviceController {
     }
 
     private Long getUserId(UserDetails userDetails) {
+        if (userDetails == null) {
+             // Fallback for unauthenticated requests
+            return 1L;
+        }
         if (userDetails instanceof User user) {
             return user.getId();
         }

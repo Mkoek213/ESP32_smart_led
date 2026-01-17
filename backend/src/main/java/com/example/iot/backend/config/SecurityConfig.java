@@ -32,6 +32,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/login", "/register", "/firmware/**", "/error").permitAll()
+                        // Allow basic device/location ops for demo purposes without auth
+                        .requestMatchers("/locations/**", "/devices/**", "/telemetry/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)

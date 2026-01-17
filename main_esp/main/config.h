@@ -36,8 +36,8 @@
 #define MQTT_TOPIC_SUFFIX_ATTRIBUTES "/attributes"
 
 // Sensor Configuration
-#define USE_REAL_HCSR04 0                // Set to 0 to simulate distance sensor
-#define USE_REAL_PHOTORESISTOR 0         // Set to 0 to simulate photoresistor
+#define USE_REAL_HCSR04 1                // Set to 0 to simulate distance sensor
+#define USE_REAL_PHOTORESISTOR 1         // Set to 0 to simulate photoresistor
 #define TELEMETRY_SEND_INTERVAL_MS 30000 // Send telemetry every 30 seconds
 
 // LED Auto-off Configuration

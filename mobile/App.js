@@ -6,13 +6,17 @@ import * as Location from 'expo-location';
 
 import DashboardScreen from './components/DashboardScreen';
 import ProvisioningScreen from './components/ProvisioningScreen';
+import SettingsScreen from './components/SettingsScreen';
 
 // Singleton BleManager
 const manager = new BleManager();
+const DEFAULT_HOST = 'http://172.20.10.7:8080';
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState('dashboard'); // 'dashboard' | 'provisioning'
+  const [currentScreen, setCurrentScreen] = useState('dashboard'); // 'dashboard' | 'provisioning' | 'settings'
   const [permissionGranted, setPermissionGranted] = useState(false);
+  const [host, setHost] = useState(DEFAULT_HOST);
+  const [settingsDeviceId, setSettingsDeviceId] = useState(null);
 
   useEffect(() => {
     requestPermissions();
@@ -51,13 +55,32 @@ export default function App() {
 
   const renderScreen = () => {
     if (currentScreen === 'dashboard') {
-        return <DashboardScreen onNavigateProvision={() => setCurrentScreen('provisioning')} />;
-    } else {
+        return (
+          <DashboardScreen 
+            host={host}
+            setHost={setHost}
+            onNavigateProvision={() => setCurrentScreen('provisioning')} 
+            onNavigateSettings={(deviceId) => {
+                setSettingsDeviceId(deviceId);
+                setCurrentScreen('settings');
+            }}
+          />
+        );
+    } else if (currentScreen === 'provisioning') {
         return (
             <ProvisioningScreen 
                 manager={manager} 
+                host={host}
                 onFinish={() => setCurrentScreen('dashboard')}
                 onCancel={() => setCurrentScreen('dashboard')}
+            />
+        );
+    } else if (currentScreen === 'settings') {
+        return (
+            <SettingsScreen
+                host={host}
+                deviceId={settingsDeviceId}
+                onBack={() => setCurrentScreen('dashboard')}
             />
         );
     }

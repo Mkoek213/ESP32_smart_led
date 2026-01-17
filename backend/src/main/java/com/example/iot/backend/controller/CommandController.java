@@ -36,6 +36,9 @@ public class CommandController {
     }
 
     private Long getUserId(UserDetails userDetails) {
+        if (userDetails == null) {
+            return 1L;
+        }
         if (userDetails instanceof User user) {
             return user.getId();
         }
