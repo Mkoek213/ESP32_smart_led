@@ -35,6 +35,14 @@ static std::string topic_status;
 static std::string topic_cmd;
 static std::string topic_config;
 
+// Embed certificates
+extern const uint8_t root_ca_pem_start[] asm("_binary_AmazonRootCA1_pem_start");
+extern const uint8_t root_ca_pem_end[] asm("_binary_AmazonRootCA1_pem_end");
+extern const uint8_t client_cert_pem_start[] asm("_binary_client_cert_pem_start");
+extern const uint8_t client_cert_pem_end[] asm("_binary_client_cert_pem_end");
+extern const uint8_t private_key_pem_start[] asm("_binary_private_pem_key_start");
+extern const uint8_t private_key_pem_end[] asm("_binary_private_pem_key_end");
+
 extern "C" {
 
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
@@ -315,8 +323,11 @@ void app_mqtt_init(void) {
 
   esp_mqtt_client_config_t mqtt_cfg = {};
   mqtt_cfg.broker.address.uri = BROKER_URI;
-  mqtt_cfg.credentials.username = MQTT_USERNAME;
-  mqtt_cfg.credentials.authentication.password = MQTT_PASSWORD;
+  
+  // AWS IoT Core Authentication (Certificate-based)
+  mqtt_cfg.broker.verification.certificate = (const char *)root_ca_pem_start;
+  mqtt_cfg.credentials.authentication.certificate = (const char *)client_cert_pem_start;
+  mqtt_cfg.credentials.authentication.key = (const char *)private_key_pem_start;
 
   // LWT Setup
   mqtt_cfg.session.last_will.topic = topic_status.c_str();
