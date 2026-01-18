@@ -240,6 +240,8 @@ Urządzenie montowane w pomieszczeniach magazynowych, gdzie:
 
 ## 4. Opis funkcjonalności i logiki działania
 
+**Platforma chmurowa:** System wykorzystuje **AWS IoT Core** jako broker MQTT w chmurze. Komunikacja MQTT między urządzeniami ESP32 a backendem odbywa się przez AWS IoT Core, zapewniając skalowalną i bezpieczną infrastrukturę komunikacyjną.
+
 ### 4.1 Logika LED
 
 #### 4.1.1 Określanie koloru na podstawie wilgotności
@@ -696,9 +698,10 @@ System nie parsuje advertising frames. Zamiast tego, łączy się jako klient GA
 
 #### 5.2.3 Konfiguracja MQTT
 
-**Broker:** Eclipse Mosquitto 2.0  
-**Port:** 1883 (TCP), 9001 (WebSockets)  
-**Protokół:** MQTT 3.1.1
+**Broker:** AWS IoT Core (produkcja) / Eclipse Mosquitto 2.0 (development)  
+**Port:** 8883 (TLS - AWS IoT Core), 1883 (TCP - Mosquitto)  
+**Protokół:** MQTT 3.1.1  
+**Bezpieczeństwo:** TLS/SSL z certyfikatami X.509 (AWS IoT Core), autoryzacja przez AWS IAM
 
 **Konfiguracja klienta ESP32:**
 - URI: Konfigurowalne (domyślnie: `mqtt://192.168.1.1:1883`)
@@ -908,19 +911,96 @@ System nie parsuje advertising frames. Zamiast tego, łączy się jako klient GA
 
 ### 5.5 Aplikacja Mobilna
 
-# TODO 
-
-**Docelowa funkcjonalność:**
-- Odwzorowanie funkcjonalności aplikacji webowej
-- Provisioning urządzeń przez BLE (z wykorzystaniem `react-native-ble-plx`)
-- Wyświetlanie dashboardu z urządzeniami
-- Sterowanie urządzeniami i konfiguracja LED
-- Przeglądanie historii telemetrii
-
 **Technologie:**
-- React Native 0.81.5
-- Expo SDK ~54.0.31
-- `react-native-ble-plx` - komunikacja BLE
+- **Framework:** React Native 0.81.5
+- **Platforma:** Expo SDK ~54.0.31
+- **Komunikacja BLE:** `react-native-ble-plx`
+- **Platformy:** Android, iOS
+
+#### 5.5.1 Funkcjonalności aplikacji
+
+##### Dashboard - zarządzanie urządzeniami
+
+**Wyświetlanie listy urządzeń:**
+- Wszystkie urządzenia przypisane do użytkownika
+- Filtrowanie według lokalizacji (pomieszczeń)
+- Status online/offline każdego urządzenia (zielona/szara kropka)
+- Odświeżanie listy przez pull-to-refresh
+
+**Tworzenie i zarządzanie lokalizacjami:**
+- Dodawanie nowych pomieszczeń (np. "Magazyn A", "Sala B")
+- Usuwanie lokalizacji (long-press na pili lokalizacji)
+- Filtrowanie urządzeń według wybranej lokalizacji
+
+**Szczegóły urządzenia:**
+- Wyświetlanie danych telemetrycznych w czasie rzeczywistym:
+  - Temperatura (°C)
+  - Wilgotność (%)
+  - Ciśnienie (hPa)
+  - Wykrycie ruchu (Detected/None)
+- Automatyczne odświeżanie danych co 2 sekundy
+- Nawigacja do ekranu konfiguracji urządzenia
+- Usuwanie urządzenia z potwierdzeniem
+
+##### Provisioning urządzeń
+
+**Konfiguracja WiFi przez BLE:**
+- **Skanowanie urządzeń BLE** - wyszukiwanie urządzeń w trybie provisioning
+- **Połączenie z urządzeniem** - wybór urządzenia z listy znalezionych
+- **Automatyczne odczytanie MAC Address** - urządzenie automatycznie odczytuje MAC z ESP32 przez BLE
+- **Wprowadzenie danych:**
+  - SSID sieci WiFi
+  - Hasło WiFi
+  - Nazwa urządzenia (opcjonalna)
+  - Wybór lokalizacji (z listy istniejących lub utworzenie nowej)
+- **Automatyczne claimowanie** - po odczycie MAC, urządzenie jest automatycznie rejestrowane w backendzie
+- **Wysłanie konfiguracji** - zapis danych WiFi przez charakterystyki GATT BLE
+- **Automatyczny restart** - po wysłaniu konfiguracji, ESP32 automatycznie restartuje się i łączy z WiFi
+
+**Proces:**
+1. Użytkownik wybiera "Add Device" z Dashboard
+2. Aplikacja skanuje urządzenia BLE (10 sekund)
+3. Użytkownik wybiera urządzenie z listy
+4. Aplikacja łączy się i odczytuje MAC Address
+5. Użytkownik wprowadza dane WiFi i wybiera lokalizację
+6. Aplikacja automatycznie rejestruje urządzenie w backendzie (claim)
+7. Aplikacja wysyła konfigurację WiFi przez BLE
+8. ESP32 restartuje się i łączy z siecią WiFi
+
+##### Konfiguracja urządzenia
+
+**Konfiguracja LED:**
+- **Kolory RGB** - wybór 3 kolorów dla różnych progów wilgotności (presety lub ręczne hex)
+- **Progi wilgotności** - 4 wartości progowe (domyślnie: 30%, 50%, 70%, 90%, konfigurowalne)
+- **Liczba aktywnych LED** - ustawienie liczby diod (1-5)
+
+**Konfiguracja jasności:**
+- **Auto-brightness** - włączenie/wyłączenie automatycznej regulacji jasności (na podstawie fotorezystora)
+- **Jasność ręczna** - suwak do ustawienia jasności (0-100%) gdy auto-brightness wyłączone
+
+**Konfiguracja czujników:**
+- **Próg wykrywania ruchu** - odległość w cm (10-400 cm)
+
+**Wysyłanie konfiguracji:**
+- Przycisk "Save Configuration" wysyła konfigurację przez REST API backendu
+- Backend przesyła komendę `SET_CONFIG` przez MQTT do ESP32
+- ESP32 aktualizuje konfigurację w NVS i stosuje nowe ustawienia
+
+#### 5.5.2 Połączenie z systemem IoT
+
+**Komunikacja z backendem:**
+- Aplikacja mobilna komunikuje się z backendem przez REST API
+- Endpointy identyczne jak w aplikacji webowej (zarządzanie urządzeniami, telemetria, lokalizacje)
+- Backend host konfigurowalny (domyślnie: `http://192.168.0.186:8080`)
+
+**Komunikacja z ESP32:**
+- **Provisioning:** Bezpośrednia komunikacja BLE (GATT) - skanowanie, połączenie, odczyt/zapis charakterystyk
+- **Konfiguracja:** Pośrednia przez backend - aplikacja → REST API → MQTT → ESP32
+- **Telemetria:** Pośrednia przez backend - ESP32 → MQTT → Backend → REST API → Aplikacja mobilna
+
+**Uprawnienia:**
+- **Android:** Wymagane uprawnienia Bluetooth i lokalizacji (dla skanowania BLE)
+- **iOS:** Wymagane uprawnienia Bluetooth (automatycznie żądane przy pierwszym użyciu)
 
 ---
 
@@ -939,6 +1019,6 @@ System Inteligentnego Oświetlenia LED z Monitorowaniem Wilgotności to kompleks
 
 **Architektura:**
 - **Warstwa urządzeń:** ESP32 z czujnikami i LED
-- **Warstwa komunikacyjna:** MQTT (Eclipse Mosquitto)
+- **Warstwa komunikacyjna:** MQTT (AWS IoT Core w chmurze)
 - **Warstwa serwerowa:** Spring Boot (Java) + PostgreSQL
-- **Warstwa kliencka:** Aplikacja webowa (React PWA) + Aplikacja mobilna (w rozwoju)
+- **Warstwa kliencka:** Aplikacja webowa (React PWA) + Aplikacja mobilna (React Native)
