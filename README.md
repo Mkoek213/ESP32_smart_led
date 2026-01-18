@@ -102,6 +102,25 @@ This will:
 
 To stop the services, run `docker compose down` or press `Ctrl+C`.
 
+### Running in Production (AWS IoT Core)
+
+To run the system with a secure connection to AWS IoT Core:
+
+1.  **Prepare Certificates**:
+    Place your AWS IoT Core certificates in the `backend/certs/` directory. They must be named exactly as follows:
+    -   `AmazonRootCA1.pem` - The Root CA certificate.
+    -   `certificate.pem.crt` - The device/client certificate.
+    -   `private.pem.key` - The private key.
+
+2.  **Run with Production Profile**:
+    Execute the following command, replacing the broker URL with your AWS endpoint:
+
+    ```bash
+    MQTT_BROKER_URL=ssl://your-endpoint.iot.region.amazonaws.com:8883 docker compose -f compose.yaml -f compose.prod.yaml up --build -d
+    ```
+
+    This will start the Backend and PostgreSQL, but **not** the local Mosquitto broker (as it connects to the cloud broker).
+
 ## Mobile Application (Frontend)
 
 The user interface is a Progressive Web App (PWA) built with **React** and **Vite**, designed to be installed on mobile devices for native-like control without App Store distribution.

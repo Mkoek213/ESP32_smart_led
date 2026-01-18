@@ -344,6 +344,7 @@ Urządzenie montowane w pomieszczeniach magazynowych, gdzie:
    - Aplikacja zapisuje dane do charakterystyk GATT:
      - `CHR_SSID`: SSID 
      - `CHR_PASS`: Hasło
+     - `CHR_BROKER_URL`: Adres brokera MQTT
      - `CHR_IDS`: csv z customerId, locationId, deviceId 
      - `CHR_CMD`: bajt 0x01 (SAVE) - uruchamia proces połączenia
 
