@@ -14,3 +14,9 @@ springdoc:
     enabled: true
   swagger-ui:
     enabled: true
+
+mqtt:
+  broker-url: tcp://mosquitto:1883
+  credentials:
+    username: ""
+    password: ""

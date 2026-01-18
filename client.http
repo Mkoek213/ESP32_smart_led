@@ -29,7 +29,7 @@ Content-Type: application/json
 ### add location
 POST http://localhost:8080/api/locations
 Content-Type: application/json
-Authorization: Bearer {{auth_token}}}
+Authorization: Bearer {{auth_token}}
 
 {
   "name": "New Location"
@@ -37,13 +37,13 @@ Authorization: Bearer {{auth_token}}}
 
 ### get all locations
 GET http://localhost:8080/api/locations
-Authorization: Bearer {{auth_token}}}
+Authorization: Bearer {{auth_token}}
 
 
 ### add device
 POST http://localhost:8080/api/devices
 Content-Type: application/json
-Authorization: Bearer {{auth_token}}}
+Authorization: Bearer {{auth_token}}
 
 {
   "locationId": 1,
@@ -52,4 +52,16 @@ Authorization: Bearer {{auth_token}}}
 
 ### get all devices
 GET http://localhost:8080/api/devices
-Authorization: Bearer {{auth_token}}}
+Authorization: Bearer {{auth_token}}
+
+### random command
+POST http://localhost:8080/api/commands/1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "type": "RANDOM_COMMAND",
+  "payload": {
+    "param1": "test value"
+  }
+}

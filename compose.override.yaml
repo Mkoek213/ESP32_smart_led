@@ -1,0 +1,27 @@
+services:
+  postgres:
+    ports:
+      - '5432:5432'
+
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: iot-mosquitto
+    ports:
+      - '1883:1883'
+      - '9001:9001'
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - iot-network
+
+  backend:
+    depends_on:
+      mosquitto:
+        condition: service_started
+    ports:
+      - '8080:8080'
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      MQTT_BROKER-URL: tcp://mosquitto:1883
+      MQTT_CREDENTIALS_USERNAME: ""
+      MQTT_CREDENTIALS_PASSWORD: ""

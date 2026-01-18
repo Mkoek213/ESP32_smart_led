@@ -17,9 +17,18 @@ public class MqttProperties {
 
     private Credentials credentials;
 
+    private Ssl ssl;
+
     @Data
     public static class Credentials {
         private String username;
         private String password;
+    }
+
+    @Data
+    public static class Ssl {
+        private String caCrtFile;
+        private String crtFile;
+        private String keyFile;
     }
 }

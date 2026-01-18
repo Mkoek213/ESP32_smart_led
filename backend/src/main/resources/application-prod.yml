@@ -1,0 +1,24 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
+logging:
+  level:
+    root: INFO
+    com.example.iot: INFO
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+mqtt:
+  broker-url: ${MQTT_BROKER_URL}
+  ssl:
+    ca-crt-file: ${MQTT_SSL_CA_CRT_FILE}
+    crt-file: ${MQTT_SSL_CRT_FILE}
+    key-file: ${MQTT_SSL_KEY_FILE}

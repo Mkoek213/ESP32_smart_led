@@ -6,28 +6,17 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: iot-db
-    ports:
-      - '5432:5432'
     volumes:
       - ./postgres/data:/var/lib/postgresql/data
     networks:
       - iot-network
+    ports:
+      - '5432:5432'
     healthcheck:
       test: [ 'CMD-SHELL', 'pg_isready -U postgres' ]
       interval: 5s
       timeout: 5s
       retries: 5
-
-  mosquitto:
-    image: eclipse-mosquitto:2.0
-    container_name: iot-mosquitto
-    ports:
-      - '1883:1883'
-      - '9001:9001'
-    volumes:
-      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
-    networks:
-      - iot-network
 
   backend:
     build: ./backend
@@ -35,22 +24,14 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      mosquitto:
-        condition: service_started
-    ports:
-      - '8080:8080'
+    networks:
+      - iot-network
     environment:
-      SPRING_PROFILES_ACTIVE: dev
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/iot-db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      MQTT_BROKER-URL: tcp://mosquitto:1883
-      MQTT_CREDENTIALS_USERNAME: ""
-      MQTT_CREDENTIALS_PASSWORD: ""
       JWT_SECRET-KEY: aiob+gN3NyYErzgX/3w0tw3ySC4wU+w6erPyoHuFS/4= # Example key
       JWT_EXPIRATION-MS: 86400000 # 24 hours
-    networks:
-      - iot-network
 
 networks:
   iot-network:

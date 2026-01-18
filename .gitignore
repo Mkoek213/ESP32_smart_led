@@ -47,8 +47,6 @@
 **/.cache/
 ble_com/components/
 venv/
-**/build/
-**/.cache/
 .vscode/
 *.code-workspace
 
@@ -88,5 +86,10 @@ yarn-error.log*
 # Expo
 .expo/
 web-build/
+
+# Certificates
+*.pem
+*.crt
+*.key
 sdkconfig
 *key.bin

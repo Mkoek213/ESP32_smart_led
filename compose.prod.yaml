@@ -1,0 +1,12 @@
+services:
+  backend:
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./backend/certs:/app/certs:ro
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      MQTT_BROKER_URL: ${MQTT_BROKER_URL}
+      MQTT_SSL_CA_CRT_FILE: /app/certs/AmazonRootCA1.pem
+      MQTT_SSL_CRT_FILE: /app/certs/certificate.pem.crt
+      MQTT_SSL_KEY_FILE: /app/certs/private.pem.key
