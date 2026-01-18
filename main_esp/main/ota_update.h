@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 // Current firmware version (update this with each release)
-#define FIRMWARE_VERSION "34.0"
+#define FIRMWARE_VERSION "36.0"
 
 // OTA Configuration
 #define OTA_CHECK_INTERVAL_MS (60000) // Check every 1 minute (dev)

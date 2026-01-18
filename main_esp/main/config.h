@@ -65,7 +65,7 @@
 #define BACKEND_URL                                                            \
   "http://192.168.0.186:8080" // Change this to your actual backend URL
 #define MQTT_BROKER_URL                                                        \
-  "mqtt://192.168.0.186:1883" // Default MQTT broker URL (Fallback)
+  "mqtts://a2v3fr962jnk0f-ats.iot.us-east-1.amazonaws.com:8883" // AWS MQTT Broker (mqtts schema)
 #define DEVICE_CONFIG_URL BACKEND_URL "/api/devices/mac/%s/config"
 
 #endif

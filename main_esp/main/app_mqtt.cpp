@@ -38,8 +38,8 @@ static std::string topic_config;
 // Embed certificates
 extern const uint8_t root_ca_pem_start[] asm("_binary_AmazonRootCA1_pem_start");
 extern const uint8_t root_ca_pem_end[] asm("_binary_AmazonRootCA1_pem_end");
-extern const uint8_t client_cert_pem_start[] asm("_binary_client_cert_pem_start");
-extern const uint8_t client_cert_pem_end[] asm("_binary_client_cert_pem_end");
+extern const uint8_t client_cert_pem_start[] asm("_binary_certificate_pem_crt_start");
+extern const uint8_t client_cert_pem_end[] asm("_binary_certificate_pem_crt_end");
 extern const uint8_t private_key_pem_start[] asm("_binary_private_pem_key_start");
 extern const uint8_t private_key_pem_end[] asm("_binary_private_pem_key_end");
 
@@ -302,7 +302,7 @@ void app_mqtt_init(void) {
   // Get device MAC address for topic construction
   uint8_t mac[6];
   esp_read_mac(mac, ESP_MAC_WIFI_STA);
-  char mac_str[18];
+  static char mac_str[18];
   snprintf(mac_str, sizeof(mac_str), "%02X:%02X:%02X:%02X:%02X:%02X", mac[0],
            mac[1], mac[2], mac[3], mac[4], mac[5]);
 
@@ -325,13 +325,14 @@ void app_mqtt_init(void) {
 
   // Load configuration from NVS
   WifiConfig wifi_cfg;
-  if (wifi_config_load(wifi_cfg) && strlen(wifi_cfg.brokerUrl) > 0) {
-      ESP_LOGI(TAG, "Using configured MQTT Broker: %s", wifi_cfg.brokerUrl);
-      mqtt_cfg.broker.address.uri = wifi_cfg.brokerUrl;
-  } else {
-      ESP_LOGW(TAG, "No configured broker found, using default: %s", MQTT_BROKER_URL);
+  // FORCE HARDCODED because NVS might have old URL
+  // if (wifi_config_load(wifi_cfg) && strlen(wifi_cfg.brokerUrl) > 0) {
+  //     ESP_LOGI(TAG, "Using configured MQTT Broker: %s", wifi_cfg.brokerUrl);
+  //     mqtt_cfg.broker.address.uri = wifi_cfg.brokerUrl;
+  // } else {
+      ESP_LOGW(TAG, "Using hardcoded AWS Broker: %s", MQTT_BROKER_URL);
       mqtt_cfg.broker.address.uri = MQTT_BROKER_URL;
-  }
+  // }
   
   // AWS IoT Core Authentication (Certificate-based)
   mqtt_cfg.broker.verification.certificate = (const char *)root_ca_pem_start;
@@ -342,7 +343,13 @@ void app_mqtt_init(void) {
   mqtt_cfg.session.last_will.topic = topic_status.c_str();
   mqtt_cfg.session.last_will.msg = "{\"state\":\"offline\"}";
   mqtt_cfg.session.last_will.qos = 1;
-  mqtt_cfg.session.last_will.retain = 1;
+  // Fix: Set Client ID (Static string)
+  mqtt_cfg.credentials.client_id = mac_str;
+
+  // Debug: Validate Certs
+  ESP_LOGI(TAG, "Root CA len: %d", strlen((const char *)root_ca_pem_start));
+  ESP_LOGI(TAG, "Client Cert len: %d", strlen((const char *)client_cert_pem_start));
+  ESP_LOGI(TAG, "Private Key len: %d", strlen((const char *)private_key_pem_start));
 
   mqtt_client = esp_mqtt_client_init(&mqtt_cfg);
   esp_mqtt_client_register_event(mqtt_client,
@@ -352,6 +359,11 @@ void app_mqtt_init(void) {
 
 void app_mqtt_start(void) {
   if (mqtt_client) {
+    // Wait for Time Sync before connecting (crucial for AWS TLS)
+    ESP_LOGI(TAG, "Waiting for Time Sync...");
+    xEventGroupWaitBits(s_app_event_group, TIME_SYNCED_BIT, pdFALSE, pdTRUE, pdMS_TO_TICKS(20000));
+    ESP_LOGI(TAG, "Time Synced (or timeout), starting MQTT...");
+
     esp_mqtt_client_start(mqtt_client);
   }
 }
