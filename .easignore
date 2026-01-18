@@ -1,0 +1,7 @@
+postgres/
+backend/
+main_esp/
+rd01_test/
+*.md
+.git/
+.vscode/

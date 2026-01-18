@@ -88,3 +88,5 @@ yarn-error.log*
 # Expo
 .expo/
 web-build/
+sdkconfig
+*key.bin

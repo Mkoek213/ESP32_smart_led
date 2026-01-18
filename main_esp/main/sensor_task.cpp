@@ -6,10 +6,9 @@
 #include "app_common.h"
 #include <ctime>
 #include <cstdlib>
-#include <cmath>
 
 static const char* TAG = "sensor_task";
-static const int SENSOR_READ_INTERVAL_MS = 5000; // Read every 5 seconds (sim)
+static const int SENSOR_READ_INTERVAL_MS = 30000; // Read every 30 seconds
 static const int MOTION_CHECK_INTERVAL_MS = 5000; // Check for motion every 5s
 
 #include "esp_log.h"
@@ -320,8 +319,8 @@ static void sensor_reading_task(void* arg) {
         ESP_LOGI(TAG, "Starting BLE scan for sensor...");
         start_scan();
 
-        // Wait for completion (timeout 5s for faster testing feedback)
-        if (xSemaphoreTake(s_ble_sem, pdMS_TO_TICKS(5000)) == pdTRUE) {
+        // Wait for completion (timeout 30s to handle slow BLE connections)
+        if (xSemaphoreTake(s_ble_sem, pdMS_TO_TICKS(30000)) == pdTRUE) {
             // Check if we got valid data
             if (g_ctx.current_data.valid) {
                  // Update the latest sensor data cache (always available for LED colors)
@@ -360,23 +359,10 @@ static void sensor_reading_task(void* arg) {
                                      g_ctx.current_data.humidity,
                                      pressure);
         } else {
-             // User has no sensors attached - generate SIMULATED data for verification
-             static float sim_tick = 0.0f;
-             sim_tick += 0.1f;
-             
-             float sim_temp = 24.0f + 2.0f * sin(sim_tick); // Range 22-26C
-             float sim_hum = 60.0f + 10.0f * cos(sim_tick * 0.5f); // Range 50-70%
-             
-             // Add a little noise
-             sim_temp += ((rand() % 100) / 500.0f); 
-             
-             // Jitter pressure if we don't have a real one (defaulted to 1013.25 previously)
-             if (g_bmp_handle == NULL) {
-                 pressure += ((rand() % 200) / 100.0f) - 1.0f; // +/- 1.0 hPa
-             }
-
-             ESP_LOGW(TAG, "Using SIMULATED data: T=%.2f H=%.2f P=%.2f", sim_temp, sim_hum, pressure);
-             LatestSensorData::update(sim_temp, sim_hum, pressure);
+             // If BLE failed, we update pressure but keep old temp/humidity
+             LatestSensorData::update(LatestSensorData::get_temperature(), 
+                                     LatestSensorData::get_humidity(),
+                                     pressure);
         }
 
         // Send telemetry if we have ANY valid data (BLE or Pressure)

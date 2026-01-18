@@ -36,8 +36,7 @@
 #define MQTT_TOPIC_SUFFIX_ATTRIBUTES "/attributes"
 
 // Sensor Configuration
-#define USE_REAL_HCSR04 1                // Set to 0 to simulate distance sensor
-#define USE_REAL_PHOTORESISTOR 1         // Set to 0 to simulate photoresistor
+#define USE_REAL_PHOTORESISTOR 1         // Use real photoresistor on GPIO34
 #define TELEMETRY_SEND_INTERVAL_MS 30000 // Send telemetry every 30 seconds
 
 // LED Auto-off Configuration
@@ -64,9 +63,9 @@
 
 // Backend Configuration (UPDATE THIS WITH YOUR BACKEND URL)
 #define BACKEND_URL                                                            \
-  "http://172.20.10.7:8080" // Change this to your actual backend URL
+  "http://192.168.0.186:8080" // Change this to your actual backend URL
 #define MQTT_BROKER_URL                                                        \
-  "mqtt://172.20.10.7" // Change this to your MQTT broker URL
+  "mqtt://192.168.0.186" // Change this to your MQTT broker URL
 #define DEVICE_CONFIG_URL BACKEND_URL "/api/devices/mac/%s/config"
 
 #endif

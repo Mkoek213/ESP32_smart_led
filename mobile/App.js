@@ -10,7 +10,7 @@ import SettingsScreen from './components/SettingsScreen';
 
 // Singleton BleManager
 const manager = new BleManager();
-const DEFAULT_HOST = 'http://172.20.10.7:8080';
+const DEFAULT_HOST = 'http://192.168.0.186:8080';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('dashboard'); // 'dashboard' | 'provisioning' | 'settings'
@@ -24,65 +24,65 @@ export default function App() {
 
   const requestPermissions = async () => {
     if (Platform.OS === 'android') {
-        // Request Expo Location Permission (this handles Manifest)
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-           Alert.alert('Permission denied', 'Location permission is required for Bluetooth scanning.');
-           return;
-        }
+      // Request Expo Location Permission (this handles Manifest)
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission denied', 'Location permission is required for Bluetooth scanning.');
+        return;
+      }
 
-        // Request Android 12+ Bluetooth Permissions
-        if (Platform.Version >= 31) {
-            const granted = await PermissionsAndroid.requestMultiple([
-                PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
-                PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-            ]);
-            
-            const allGranted = Object.values(granted).every(
-                perm => perm === PermissionsAndroid.RESULTS.GRANTED
-            );
+      // Request Android 12+ Bluetooth Permissions
+      if (Platform.Version >= 31) {
+        const granted = await PermissionsAndroid.requestMultiple([
+          PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+          PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        ]);
 
-            setPermissionGranted(true);
-        } else {
-            setPermissionGranted(true);
-        }
-    } else {
-        // iOS permissions are handled by plist and triggered on usage
+        const allGranted = Object.values(granted).every(
+          perm => perm === PermissionsAndroid.RESULTS.GRANTED
+        );
+
         setPermissionGranted(true);
+      } else {
+        setPermissionGranted(true);
+      }
+    } else {
+      // iOS permissions are handled by plist and triggered on usage
+      setPermissionGranted(true);
     }
   };
 
   const renderScreen = () => {
     if (currentScreen === 'dashboard') {
-        return (
-          <DashboardScreen 
-            host={host}
-            setHost={setHost}
-            onNavigateProvision={() => setCurrentScreen('provisioning')} 
-            onNavigateSettings={(deviceId) => {
-                setSettingsDeviceId(deviceId);
-                setCurrentScreen('settings');
-            }}
-          />
-        );
+      return (
+        <DashboardScreen
+          host={host}
+          setHost={setHost}
+          onNavigateProvision={() => setCurrentScreen('provisioning')}
+          onNavigateSettings={(deviceId) => {
+            setSettingsDeviceId(deviceId);
+            setCurrentScreen('settings');
+          }}
+        />
+      );
     } else if (currentScreen === 'provisioning') {
-        return (
-            <ProvisioningScreen 
-                manager={manager} 
-                host={host}
-                onFinish={() => setCurrentScreen('dashboard')}
-                onCancel={() => setCurrentScreen('dashboard')}
-            />
-        );
+      return (
+        <ProvisioningScreen
+          manager={manager}
+          host={host}
+          onFinish={() => setCurrentScreen('dashboard')}
+          onCancel={() => setCurrentScreen('dashboard')}
+        />
+      );
     } else if (currentScreen === 'settings') {
-        return (
-            <SettingsScreen
-                host={host}
-                deviceId={settingsDeviceId}
-                onBack={() => setCurrentScreen('dashboard')}
-            />
-        );
+      return (
+        <SettingsScreen
+          host={host}
+          deviceId={settingsDeviceId}
+          onBack={() => setCurrentScreen('dashboard')}
+        />
+      );
     }
   };
 

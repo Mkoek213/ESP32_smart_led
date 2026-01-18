@@ -198,26 +198,7 @@ static void distance_sensor_task(void *arg) {
   
   // Measure distance every 50ms for ultra-fast detection (20 times per second)
   while (true) {
-    #if USE_REAL_HCSR04
     float distance_cm = sensor->measure_distance_cm();
-    #else
-    // Simulate a person walking by every 15 seconds
-    static int64_t sim_start_time = 0;
-    if (sim_start_time == 0) sim_start_time = esp_timer_get_time() / 1000;
-    
-    int64_t time_diff = (esp_timer_get_time() / 1000) - sim_start_time;
-    float distance_cm;
-    
-    // Every 15 seconds, drop distance to 20cm for 3 seconds to simulate motion
-    if ((time_diff % 15000) < 3000) {
-        distance_cm = 20.0f; 
-    } else {
-        distance_cm = 400.0f;
-    }
-    // Add small noise
-    distance_cm += ((esp_random() % 100) / 100.0f);
-    
-    #endif
 
     if (distance_cm > 0) {
       // Distance measurement successful (logging disabled to reduce clutter)

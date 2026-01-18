@@ -99,7 +99,7 @@ static ble_uuid128_t UUID_CHR_DEVICE_ID = BLE_UUID128_INIT(
 // uuid dla charakterystyki IDS (write)
 static ble_uuid128_t UUID_CHR_IDS = BLE_UUID128_INIT(
     0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0,
-    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf8
+    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf5
 );
 
 static LEDController* s_led = nullptr;
@@ -271,6 +271,11 @@ static int gatt_chr_access_cb(uint16_t conn_handle,
     // ustawianie SSID
     if (ble_uuid_cmp(uuid, &UUID_CHR_SSID.u) == 0) {
         if (ctxt->op == BLE_GATT_ACCESS_OP_WRITE_CHR) {
+            // Reset timer on activity
+            if (s_provisioning_timer != nullptr) {
+                xTimerReset(s_provisioning_timer, 0);
+            }
+
             uint16_t len = OS_MBUF_PKTLEN(ctxt->om);
             if (len > WIFI_SSID_MAX_LEN) {
                 ESP_LOGW(TAG, "SSID too long: %d", len);
@@ -297,6 +302,11 @@ static int gatt_chr_access_cb(uint16_t conn_handle,
     // ustawianie PASSWORD
     if (ble_uuid_cmp(uuid, &UUID_CHR_PASS.u) == 0) {
         if (ctxt->op == BLE_GATT_ACCESS_OP_WRITE_CHR) {
+            // Reset timer on activity
+            if (s_provisioning_timer != nullptr) {
+                xTimerReset(s_provisioning_timer, 0);
+            }
+
             uint16_t len = OS_MBUF_PKTLEN(ctxt->om);
             if (len > WIFI_PASS_MAX_LEN) {
                 ESP_LOGW(TAG, "Password too long: %d", len);
@@ -328,6 +338,11 @@ static int gatt_chr_access_cb(uint16_t conn_handle,
     // komendy: 0x01 = SAVE, 0x02 = RESET (clear config), 0x03 = FACTORY_RESET (unbind device)
     if (ble_uuid_cmp(uuid, &UUID_CHR_CMD.u) == 0) {
         if (ctxt->op == BLE_GATT_ACCESS_OP_WRITE_CHR) {
+            // Reset timer on activity
+            if (s_provisioning_timer != nullptr) {
+                xTimerReset(s_provisioning_timer, 0);
+            }
+
             uint8_t cmd = 0;
             os_mbuf_copydata(ctxt->om, 0, 1, &cmd);
             
@@ -400,6 +415,11 @@ static int gatt_chr_access_cb(uint16_t conn_handle,
     // obsluga zapisu IDS
     if (ble_uuid_cmp(uuid, &UUID_CHR_IDS.u) == 0) {
         if (ctxt->op == BLE_GATT_ACCESS_OP_WRITE_CHR) {
+            // Reset timer on activity
+            if (s_provisioning_timer != nullptr) {
+                xTimerReset(s_provisioning_timer, 0);
+            }
+
             uint16_t len = OS_MBUF_PKTLEN(ctxt->om);
             
             // Max length check
@@ -442,12 +462,8 @@ static int gatt_chr_access_cb(uint16_t conn_handle,
                 strncpy(s_temp_config.deviceId, token, sizeof(s_temp_config.deviceId) - 1);
                 s_temp_config.deviceId[sizeof(s_temp_config.deviceId) - 1] = '\0';
             } else {
-                // Optional: usage of MAC as DeviceID if not provided
-                uint8_t mac[6];
-                ble_provisioning_get_mac_address(mac);
-                snprintf(s_temp_config.deviceId, sizeof(s_temp_config.deviceId), "%02X:%02X:%02X:%02X:%02X:%02X",
-                     mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-                ESP_LOGI(TAG, "No DeviceID provided, using MAC: %s", s_temp_config.deviceId);
+                ESP_LOGE(TAG, "Failed to parse deviceId");
+                return BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN;
             }
 
             ESP_LOGI(TAG, "Parsed IDs: Customer='%s', Location='%s', Device='%s'", 
