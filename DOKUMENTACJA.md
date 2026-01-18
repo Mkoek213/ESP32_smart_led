@@ -9,8 +9,8 @@
 |-----|----------------|-------|
 | 1.  | Mikołaj Kołek  |       |
 | 2.  | Jan Jędra      |       |
-| 3.  | Karol Bystrek  |       |
-| 4.  | Patryk Chamera | pchamera@student.agh.edu.pl       |
+| 3.  | Karol Bystrek  | karbystrek@student.agh.edu.pl |
+| 4.  | Patryk Chamera | pchamera@student.agh.edu.pl   |
 
 ---
 
