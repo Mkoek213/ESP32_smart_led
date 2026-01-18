@@ -10,6 +10,7 @@ const CHR_PASS = "f2debc9a-7856-3412-f0de-bc9a78563412";
 const CHR_CMD = "f4debc9a-7856-3412-f0de-bc9a78563412"; // Write 0x01 to save
 const CHR_IDS = "f5debc9a-7856-3412-f0de-bc9a78563412"; // Combined IDs
 const CHR_MAC = "e0debc9a-7856-3412-f0de-bc9a78563412"; // Read MAC
+const CHR_BROKER_URL = "f8debc9a-7856-3412-f0de-bc9a78563412"; // Broker URL
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -19,6 +20,7 @@ export default function ProvisioningScreen({ manager, host, onFinish, onCancel }
     const [devName, setDevName] = useState('');
     const [locationId, setLocationId] = useState('');
     const [customerId] = useState('1'); // Hidden default
+    const [brokerUrl, setBrokerUrl] = useState('');
 
     const [status, setStatus] = useState('Idle');
     const [device, setDevice] = useState(null);
@@ -32,8 +34,27 @@ export default function ProvisioningScreen({ manager, host, onFinish, onCancel }
 
     useEffect(() => {
         fetchLocations();
+        fetchSystemConfig();
         return () => manager.stopDeviceScan();
     }, []);
+
+    const fetchSystemConfig = async () => {
+        try {
+            console.log(`Fetching config from: ${host}/api/config`);
+            const res = await fetch(`${host}/api/config`);
+            if (res.ok) {
+                const data = await res.json();
+                console.log("System Config:", data);
+                if (data.mqttBrokerUrl) {
+                    setBrokerUrl(data.mqttBrokerUrl);
+                }
+            } else {
+                console.warn("Failed to fetch system config:", res.status);
+            }
+        } catch (e) {
+            console.warn("Error fetching system config:", e);
+        }
+    };
 
     const fetchLocations = async () => {
         try {
@@ -257,6 +278,21 @@ export default function ProvisioningScreen({ manager, host, onFinish, onCancel }
             return;
         }
 
+        if (brokerUrl) {
+            try {
+                console.log(`Writing Broker URL: ${brokerUrl}`);
+                await device.writeCharacteristicWithResponseForService(
+                    SERVICE_UUID, CHR_BROKER_URL, encode(brokerUrl)
+                );
+                setStatus('Broker URL written...');
+                await delay(500);
+            } catch (e) {
+                console.error("Broker URL Write Failed", e);
+                // We don't block if this fails, as device might fallback
+                setStatus(`Warning: Broker URL write failed: ${e.message}`);
+            }
+        }
+
         try {
             console.log("Writing Save Command (0x01)...");
             // Use WithoutResponse to avoid waiting for ack (since device reboots immediately)
@@ -418,4 +454,3 @@ const styles = StyleSheet.create({
     roomItemText: { fontSize: 16 },
     btn: { backgroundColor: '#007AFF', padding: 15, borderRadius: 12, alignItems: 'center' },
 });
-

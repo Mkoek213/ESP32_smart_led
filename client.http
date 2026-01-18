@@ -65,3 +65,7 @@ Authorization: Bearer {{auth_token}}
     "param1": "test value"
   }
 }
+
+### get config
+GET http://localhost:8080/api/config
+Authorization: Bearer {{auth_token}}
