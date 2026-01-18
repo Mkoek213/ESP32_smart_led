@@ -7,7 +7,7 @@
 
 | Lp. | Imię i Nazwisko | Email |
 |-----|----------------|-------|
-| 1.  | Mikołaj Kołek  |       |
+| 1.  | Mikołaj Kołek  | mkolek@student.agh.edu.pl     |
 | 2.  | Jan Jędra      | jjedra@student.agh.edu.pl     |
 | 3.  | Karol Bystrek  | karbystrek@student.agh.edu.pl |
 | 4.  | Patryk Chamera | pchamera@student.agh.edu.pl   |
