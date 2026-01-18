@@ -102,6 +102,12 @@ static ble_uuid128_t UUID_CHR_IDS = BLE_UUID128_INIT(
     0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf5
 );
 
+// uuid dla charakterystyki BROKER_URL (write)
+static ble_uuid128_t UUID_CHR_BROKER_URL = BLE_UUID128_INIT(
+    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0,
+    0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf8
+);
+
 static LEDController* s_led = nullptr;
 static uint8_t s_own_addr_type = 0;
 static bool s_provisioning_active = false;
@@ -473,11 +479,34 @@ static int gatt_chr_access_cb(uint16_t conn_handle,
         }
         return BLE_ATT_ERR_UNLIKELY;
     }
+
+    // obsluga zapisu BROKER_URL
+    if (ble_uuid_cmp(uuid, &UUID_CHR_BROKER_URL.u) == 0) {
+        if (ctxt->op == BLE_GATT_ACCESS_OP_WRITE_CHR) {
+            if (s_provisioning_timer != nullptr) {
+                xTimerReset(s_provisioning_timer, 0);
+            }
+
+            uint16_t len = OS_MBUF_PKTLEN(ctxt->om);
+            if (len > BROKER_URL_MAX_LEN) {
+                ESP_LOGW(TAG, "Broker URL too long: %d", len);
+                return BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN;
+            }
+
+            memset(s_temp_config.brokerUrl, 0, sizeof(s_temp_config.brokerUrl));
+            os_mbuf_copydata(ctxt->om, 0, len, s_temp_config.brokerUrl);
+            s_temp_config.brokerUrl[len] = '\0';
+
+            ESP_LOGI(TAG, "Broker URL received: '%s'", s_temp_config.brokerUrl);
+            return 0;
+        }
+        return BLE_ATT_ERR_UNLIKELY;
+    }
     
     return BLE_ATT_ERR_UNLIKELY;
 }
 
-static struct ble_gatt_chr_def prov_chrs[8];
+static struct ble_gatt_chr_def prov_chrs[9];
 static struct ble_gatt_svc_def gatt_svcs[2];
 
 // Descriptors for characteristics (User Description)
@@ -488,6 +517,7 @@ static const char* desc_pass = "WiFi Password";
 static const char* desc_status = "Provisioning Status";
 static const char* desc_cmd = "Command";
 static const char* desc_ids = "Device IDs (JSON)";
+static const char* desc_broker = "MQTT Broker URL";
 
 // Static UUIDs for descriptors (CUD - Characteristic User Description, 0x2901)
 static const ble_uuid16_t UUID_CUD = BLE_UUID16_INIT(0x2901);
@@ -534,6 +564,12 @@ static int desc_ids_access(uint16_t, uint16_t, struct ble_gatt_access_ctxt *ctxt
     return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
 }
 
+static int desc_broker_access(uint16_t, uint16_t, struct ble_gatt_access_ctxt *ctxt, void*) {
+    ESP_LOGI(TAG, "Reading Broker descriptor");
+    int rc = os_mbuf_append(ctxt->om, desc_broker, strlen(desc_broker));
+    return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+}
+
 // Descriptor definitions - will be filled at runtime
 static struct ble_gatt_dsc_def mac_dsc[2];
 static struct ble_gatt_dsc_def pop_dsc[2];
@@ -542,6 +578,7 @@ static struct ble_gatt_dsc_def pass_dsc[2];
 static struct ble_gatt_dsc_def status_dsc[2];
 static struct ble_gatt_dsc_def cmd_dsc[2];
 static struct ble_gatt_dsc_def ids_dsc[2];
+static struct ble_gatt_dsc_def broker_dsc[2];
 
 static int gatt_svr_init()
 {
@@ -591,6 +628,12 @@ static int gatt_svr_init()
     ids_dsc[0].access_cb = desc_ids_access;
     ids_dsc[0].arg = nullptr;
 
+    memset(broker_dsc, 0, sizeof(broker_dsc));
+    broker_dsc[0].uuid = &UUID_CUD.u;
+    broker_dsc[0].att_flags = BLE_ATT_F_READ;
+    broker_dsc[0].access_cb = desc_broker_access;
+    broker_dsc[0].arg = nullptr;
+
     // Characteristic 0: MAC Address (READ only)
     prov_chrs[0].uuid = &UUID_CHR_MAC.u;
     prov_chrs[0].access_cb = gatt_chr_access_cb;
@@ -634,7 +677,13 @@ static int gatt_svr_init()
     prov_chrs[6].flags = BLE_GATT_CHR_F_WRITE;
     prov_chrs[6].descriptors = ids_dsc;
 
-    // Characteristic 7: Terminator (already zeroed)
+    // Characteristic 7: Broker URL (WRITE only)
+    prov_chrs[7].uuid = &UUID_CHR_BROKER_URL.u;
+    prov_chrs[7].access_cb = gatt_chr_access_cb;
+    prov_chrs[7].flags = BLE_GATT_CHR_F_WRITE;
+    prov_chrs[7].descriptors = broker_dsc;
+
+    // Characteristic 8: Terminator (already zeroed)
 
 
     memset(gatt_svcs, 0, sizeof(gatt_svcs));

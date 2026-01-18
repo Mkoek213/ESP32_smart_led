@@ -1,6 +1,7 @@
 #include "app_mqtt.h"
 #include "app_common.h"
 #include "config.h"
+#include "wifi_config.h"
 #include "esp_mac.h"
 #include "led_config.h"
 #include "sensor_manager.h"
@@ -17,7 +18,6 @@
 #include "freertos/task.h"
 #include "mqtt_client.h"
 
-#define BROKER_URI "mqtt://192.168.0.186:1883"
 #define MQTT_USERNAME ""
 #define MQTT_PASSWORD ""
 
@@ -322,7 +322,16 @@ void app_mqtt_init(void) {
   ESP_LOGI(TAG, "Config Topic: %s", topic_config.c_str());
 
   esp_mqtt_client_config_t mqtt_cfg = {};
-  mqtt_cfg.broker.address.uri = BROKER_URI;
+
+  // Load configuration from NVS
+  WifiConfig wifi_cfg;
+  if (wifi_config_load(wifi_cfg) && strlen(wifi_cfg.brokerUrl) > 0) {
+      ESP_LOGI(TAG, "Using configured MQTT Broker: %s", wifi_cfg.brokerUrl);
+      mqtt_cfg.broker.address.uri = wifi_cfg.brokerUrl;
+  } else {
+      ESP_LOGW(TAG, "No configured broker found, using default: %s", MQTT_BROKER_URL);
+      mqtt_cfg.broker.address.uri = MQTT_BROKER_URL;
+  }
   
   // AWS IoT Core Authentication (Certificate-based)
   mqtt_cfg.broker.verification.certificate = (const char *)root_ca_pem_start;

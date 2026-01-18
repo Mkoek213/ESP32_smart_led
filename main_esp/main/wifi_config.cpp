@@ -11,6 +11,7 @@ static const char* NVS_KEY_PASS = "password";
 static const char* NVS_KEY_CUSTOMER_ID = "customer_id";
 static const char* NVS_KEY_LOCATION_ID = "location_id";
 static const char* NVS_KEY_DEVICE_ID = "device_id";
+static const char* NVS_KEY_BROKER_URL = "broker_url";
 
 bool wifi_config_nvs_init() {
     esp_err_t ret = nvs_flash_init();
@@ -71,9 +72,18 @@ bool wifi_config_load(WifiConfig& cfg) {
         // Not fatal
     }
 
+    required_size = sizeof(cfg.brokerUrl);
+    err = nvs_get_str(handle, NVS_KEY_BROKER_URL, cfg.brokerUrl, &required_size);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "Failed to read brokerUrl: %s", esp_err_to_name(err));
+        // Not fatal, will use default
+        cfg.brokerUrl[0] = '\0';
+    }
+
     nvs_close(handle);
     ESP_LOGI(TAG, "Loaded WiFi config: SSID='%s'", cfg.ssid);
     ESP_LOGI(TAG, "Loaded IDs: Customer='%s', Location='%s', Device='%s'", cfg.customerId, cfg.locationId, cfg.deviceId);
+    ESP_LOGI(TAG, "Loaded Broker: '%s'", cfg.brokerUrl);
     return true;
 }
 
@@ -125,6 +135,15 @@ bool wifi_config_save(const WifiConfig& cfg) {
         return false;
     }
 
+    if (strlen(cfg.brokerUrl) > 0) {
+        err = nvs_set_str(handle, NVS_KEY_BROKER_URL, cfg.brokerUrl);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to write brokerUrl: %s", esp_err_to_name(err));
+            nvs_close(handle);
+            return false;
+        }
+    }
+
     err = nvs_commit(handle);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to commit NVS: %s", esp_err_to_name(err));
@@ -135,6 +154,7 @@ bool wifi_config_save(const WifiConfig& cfg) {
     nvs_close(handle);
     ESP_LOGI(TAG, "Saved WiFi config: SSID='%s'", cfg.ssid);
     ESP_LOGI(TAG, "Saved IDs: Customer='%s', Location='%s', Device='%s'", cfg.customerId, cfg.locationId, cfg.deviceId);
+    ESP_LOGI(TAG, "Saved Broker: '%s'", cfg.brokerUrl);
     return true;
 }
 

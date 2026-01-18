@@ -65,7 +65,7 @@
 #define BACKEND_URL                                                            \
   "http://192.168.0.186:8080" // Change this to your actual backend URL
 #define MQTT_BROKER_URL                                                        \
-  "mqtt://192.168.0.186" // Change this to your MQTT broker URL
+  "mqtt://192.168.0.186:1883" // Default MQTT broker URL (Fallback)
 #define DEVICE_CONFIG_URL BACKEND_URL "/api/devices/mac/%s/config"
 
 #endif
