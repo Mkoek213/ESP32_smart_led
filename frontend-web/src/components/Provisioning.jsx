@@ -11,6 +11,7 @@ const CHR_PASS = "f2debc9a-7856-3412-f0de-bc9a78563412";
 const CHR_STATUS = "f3debc9a-7856-3412-f0de-bc9a78563412";
 const CHR_CMD = "f4debc9a-7856-3412-f0de-bc9a78563412";
 const CHR_IDS = "f5debc9a-7856-3412-f0de-bc9a78563412";
+const CHR_BROKER_URL = "f8debc9a-7856-3412-f0de-bc9a78563412";
 
 export default function Provisioning() {
     const [device, setDevice] = useState(null);
@@ -21,15 +22,25 @@ export default function Provisioning() {
     const [customerId, setCustomerId] = useState('1'); // Defaulting to 1 as per backend schema
     const [locationId, setLocationId] = useState('');
     const [deviceName, setDeviceName] = useState('');
+    const [brokerUrl, setBrokerUrl] = useState('');
     const [locations, setLocations] = useState([]);
     const [status, setStatus] = useState('Idle');
     const navigate = useNavigate();
 
-    // Load locations on mount
+    // Load locations and config on mount
     React.useEffect(() => {
         api.locations.list()
             .then(setLocations)
             .catch(err => console.error('Failed to load locations:', err));
+            
+        api.system.getConfig()
+            .then(config => {
+                if (config && config.mqttBrokerUrl) {
+                    console.log("Fetched broker URL:", config.mqttBrokerUrl);
+                    setBrokerUrl(config.mqttBrokerUrl);
+                }
+            })
+            .catch(err => console.error('Failed to load system config:', err));
     }, []);
 
     const connect = async () => {
@@ -95,6 +106,18 @@ export default function Provisioning() {
             // Write Password
             const passChr = await service.getCharacteristic(CHR_PASS);
             await passChr.writeValue(enc.encode(password));
+            
+            // Write Broker URL if available
+            if (brokerUrl) {
+                try {
+                    console.log(`Writing Broker URL: ${brokerUrl}`);
+                    const brokerChr = await service.getCharacteristic(CHR_BROKER_URL);
+                    await brokerChr.writeValue(enc.encode(brokerUrl));
+                } catch (e) {
+                    console.error("Broker URL Write Failed", e);
+                    // Continue even if this fails, as device might rely on default or previous
+                }
+            }
 
             // Write IDs
             const idsChr = await service.getCharacteristic(CHR_IDS);

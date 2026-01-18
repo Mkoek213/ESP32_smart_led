@@ -152,6 +152,15 @@ export const api = {
             return text ? JSON.parse(text) : null;
         }
     },
+    system: {
+        getConfig: async () => {
+            const res = await fetch(`${BASE_URL}/config`, {
+                headers: getHeaders()
+            });
+            if (!res.ok) throw new Error('Failed to fetch system config');
+            return res.json();
+        }
+    },
     firmware: {
         upload: async (file, version) => {
             const formData = new FormData();
